@@ -176,10 +176,18 @@ async function gpost(model,body){
  catch(e){throw new Error('اتصال به Gemini برقرار نشد. اینترنت یا VPN را بررسی کنید.')}
  if(!r.ok){var m='';try{m=(await r.json()).error.message}catch(e){}throw new Error('خطای Gemini ('+r.status+')'+(m?': '+m:''))}
  return r.json()}
-async function geminiCall(parts){
- var j=await gpost(gcfg().model,{contents:[{role:'user',parts:parts}],generationConfig:{responseMimeType:'application/json',temperature:0}}),txt='';
- try{txt=j.candidates[0].content.parts.map(function(p){return p.text||''}).join('')}catch(e){throw new Error('پاسخ Gemini خالی بود.')}
+var THINK=[{thinkingConfig:{thinkingBudget:0}},{thinkingConfig:{thinkingLevel:'minimal'}},{}];
+function thinkIdx(){try{return +localStorage.getItem('mahdavan_think')||0}catch(e){return 0}}
+function parseOut(j){var txt='';try{txt=j.candidates[0].content.parts.map(function(p){return p.text||''}).join('')}catch(e){throw new Error('پاسخ Gemini خالی بود.')}
  try{return JSON.parse(txt.replace(/```json|```/g,'').trim())}catch(e){throw new Error('پاسخ Gemini قابل فهم نبود.')}}
+// Speed: ask the model not to "think" first. Models differ in how to say that, so try the variants and remember the one that works.
+async function geminiCall(parts){
+ var last=null;
+ for(var k=thinkIdx();k<THINK.length;k++){
+  var cfg=Object.assign({responseMimeType:'application/json',temperature:0,maxOutputTokens:1024},THINK[k]);
+  try{var j=await gpost(gcfg().model,{contents:[{role:'user',parts:parts}],generationConfig:cfg});try{localStorage.setItem('mahdavan_think',String(k))}catch(e){}return parseOut(j)}
+  catch(e){last=e;if(!/\(400\)/.test(e.message)||k===THINK.length-1)throw e}}
+ throw last}
 // Model names change often: ask Google which models exist for this key and pick the newest flash + TTS model.
 async function listModels(){
  var r;try{r=await fetch(GBASE+'models?pageSize=200&key='+encodeURIComponent(gcfg().key))}catch(e){throw new Error('اتصال به Gemini برقرار نشد. اینترنت یا VPN را بررسی کنید.')}
@@ -195,16 +203,21 @@ async function autoModels(){
 var ttsCtx=null,ttsStop=null,ttsNoted=false,ttsGen=0,speaking=false;
 function stopSpeech(){ttsGen++;if(ttsStop)ttsStop();try{if('speechSynthesis' in window)speechSynthesis.cancel()}catch(e){}}
 function unlockAudio(){try{var AC=window.AudioContext||window.webkitAudioContext;if(!ttsCtx&&AC)ttsCtx=new AC();if(ttsCtx&&ttsCtx.state==='suspended')ttsCtx.resume()}catch(e){}}
+var ttsCache={},ttsKeys=[],lastTTS=0;
 async function geminiSpeak(text){
- var gen=ttsGen,g=gcfg();if(!g.tts){try{await autoModels();g=gcfg()}catch(e){}}
- if(!g.tts)throw new Error('مدل صدای Gemini برای این کلید پیدا نشد.');
+ var gen=ttsGen,g=gcfg(),buf=ttsCache[text];
+ if(!g.tts&&!buf){try{await autoModels();g=gcfg()}catch(e){}}
  unlockAudio();if(!ttsCtx)throw new Error('پخش صدا در این مرورگر ممکن نیست.');
- var j=await gpost(g.tts,{contents:[{parts:[{text:'با لحن دوستانه و به فارسی روان بخوان: '+text}]}],generationConfig:{responseModalities:['AUDIO'],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:'Kore'}}}}});
- var p,d;try{p=j.candidates[0].content.parts[0];d=p.inlineData||p.inline_data;if(!d||!d.data)throw 0}catch(e){throw new Error('Gemini صدایی برنگرداند.')}
- var rate=24000,mm=/rate=(\d+)/.exec(d.mimeType||d.mime_type||'');if(mm)rate=+mm[1];
- if(gen!==ttsGen)return; // user interrupted while audio was being fetched
- var bin=atob(d.data),n=bin.length>>1,buf=ttsCtx.createBuffer(1,Math.max(1,n),rate),ch=buf.getChannelData(0);
- for(var i=0;i<n;i++){var v=bin.charCodeAt(2*i)|(bin.charCodeAt(2*i+1)<<8);if(v&0x8000)v-=0x10000;ch[i]=v/32768}
+ if(buf){lastTTS=0}else{
+  if(!g.tts)throw new Error('مدل صدای Gemini برای این کلید پیدا نشد.');
+  var t0=Date.now();
+  var j=await gpost(g.tts,{contents:[{parts:[{text:'با لحن دوستانه و به فارسی روان بخوان: '+text}]}],generationConfig:{responseModalities:['AUDIO'],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:'Kore'}}}}});
+  var p,d;try{p=j.candidates[0].content.parts[0];d=p.inlineData||p.inline_data;if(!d||!d.data)throw 0}catch(e){throw new Error('Gemini صدایی برنگرداند.')}
+  var rate=24000,mm=/rate=(\d+)/.exec(d.mimeType||d.mime_type||'');if(mm)rate=+mm[1];
+  var bin=atob(d.data),n=bin.length>>1;buf=ttsCtx.createBuffer(1,Math.max(1,n),rate);var ch=buf.getChannelData(0);
+  for(var i=0;i<n;i++){var v=bin.charCodeAt(2*i)|(bin.charCodeAt(2*i+1)<<8);if(v&0x8000)v-=0x10000;ch[i]=v/32768}
+  lastTTS=Date.now()-t0;ttsCache[text]=buf;ttsKeys.push(text);if(ttsKeys.length>40)delete ttsCache[ttsKeys.shift()]}
+ if(gen!==ttsGen)return; // user interrupted while audio was being prepared
  await new Promise(function(res){var src=ttsCtx.createBufferSource();src.buffer=buf;src.connect(ttsCtx.destination);var done=false;function fin(){if(!done){done=true;ttsStop=null;res()}}src.onended=fin;ttsStop=function(){try{src.stop()}catch(e){}fin()};src.start();setTimeout(fin,buf.duration*1000+1500)})}
 function noteTTS(e){if(ttsNoted)return;ttsNoted=true;addMsg('ℹ️ صدای Gemini در دسترس نیست ('+(e&&e.message?e.message:'خطا')+'). فقط متن نمایش داده می‌شود.')}
 function aiPrompt(){
@@ -227,12 +240,15 @@ async function aiInterpret(input){
  var parts=[{text:aiPrompt()}];
  if(input.text)parts.push({text:'User said: '+input.text});else parts.push({inline_data:{mime_type:'audio/wav',data:input.wav}});
  var o=await geminiCall(parts);return {heard:String(o.heard||''),commands:Array.isArray(o.commands)?o.commands:[],reply:String(o.reply||'')}}
+function sec(ms){return P((ms/1000).toFixed(1)).replace('.','٫')+' ثانیه'}
+function addDim(t){var d=document.createElement('div');d.className='dim';d.style.cssText='font-size:11px;padding:0 6px';d.textContent=t;$('#msgs').appendChild(d);$('#msgs').scrollTop=1e6}
 async function interpret(input){
  setAv('processing');
- try{var out=await aiInterpret(input);if(out.heard&&!input.text)addMsg(out.heard,'u');
+ try{var tU=Date.now();var out=await aiInterpret(input);tU=Date.now()-tU;lastTTS=0;if(out.heard&&!input.text)addMsg(out.heard,'u');
   var cmds=out.commands.filter(Boolean);
-  if(!cmds.length){await say(out.reply||(input.text?'متوجه نشدم. مثلاً بگویید: «فردا ساعت پنج آقای احمدی را برای اصلاح ثبت کن».':'متوجه نشدم. دوباره بگویید یا بنویسید.'));return}
-  for(var i=0;i<cmds.length;i++)await handle(String(cmds[i]),true)
+  if(!cmds.length){await say(out.reply||(input.text?'متوجه نشدم. مثلاً بگویید: «فردا ساعت پنج آقای احمدی را برای اصلاح ثبت کن».':'متوجه نشدم. دوباره بگویید یا بنویسید.'));addDim('⏱ فهمیدن: '+sec(tU)+(lastTTS?' · ساخت صدا: '+sec(lastTTS):''));return}
+  for(var i=0;i<cmds.length;i++)await handle(String(cmds[i]),true);
+  addDim('⏱ فهمیدن: '+sec(tU)+(lastTTS?' · ساخت صدا: '+sec(lastTTS):''))
  }catch(e){setAv('error');addMsg(e.message,'er');setTimeout(function(){setAv('idle')},1800)}}
 function b64(buf){var b=new Uint8Array(buf),s='',n=0x8000;for(var i=0;i<b.length;i+=n)s+=String.fromCharCode.apply(null,b.subarray(i,i+n));return btoa(s)}
 async function toWav(blob){
@@ -245,9 +261,18 @@ async function toWav(blob){
  w(0,'RIFF');v.setUint32(4,36+d.length*2,true);w(8,'WAVE');w(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,16000,true);v.setUint32(28,32000,true);v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,'data');v.setUint32(40,d.length*2,true);
  for(var i=0;i<d.length;i++){var x=Math.max(-1,Math.min(1,d[i]));v.setInt16(44+i*2,x<0?x*0x8000:x*0x7fff,true)}
  return b64(v.buffer)}
-var aiRec=null,aiTimer=null;
+var aiRec=null,aiTimer=null,aiHeard=false;
+function startVAD(stream,mr){
+ try{unlockAudio();if(!ttsCtx)return false;var src=ttsCtx.createMediaStreamSource(stream),an=ttsCtx.createAnalyser();an.fftSize=1024;src.connect(an);
+  var buf=new Float32Array(an.fftSize),t0=Date.now(),floor=0,n=0,lastLoud=Date.now();
+  var iv=setInterval(function(){if(!aiRec||mr.state!=='recording'){clearInterval(iv);try{src.disconnect()}catch(e){}return}
+   an.getFloatTimeDomainData(buf);var sum=0;for(var i=0;i<buf.length;i++)sum+=buf[i]*buf[i];var rms=Math.sqrt(sum/buf.length),el=Date.now()-t0;
+   if(el<400){floor=(floor*n+rms)/(n+1);n++;return}
+   if(rms>Math.max(0.008,floor*2.5)){aiHeard=true;lastLoud=Date.now()}
+   if(aiHeard&&Date.now()-lastLoud>1200)mr.stop();else if(!aiHeard&&el>7000)mr.stop()},100);
+  return true}catch(e){return false}}
 async function recordAI(){
- if(aiRec){aiRec.stop();return}
+ if(aiRec){aiHeard=true;aiRec.stop();return}
  try{try{speechSynthesis.cancel()}catch(e){}
   var stream=await navigator.mediaDevices.getUserMedia({audio:true});
   var mime=window.MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported('audio/mp4')?'audio/mp4':'';
@@ -255,10 +280,11 @@ async function recordAI(){
   mr.ondataavailable=function(e){if(e.data&&e.data.size)chunks.push(e.data)};
   mr.onstop=async function(){clearTimeout(aiTimer);aiRec=null;stream.getTracks().forEach(function(t){t.stop()});
    if(!chunks.length){setAv('idle');return}
+   if(!aiHeard){setAv('idle');addMsg('صدایی شنیده نشد. نزدیک‌تر صحبت کنید یا بنویسید.','er');return}
    setAv('processing');
    try{var wav=await toWav(new Blob(chunks,{type:mr.mimeType}));await interpret({wav:wav})}
    catch(e){setAv('error');addMsg(/Gemini|اتصال|کلید/.test(e.message)?e.message:'ضبط صدا قابل پردازش نبود. دوباره امتحان کنید یا بنویسید.','er');setTimeout(function(){setAv('idle')},1800)}};
-  aiRec=mr;mr.start();setAv('listening');aiTimer=setTimeout(function(){if(aiRec&&aiRec.state==='recording')aiRec.stop()},12000);
+  aiRec=mr;mr.start();setAv('listening');aiHeard=!startVAD(stream,mr);aiTimer=setTimeout(function(){if(aiRec&&aiRec.state==='recording')aiRec.stop()},12000);
  }catch(e){aiRec=null;setAv('error');addMsg('دسترسی به میکروفن داده نشد. در تنظیمات Safari اجازهٔ میکروفن را بدهید یا بنویسید.','er');setTimeout(function(){setAv('idle')},1800)}}
 function micOk(){return !!(window.SpeechRecognition||window.webkitSpeechRecognition)||(!!gcfg().key&&!!(navigator.mediaDevices&&window.MediaRecorder))}
 function updateMic(){var m=$('#pmic');if(m)m.style.display=micOk()?'':'none';var i=$('#pin');if(i)i.placeholder=micOk()?'بنویسید یا میکروفن را بزنید…':'دستور را بنویسید (میکروفن در دسترس نیست)'}
