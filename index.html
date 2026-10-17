@@ -122,6 +122,7 @@ function settings(){
  var s=db.settings;
  return '<div class="card"><h2>ساعت و روزهای کاری</h2><div class="row"><div class="grow"><label>شروع</label><input class="in" type="time" id="ws" value="'+s.work_start+'"></div><div class="grow"><label>پایان</label><input class="in" type="time" id="we" value="'+s.work_end+'"></div></div><label>روزهای کاری</label><div class="row wrapf">'+M.WEEKDAYS.map(function(w,i){return '<button class="btn sm '+(s.work_days.indexOf(i)>-1?'pri':'')+'" data-wd="'+i+'">'+w+'</button>'}).join('')+'</div></div>'+
  '<div class="card"><h2>خدمات و مدت (دقیقه)</h2><div id="svs">'+s.services.map(function(v,i){return '<div class="row" style="margin-bottom:6px"><input class="in" data-sn="'+i+'" value="'+esc(v.name)+'" style="flex:2"><input class="in" type="number" min="5" step="5" data-sd="'+i+'" value="'+v.duration+'" style="flex:1"><button class="btn dng sm" data-sx="'+i+'">✕</button></div>'}).join('')+'</div><button class="btn" id="sadd" style="width:100%;margin-bottom:8px">＋ افزودن خدمت</button><button class="btn pri" id="ssave" style="width:100%">ذخیرهٔ تنظیمات</button><div id="smsg"></div></div>'+
+ '<div class="card"><h2>هوش مصنوعی (Gemini) — اختیاری</h2><p class="dim">با کلید رایگان Gemini می‌توانید با میکروفن همین برنامه حرف بزنید و جمله‌های آزاد بگویید. صدا و متن فرمان (به‌همراه نام مشتری) برای پردازش به گوگل فرستاده می‌شود. کلید فقط روی همین گوشی می‌ماند و در پشتیبان نیست.</p><label>کلید API (از aistudio.google.com ← Get API key)</label><input class="in" id="gk" type="password" dir="ltr" autocomplete="off" placeholder="'+(gcfg().key?'کلید ذخیره شده است — برای تغییر، کلید جدید را وارد کنید':'AIza…')+'"><label>مدل</label><input class="in" id="gm" dir="ltr" value="'+esc(gcfg().model)+'"><div class="row" style="margin-top:10px"><button class="btn pri grow" id="gsave">ذخیره</button><button class="btn grow" id="gtest">آزمایش اتصال</button><button class="btn dng" id="gdel">حذف</button></div><div id="gmsg"></div></div>'+
  '<div class="card"><h2>پشتیبان‌گیری</h2><p class="dim">اطلاعات فقط روی همین دستگاه ذخیره می‌شود. حتماً مرتب پشتیبان بگیرید؛ با پاک شدن اطلاعات Safari نوبت‌ها از بین می‌روند.</p><div class="row"><button class="btn grow" id="exp">⬇ دریافت پشتیبان</button><button class="btn grow" id="imp">⬆ بازیابی</button></div><input type="file" id="impf" accept=".json,application/json" hidden><div id="bmsg"></div><p class="dim" id="persist"></p></div>'}
 function render(){
  var v=tab==='home'?home():tab==='cal'?cal():tab==='list'?list():settings();
@@ -163,6 +164,73 @@ function openForm(a,date){
  draw()}
 function mutate(id,fn,okmsg){var a=db.appts.filter(function(x){return x.id===id})[0];if(!a)return;var snap=JSON.stringify(db.appts);fn(a);if(!save()){db.appts=JSON.parse(snap);flash={ok:false,t:'ذخیره نشد؛ تغییر اعمال نشد.'}}else flash={ok:true,t:okmsg};render()}
 
+
+/* ---------- Gemini (optional, free key) ---------- */
+var GKEY='mahdavan_gemini_v1';
+function gcfg(){try{var c=JSON.parse(localStorage.getItem(GKEY)||'{}');return {key:c.key||'',model:c.model||'gemini-2.5-flash'}}catch(e){return {key:'',model:'gemini-2.5-flash'}}}
+function gsave(c){try{localStorage.setItem(GKEY,JSON.stringify(c));return true}catch(e){return false}}
+async function geminiCall(parts){
+ var g=gcfg();if(!g.key)throw new Error('کلید Gemini در تنظیمات وارد نشده است.');
+ var r;try{r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(g.model)+':generateContent?key='+encodeURIComponent(g.key),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{role:'user',parts:parts}],generationConfig:{responseMimeType:'application/json',temperature:0}})})}
+ catch(e){throw new Error('اتصال به Gemini برقرار نشد. اینترنت یا VPN را بررسی کنید.')}
+ if(!r.ok){var m='';try{m=(await r.json()).error.message}catch(e){}throw new Error('خطای Gemini ('+r.status+')'+(m?': '+m:''))}
+ var j=await r.json(),txt='';try{txt=j.candidates[0].content.parts.map(function(p){return p.text||''}).join('')}catch(e){throw new Error('پاسخ Gemini خالی بود.')}
+ try{return JSON.parse(txt.replace(/```json|```/g,'').trim())}catch(e){throw new Error('پاسخ Gemini قابل فهم نبود.')}}
+function aiPrompt(){
+ var ph=dlg.phase==='confirming'?'waiting for yes/no confirmation':dlg.phase==='collecting'?('app is asking for missing info'+(dlg.asking?' (asked: '+dlg.asking+')':'')):'free (no pending question)';
+ return ['You are the command interpreter of a Persian barbershop appointment app. The user speaks or writes Persian.',
+ 'Today: '+M.formatJalali(today)+' (Gregorian '+today+'). Services: '+db.settings.services.map(function(x){return x.name}).join(', ')+'. Dialog state: '+ph+'.',
+ 'Return ONLY JSON: {"heard":"exact transcript of what the user said","commands":["..."]}.',
+ 'commands = 1-2 short Persian sentences for a rule-based parser, executed in order. Rules:',
+ '- Latin digits only. Times always 24h as "ساعت HH:MM" (e.g. ساعت 17:00). A bare "ساعت پنج" means 17:00.',
+ '- Dates: فردا / امروز / پس‌فردا, a weekday name (e.g. شنبه), or Jalali "D ماه" (e.g. 25 مهر). Never Gregorian.',
+ '- Create (exact shape): "برای {date} ساعت HH:MM، {name with title} رو برای {service} ثبت کن". Example: "برای فردا ساعت 17:00، آقای احمدی رو برای اصلاح ثبت کن". Never start a command with "ثبت کن".',
+ '- Cancel: "لغو کن نوبت {name} {date if said}".',
+ '- Change time: two commands: ["جابجا کن نوبت {name} {old date if said}", "{new date} ساعت HH:MM"].',
+ '- List: "چه نوبت‌هایی دارم {date}".',
+ '- If waiting for confirmation: the only command is "بله" or "نه".',
+ '- If the app is asking for missing info: the command is just the answer (e.g. "آقای رضایی", "ساعت 18:00", or the service name).',
+ '- Keep names exactly as spoken, with title (آقای/خانم) if said. If it is not an appointment request or you are unsure, return "commands": [].'].join('\n')}
+async function aiInterpret(input){
+ var parts=[{text:aiPrompt()}];
+ if(input.text)parts.push({text:'User said: '+input.text});else parts.push({inline_data:{mime_type:'audio/wav',data:input.wav}});
+ var o=await geminiCall(parts);return {heard:String(o.heard||''),commands:Array.isArray(o.commands)?o.commands:[]}}
+async function interpret(input){
+ setAv('processing');
+ try{var out=await aiInterpret(input);if(out.heard&&!input.text)addMsg(out.heard,'u');
+  var cmds=out.commands.filter(Boolean);
+  if(!cmds.length){await say(input.text?'متوجه نشدم. مثلاً بگویید: «فردا ساعت پنج آقای احمدی را برای اصلاح ثبت کن».':'متوجه نشدم. دوباره بگویید یا بنویسید.');return}
+  for(var i=0;i<cmds.length;i++)await handle(String(cmds[i]),true)
+ }catch(e){setAv('error');addMsg(e.message,'er');setTimeout(function(){setAv('idle')},1800)}}
+function b64(buf){var b=new Uint8Array(buf),s='',n=0x8000;for(var i=0;i<b.length;i+=n)s+=String.fromCharCode.apply(null,b.subarray(i,i+n));return btoa(s)}
+async function toWav(blob){
+ var AC=window.AudioContext||window.webkitAudioContext,ac=new AC(),buf=await blob.arrayBuffer();
+ var audio=await new Promise(function(res,rej){ac.decodeAudioData(buf,res,rej)});try{ac.close()}catch(e){}
+ var OC=window.OfflineAudioContext||window.webkitOfflineAudioContext,oc=new OC(1,Math.max(1,Math.ceil(audio.duration*16000)),16000),src=oc.createBufferSource();
+ src.buffer=audio;src.connect(oc.destination);src.start();
+ var rb=await new Promise(function(res,rej){var p=oc.startRendering();if(p&&p.then)p.then(res,rej);else oc.oncomplete=function(e){res(e.renderedBuffer)}});
+ var d=rb.getChannelData(0),v=new DataView(new ArrayBuffer(44+d.length*2));function w(o,t){for(var i=0;i<t.length;i++)v.setUint8(o+i,t.charCodeAt(i))}
+ w(0,'RIFF');v.setUint32(4,36+d.length*2,true);w(8,'WAVE');w(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,16000,true);v.setUint32(28,32000,true);v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,'data');v.setUint32(40,d.length*2,true);
+ for(var i=0;i<d.length;i++){var x=Math.max(-1,Math.min(1,d[i]));v.setInt16(44+i*2,x<0?x*0x8000:x*0x7fff,true)}
+ return b64(v.buffer)}
+var aiRec=null,aiTimer=null;
+async function recordAI(){
+ if(aiRec){aiRec.stop();return}
+ try{try{speechSynthesis.cancel()}catch(e){}
+  var stream=await navigator.mediaDevices.getUserMedia({audio:true});
+  var mime=window.MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported('audio/mp4')?'audio/mp4':'';
+  var chunks=[],mr=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream);
+  mr.ondataavailable=function(e){if(e.data&&e.data.size)chunks.push(e.data)};
+  mr.onstop=async function(){clearTimeout(aiTimer);aiRec=null;stream.getTracks().forEach(function(t){t.stop()});
+   if(!chunks.length){setAv('idle');return}
+   setAv('processing');
+   try{var wav=await toWav(new Blob(chunks,{type:mr.mimeType}));await interpret({wav:wav})}
+   catch(e){setAv('error');addMsg(/Gemini|اتصال|کلید/.test(e.message)?e.message:'ضبط صدا قابل پردازش نبود. دوباره امتحان کنید یا بنویسید.','er');setTimeout(function(){setAv('idle')},1800)}};
+  aiRec=mr;mr.start();setAv('listening');aiTimer=setTimeout(function(){if(aiRec&&aiRec.state==='recording')aiRec.stop()},12000);
+ }catch(e){aiRec=null;setAv('error');addMsg('دسترسی به میکروفن داده نشد. در تنظیمات Safari اجازهٔ میکروفن را بدهید یا بنویسید.','er');setTimeout(function(){setAv('idle')},1800)}}
+function micOk(){return !!(window.SpeechRecognition||window.webkitSpeechRecognition)||(!!gcfg().key&&!!(navigator.mediaDevices&&window.MediaRecorder))}
+function updateMic(){var m=$('#pmic');if(m)m.style.display=micOk()?'':'none';var i=$('#pin');if(i)i.placeholder=micOk()?'بنویسید یا میکروفن را بزنید…':'دستور را بنویسید (میکروفن در دسترس نیست)'}
+
 /* ---------- assistant ---------- */
 var dlg=M.initialState(),aState='idle',recog=null,muted=false,busy=false;
 function setAv(s){aState=s;var h=$('#avh');if(h)h.innerHTML=avatar(s,48);$('#fab').innerHTML=avatar(s,54)}
@@ -193,13 +261,15 @@ async function exec(a){
   else if(a.type==='cancel'){db.appts.forEach(function(x){if(x.id===a.id)x.status='cancelled'});if(!save())throw 0;render();await say('نوبت لغو شد.','ok')}
   else if(a.type==='reschedule'){db.appts.forEach(function(x){if(x.id===a.id){x.date=a.date;x.start=a.start;x.end=a.end}});if(!save())throw 0;render();await say('نوبت منتقل شد.','ok')}
  }catch(e){db.appts=JSON.parse(snap);await say('انجام نشد: ذخیره‌سازی روی این دستگاه ناموفق بود.','err')}}
-async function handle(t){
- t=(t||'').trim();if(!t||busy)return;busy=true;addMsg(t,'u');setAv('processing');
+async function handle(t,noEcho){
+ t=(t||'').trim();if(!t||(busy&&!noEcho))return;
+ if(!noEcho&&gcfg().key&&dlg.phase==='idle'&&M.parseCommand(t,today,db.settings.services).intent==='unknown'){busy=true;addMsg(t,'u');try{await interpret({text:t})}finally{busy=false}return}
+ busy=true;if(!noEcho)addMsg(t,'u');setAv('processing');
  var r=M.step(dlg,t,{today:today,services:db.settings.services,appointments:db.appts,work:{start:db.settings.work_start,end:db.settings.work_end,days:db.settings.work_days},nowMinutes:M.nowMinutesTehran()});
  dlg=r.state;chips(r.recognized);$('#yn').style.display=dlg.phase==='confirming'?'flex':'none';
  if(r.action){$('#yn').style.display='none';await exec(r.action)}else await say(r.say);
  $('#yn').style.display=dlg.phase==='confirming'?'flex':'none';busy=false}
-function listen(){var C=window.SpeechRecognition||window.webkitSpeechRecognition;if(!C)return;if(recog){try{recog.stop()}catch(e){}return}
+function listen(){if(gcfg().key&&navigator.mediaDevices&&window.MediaRecorder)return recordAI();var C=window.SpeechRecognition||window.webkitSpeechRecognition;if(!C)return;if(recog){try{recog.stop()}catch(e){}return}
  try{speechSynthesis.cancel()}catch(e){}
  var r=new C();r.lang='fa-IR';r.interimResults=false;r.continuous=false;recog=r;setAv('listening');
  r.onresult=function(e){var x=e.results[e.results.length-1];if(x.isFinal)handle(x[0].transcript)};
@@ -212,7 +282,7 @@ function closePanel(){try{if(recog)recog.stop();speechSynthesis.cancel()}catch(e
 
 /* ---------- events ---------- */
 document.addEventListener('click',function(e){
- var t=e.target.closest('[data-tab],[data-new],[data-edit],[data-done],[data-cancel],[data-day],[data-mv],[data-lt],[data-wd],[data-sx],#openA,#sadd,#ssave,#exp,#imp,#fab,#pclose,#pmute,#pmic,#pyes,#pno');if(!t)return;var d=t.dataset;
+ var t=e.target.closest('[data-tab],[data-new],[data-edit],[data-done],[data-cancel],[data-day],[data-mv],[data-lt],[data-wd],[data-sx],#openA,#sadd,#ssave,#exp,#imp,#fab,#pclose,#pmute,#pmic,#pyes,#pno,#gsave,#gtest,#gdel');if(!t)return;var d=t.dataset;
  if(d.tab){tab=d.tab;render();window.scrollTo(0,0)}
  else if(d.new!==undefined)openForm(null,d.new);
  else if(d.edit)openForm(db.appts.filter(function(x){return x.id===d.edit})[0]);
@@ -229,6 +299,14 @@ document.addEventListener('click',function(e){
   if(er){m.className='err';m.textContent=er}else{m.className=save()?'ok':'err';m.textContent=save()?'تنظیمات ذخیره شد.':'ذخیره نشد.'}}
  else if(t.id==='exp'){var b=new Blob([JSON.stringify(db,null,1)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='mahdavan-backup-'+today+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},4000);$('#bmsg').className='ok';$('#bmsg').textContent='فایل پشتیبان آماده شد.'}
  else if(t.id==='imp')$('#impf').click();
+
+ else if(t.id==='gsave'||t.id==='gtest'||t.id==='gdel'){var gm=$('#gmsg');function gs(ok,x){gm.className=ok?'ok':'err';gm.textContent=x}
+  var cur=gcfg(),nk=($('#gk').value||'').trim(),nm=($('#gm').value||'').trim()||'gemini-2.5-flash';
+  if(t.id==='gdel'){gs(gsave({key:'',model:nm}),'کلید حذف شد.');updateMic();return}
+  if(nk)cur.key=nk;cur.model=nm;
+  if(!gsave(cur))return gs(false,'ذخیره نشد.');updateMic();
+  if(t.id==='gsave')return gs(true,cur.key?'ذخیره شد. حالا دکمهٔ میکروفن دستیار با Gemini کار می‌کند.':'مدل ذخیره شد، ولی کلیدی وارد نشده است.');
+  gs(true,'در حال آزمایش…');geminiCall([{text:'Return ONLY this JSON: {"ok":true}'}]).then(function(o){gs(!!o.ok,o.ok?'اتصال برقرار است ✓':'پاسخ غیرمنتظره بود.')}).catch(function(e){gs(false,e.message)})}
  else if(t.id==='pclose')closePanel();
  else if(t.id==='pmute'){muted=!muted;t.textContent=muted?'🔇':'🔊';try{speechSynthesis.cancel()}catch(x){}}
  else if(t.id==='pmic'){unlockSpeech();listen()}
@@ -243,7 +321,7 @@ $('#ptxt').addEventListener('submit',function(e){e.preventDefault();unlockSpeech
 function net(){$('#off').style.display=navigator.onLine?'none':'block'}window.addEventListener('online',net);window.addEventListener('offline',net);net();
 
 load();render();setAv('idle');
-var SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){$('#pmic').style.display='none';$('#pin').placeholder='دستور را بنویسید (میکروفن در دسترس نیست)'}
+updateMic();
 $('#msgs').innerHTML='';addMsg('سلام! بگویید چه نوبتی ثبت یا لغو کنم. مثلاً: «برای فردا ساعت پنج، آقای احمدی رو برای اصلاح ثبت کن».');
 if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();
 if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0)navigator.serviceWorker.register('sw.js').catch(function(){});
