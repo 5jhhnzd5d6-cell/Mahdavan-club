@@ -167,20 +167,51 @@ function mutate(id,fn,okmsg){var a=db.appts.filter(function(x){return x.id===id}
 
 /* ---------- Gemini (optional, free key) ---------- */
 var GKEY='mahdavan_gemini_v1';
-function gcfg(){try{var c=JSON.parse(localStorage.getItem(GKEY)||'{}');return {key:c.key||'',model:c.model||'gemini-2.5-flash'}}catch(e){return {key:'',model:'gemini-2.5-flash'}}}
+function gcfg(){try{var c=JSON.parse(localStorage.getItem(GKEY)||'{}');return {key:c.key||'',model:c.model||'gemini-2.5-flash',tts:c.tts||''}}catch(e){return {key:'',model:'gemini-2.5-flash',tts:''}}}
 function gsave(c){try{localStorage.setItem(GKEY,JSON.stringify(c));return true}catch(e){return false}}
-async function geminiCall(parts){
+var GBASE='https://generativelanguage.googleapis.com/v1beta/';
+async function gpost(model,body){
  var g=gcfg();if(!g.key)throw new Error('کلید Gemini در تنظیمات وارد نشده است.');
- var r;try{r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(g.model)+':generateContent?key='+encodeURIComponent(g.key),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{role:'user',parts:parts}],generationConfig:{responseMimeType:'application/json',temperature:0}})})}
+ var r;try{r=await fetch(GBASE+'models/'+encodeURIComponent(model)+':generateContent?key='+encodeURIComponent(g.key),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})}
  catch(e){throw new Error('اتصال به Gemini برقرار نشد. اینترنت یا VPN را بررسی کنید.')}
  if(!r.ok){var m='';try{m=(await r.json()).error.message}catch(e){}throw new Error('خطای Gemini ('+r.status+')'+(m?': '+m:''))}
- var j=await r.json(),txt='';try{txt=j.candidates[0].content.parts.map(function(p){return p.text||''}).join('')}catch(e){throw new Error('پاسخ Gemini خالی بود.')}
+ return r.json()}
+async function geminiCall(parts){
+ var j=await gpost(gcfg().model,{contents:[{role:'user',parts:parts}],generationConfig:{responseMimeType:'application/json',temperature:0}}),txt='';
+ try{txt=j.candidates[0].content.parts.map(function(p){return p.text||''}).join('')}catch(e){throw new Error('پاسخ Gemini خالی بود.')}
  try{return JSON.parse(txt.replace(/```json|```/g,'').trim())}catch(e){throw new Error('پاسخ Gemini قابل فهم نبود.')}}
+// Model names change often: ask Google which models exist for this key and pick the newest flash + TTS model.
+async function listModels(){
+ var r;try{r=await fetch(GBASE+'models?pageSize=200&key='+encodeURIComponent(gcfg().key))}catch(e){throw new Error('اتصال به Gemini برقرار نشد. اینترنت یا VPN را بررسی کنید.')}
+ if(!r.ok){var m='';try{m=(await r.json()).error.message}catch(e){}throw new Error('خطای Gemini ('+r.status+')'+(m?': '+m:''))}
+ var j=await r.json();return (j.models||[]).filter(function(m){return (m.supportedGenerationMethods||[]).indexOf('generateContent')>-1}).map(function(m){return m.name.replace('models/','')})}
+function gver(n){var m=n.match(/gemini-(\d+(?:\.\d+)?)/);return m?parseFloat(m[1]):0}
+function bestOf(names,test){return names.filter(test).sort(function(a,b){return gver(b)-gver(a)||a.length-b.length})[0]||''}
+async function autoModels(){
+ var names=await listModels();
+ var text=bestOf(names,function(n){return /^gemini-[\d.]+-flash$/.test(n)})||bestOf(names,function(n){return /^gemini-[\d.]+-flash/.test(n)&&!/tts|image|live|audio|embed|thinking|lite/.test(n)});
+ var tts=bestOf(names,function(n){return /tts/.test(n)&&/flash/.test(n)})||bestOf(names,function(n){return /tts/.test(n)});
+ var c=gcfg();if(text)c.model=text;if(tts)c.tts=tts;gsave(c);return {text:text,tts:tts}}
+var ttsCtx=null,ttsStop=null,ttsNoted=false,ttsGen=0,speaking=false;
+function stopSpeech(){ttsGen++;if(ttsStop)ttsStop();try{if('speechSynthesis' in window)speechSynthesis.cancel()}catch(e){}}
+function unlockAudio(){try{var AC=window.AudioContext||window.webkitAudioContext;if(!ttsCtx&&AC)ttsCtx=new AC();if(ttsCtx&&ttsCtx.state==='suspended')ttsCtx.resume()}catch(e){}}
+async function geminiSpeak(text){
+ var gen=ttsGen,g=gcfg();if(!g.tts){try{await autoModels();g=gcfg()}catch(e){}}
+ if(!g.tts)throw new Error('مدل صدای Gemini برای این کلید پیدا نشد.');
+ unlockAudio();if(!ttsCtx)throw new Error('پخش صدا در این مرورگر ممکن نیست.');
+ var j=await gpost(g.tts,{contents:[{parts:[{text:'با لحن دوستانه و به فارسی روان بخوان: '+text}]}],generationConfig:{responseModalities:['AUDIO'],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:'Kore'}}}}});
+ var p,d;try{p=j.candidates[0].content.parts[0];d=p.inlineData||p.inline_data;if(!d||!d.data)throw 0}catch(e){throw new Error('Gemini صدایی برنگرداند.')}
+ var rate=24000,mm=/rate=(\d+)/.exec(d.mimeType||d.mime_type||'');if(mm)rate=+mm[1];
+ if(gen!==ttsGen)return; // user interrupted while audio was being fetched
+ var bin=atob(d.data),n=bin.length>>1,buf=ttsCtx.createBuffer(1,Math.max(1,n),rate),ch=buf.getChannelData(0);
+ for(var i=0;i<n;i++){var v=bin.charCodeAt(2*i)|(bin.charCodeAt(2*i+1)<<8);if(v&0x8000)v-=0x10000;ch[i]=v/32768}
+ await new Promise(function(res){var src=ttsCtx.createBufferSource();src.buffer=buf;src.connect(ttsCtx.destination);var done=false;function fin(){if(!done){done=true;ttsStop=null;res()}}src.onended=fin;ttsStop=function(){try{src.stop()}catch(e){}fin()};src.start();setTimeout(fin,buf.duration*1000+1500)})}
+function noteTTS(e){if(ttsNoted)return;ttsNoted=true;addMsg('ℹ️ صدای Gemini در دسترس نیست ('+(e&&e.message?e.message:'خطا')+'). فقط متن نمایش داده می‌شود.')}
 function aiPrompt(){
  var ph=dlg.phase==='confirming'?'waiting for yes/no confirmation':dlg.phase==='collecting'?('app is asking for missing info'+(dlg.asking?' (asked: '+dlg.asking+')':'')):'free (no pending question)';
  return ['You are the command interpreter of a Persian barbershop appointment app. The user speaks or writes Persian.',
  'Today: '+M.formatJalali(today)+' (Gregorian '+today+'). Services: '+db.settings.services.map(function(x){return x.name}).join(', ')+'. Dialog state: '+ph+'.',
- 'Return ONLY JSON: {"heard":"exact transcript of what the user said","commands":["..."]}.',
+ 'Return ONLY JSON: {"heard":"exact transcript of what the user said","commands":["..."],"reply":""}.',
  'commands = 1-2 short Persian sentences for a rule-based parser, executed in order. Rules:',
  '- Latin digits only. Times always 24h as "ساعت HH:MM" (e.g. ساعت 17:00). A bare "ساعت پنج" means 17:00.',
  '- Dates: فردا / امروز / پس‌فردا, a weekday name (e.g. شنبه), or Jalali "D ماه" (e.g. 25 مهر). Never Gregorian.',
@@ -190,16 +221,17 @@ function aiPrompt(){
  '- List: "چه نوبت‌هایی دارم {date}".',
  '- If waiting for confirmation: the only command is "بله" or "نه".',
  '- If the app is asking for missing info: the command is just the answer (e.g. "آقای رضایی", "ساعت 18:00", or the service name).',
- '- Keep names exactly as spoken, with title (آقای/خانم) if said. If it is not an appointment request or you are unsure, return "commands": [].'].join('\n')}
+ '- Keep names exactly as spoken, with title (آقای/خانم) if said.',
+ '- If the message is a general question or chat (NOT an appointment action), set commands to [] and put a short, friendly Persian answer (max 2 sentences) in "reply". Never invent appointments. Otherwise reply must be "".'].join('\n')}
 async function aiInterpret(input){
  var parts=[{text:aiPrompt()}];
  if(input.text)parts.push({text:'User said: '+input.text});else parts.push({inline_data:{mime_type:'audio/wav',data:input.wav}});
- var o=await geminiCall(parts);return {heard:String(o.heard||''),commands:Array.isArray(o.commands)?o.commands:[]}}
+ var o=await geminiCall(parts);return {heard:String(o.heard||''),commands:Array.isArray(o.commands)?o.commands:[],reply:String(o.reply||'')}}
 async function interpret(input){
  setAv('processing');
  try{var out=await aiInterpret(input);if(out.heard&&!input.text)addMsg(out.heard,'u');
   var cmds=out.commands.filter(Boolean);
-  if(!cmds.length){await say(input.text?'متوجه نشدم. مثلاً بگویید: «فردا ساعت پنج آقای احمدی را برای اصلاح ثبت کن».':'متوجه نشدم. دوباره بگویید یا بنویسید.');return}
+  if(!cmds.length){await say(out.reply||(input.text?'متوجه نشدم. مثلاً بگویید: «فردا ساعت پنج آقای احمدی را برای اصلاح ثبت کن».':'متوجه نشدم. دوباره بگویید یا بنویسید.'));return}
   for(var i=0;i<cmds.length;i++)await handle(String(cmds[i]),true)
  }catch(e){setAv('error');addMsg(e.message,'er');setTimeout(function(){setAv('idle')},1800)}}
 function b64(buf){var b=new Uint8Array(buf),s='',n=0x8000;for(var i=0;i<b.length;i+=n)s+=String.fromCharCode.apply(null,b.subarray(i,i+n));return btoa(s)}
@@ -246,12 +278,12 @@ function pickVoice(){
  else{voiceInfo.voice=null;voiceInfo.note='صدای فارسی روی این گوشی نصب نیست؛ پاسخ‌ها فقط نوشتاری نمایش داده می‌شوند.'}}
 if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice}
 // iOS only allows speech after a user tap: "unlock" it on every tap that sends/starts a command.
-function unlockSpeech(){try{if('speechSynthesis' in window){var u=new SpeechSynthesisUtterance(' ');u.volume=0;speechSynthesis.speak(u)}}catch(e){}}
-function speak(t){return new Promise(function(res){
+function unlockSpeech(){unlockAudio();if(gcfg().key)return;try{if('speechSynthesis' in window){var u=new SpeechSynthesisUtterance(' ');u.volume=0;speechSynthesis.speak(u)}}catch(e){}}
+function speak(t){if(gcfg().key&&!muted)return geminiSpeak(t.length>400?t.slice(0,400):t).catch(noteTTS);return new Promise(function(res){
  if(muted||!('speechSynthesis' in window)||!voiceInfo.voice)return res();
  try{var u=new SpeechSynthesisUtterance(voiceInfo.voice.lang&&/^ar/i.test(voiceInfo.voice.lang)?M.fromPersianDigits(t):t);u.voice=voiceInfo.voice;u.lang=voiceInfo.lang;u.rate=.95;
   var done=false,fin=function(){if(!done){done=true;res()}};u.onend=fin;u.onerror=fin;setTimeout(fin,15000);speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){res()}})}
-async function say(t,tone){addMsg(t,tone==='ok'?'ok':tone==='err'?'er':'');setAv('speaking');await speak(t);setAv(tone==='ok'?'success':tone==='err'?'error':'idle');if(tone)setTimeout(function(){setAv('idle')},1600)}
+async function say(t,tone){addMsg(t,tone==='ok'?'ok':tone==='err'?'er':'');setAv('speaking');speaking=true;try{await speak(t)}finally{speaking=false};setAv(tone==='ok'?'success':tone==='err'?'error':'idle');if(tone)setTimeout(function(){setAv('idle')},1600)}
 function chips(r){var e=$('#rec');if(!r||!Object.keys(r).length){e.innerHTML='';return}var L={name:'مشتری',date:'روز',time:'ساعت',service:'خدمت'};e.innerHTML='<span class="dim">شناسایی شد:</span> '+Object.keys(r).map(function(k){var v=r[k];return '<span class="chip">'+L[k]+': '+esc(k==='date'?M.formatJalali(v):k==='time'?M.formatTime(v):v)+'</span>'}).join(' ')}
 async function exec(a){
  if(a.type==='list'){var l=byDate(a.date);return say(l.length?M.formatJalali(a.date)+': '+l.map(function(x){return M.formatTime(x.start)+' '+x.customer_name+' ('+x.service+')'}).join('، '):M.formatJalali(a.date)+' نوبتی ثبت نشده است.')}
@@ -262,14 +294,14 @@ async function exec(a){
   else if(a.type==='reschedule'){db.appts.forEach(function(x){if(x.id===a.id){x.date=a.date;x.start=a.start;x.end=a.end}});if(!save())throw 0;render();await say('نوبت منتقل شد.','ok')}
  }catch(e){db.appts=JSON.parse(snap);await say('انجام نشد: ذخیره‌سازی روی این دستگاه ناموفق بود.','err')}}
 async function handle(t,noEcho){
- t=(t||'').trim();if(!t||(busy&&!noEcho))return;
+ t=(t||'').trim();if(!t||(busy&&!noEcho&&!speaking))return;if(!noEcho&&speaking)stopSpeech();
  if(!noEcho&&gcfg().key&&dlg.phase==='idle'&&M.parseCommand(t,today,db.settings.services).intent==='unknown'){busy=true;addMsg(t,'u');try{await interpret({text:t})}finally{busy=false}return}
  busy=true;if(!noEcho)addMsg(t,'u');setAv('processing');
  var r=M.step(dlg,t,{today:today,services:db.settings.services,appointments:db.appts,work:{start:db.settings.work_start,end:db.settings.work_end,days:db.settings.work_days},nowMinutes:M.nowMinutesTehran()});
  dlg=r.state;chips(r.recognized);$('#yn').style.display=dlg.phase==='confirming'?'flex':'none';
  if(r.action){$('#yn').style.display='none';await exec(r.action)}else await say(r.say);
  $('#yn').style.display=dlg.phase==='confirming'?'flex':'none';busy=false}
-function listen(){if(gcfg().key&&navigator.mediaDevices&&window.MediaRecorder)return recordAI();var C=window.SpeechRecognition||window.webkitSpeechRecognition;if(!C)return;if(recog){try{recog.stop()}catch(e){}return}
+function listen(){if(ttsStop)ttsStop();if(gcfg().key&&navigator.mediaDevices&&window.MediaRecorder)return recordAI();var C=window.SpeechRecognition||window.webkitSpeechRecognition;if(!C)return;if(recog){try{recog.stop()}catch(e){}return}
  try{speechSynthesis.cancel()}catch(e){}
  var r=new C();r.lang='fa-IR';r.interimResults=false;r.continuous=false;recog=r;setAv('listening');
  r.onresult=function(e){var x=e.results[e.results.length-1];if(x.isFinal)handle(x[0].transcript)};
@@ -278,7 +310,7 @@ function listen(){if(gcfg().key&&navigator.mediaDevices&&window.MediaRecorder)re
  try{r.start()}catch(e){recog=null;setAv('idle')}}
 var noted=false;
 function openPanel(){var p=$('#panel');if(p.style.display==='flex')return;p.style.display='flex';pickVoice();if(!noted&&voiceInfo.note){noted=true;addMsg('ℹ️ '+voiceInfo.note)}$('#fab').style.display='none';setAv(aState)}
-function closePanel(){try{if(recog)recog.stop();speechSynthesis.cancel()}catch(e){}$('#panel').style.display='none';$('#fab').style.display='block'}
+function closePanel(){if(ttsStop)ttsStop();try{if(recog)recog.stop();speechSynthesis.cancel()}catch(e){}$('#panel').style.display='none';$('#fab').style.display='block'}
 
 /* ---------- events ---------- */
 document.addEventListener('click',function(e){
@@ -306,9 +338,14 @@ document.addEventListener('click',function(e){
   if(nk)cur.key=nk;cur.model=nm;
   if(!gsave(cur))return gs(false,'ذخیره نشد.');updateMic();
   if(t.id==='gsave')return gs(true,cur.key?'ذخیره شد. حالا دکمهٔ میکروفن دستیار با Gemini کار می‌کند.':'مدل ذخیره شد، ولی کلیدی وارد نشده است.');
-  gs(true,'در حال آزمایش…');geminiCall([{text:'Return ONLY this JSON: {"ok":true}'}]).then(function(o){gs(!!o.ok,o.ok?'اتصال برقرار است ✓':'پاسخ غیرمنتظره بود.')}).catch(function(e){gs(false,e.message)})}
+  unlockAudio();gs(true,'در حال تشخیص مدل‌ها و آزمایش…');
+  (async function(){var out=[];
+   try{await autoModels()}catch(e){return gs(false,e.message)}
+   try{var o=await geminiCall([{text:'Return ONLY this JSON: {"ok":true}'}]);if(!o.ok)throw new Error('پاسخ غیرمنتظره بود.');out.push('متن ✓ ('+gcfg().model+')')}catch(e){return gs(false,e.message)}
+   try{await geminiSpeak('سلام. صدای دستیار آماده است.');out.push('صدا ✓ ('+gcfg().tts+')')}catch(e){out.push('صدا ✗: '+e.message)}
+   gs(true,out.join(' — '))})()}
  else if(t.id==='pclose')closePanel();
- else if(t.id==='pmute'){muted=!muted;t.textContent=muted?'🔇':'🔊';try{speechSynthesis.cancel()}catch(x){}}
+ else if(t.id==='pmute'){muted=!muted;t.textContent=muted?'🔇':'🔊';if(ttsStop)ttsStop();try{speechSynthesis.cancel()}catch(x){}}
  else if(t.id==='pmic'){unlockSpeech();listen()}
  else if(t.id==='pyes'){unlockSpeech();handle('بله')}else if(t.id==='pno'){unlockSpeech();handle('نه')}});
 function readSvs(){var sv=db.settings.services;document.querySelectorAll('[data-sn]').forEach(function(i){var k=+i.dataset.sn,n=i.value.trim();if(sv[k]){var old=sv[k];sv[k].keywords=old.keywords.indexOf(old.name)>-1?[n].concat(old.keywords.filter(function(w){return w!==old.name})):old.keywords;sv[k].name=n}});
