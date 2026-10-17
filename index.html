@@ -167,7 +167,22 @@ function mutate(id,fn,okmsg){var a=db.appts.filter(function(x){return x.id===id}
 var dlg=M.initialState(),aState='idle',recog=null,muted=false,busy=false;
 function setAv(s){aState=s;var h=$('#avh');if(h)h.innerHTML=avatar(s,48);$('#fab').innerHTML=avatar(s,54)}
 function addMsg(t,cls){var d=document.createElement('div');d.className='m '+(cls||'');d.textContent=t;$('#msgs').appendChild(d);$('#msgs').scrollTop=1e6}
-function speak(t){return new Promise(function(res){if(muted||!('speechSynthesis' in window))return res();try{var u=new SpeechSynthesisUtterance(t);u.lang='fa-IR';u.rate=.95;var v=speechSynthesis.getVoices().filter(function(x){return /^fa/i.test(x.lang)})[0];if(v)u.voice=v;u.onend=u.onerror=function(){res()};speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){res()}})}
+var voiceInfo={checked:false,voice:null,lang:'fa-IR',note:null};
+function pickVoice(){
+ if(!('speechSynthesis' in window)){voiceInfo.note='این مرورگر خواندن صوتی را پشتیبانی نمی‌کند؛ پاسخ‌ها فقط نوشتاری هستند.';return}
+ var vs=speechSynthesis.getVoices();if(!vs.length)return;
+ var fa=vs.filter(function(x){return /^fa/i.test(x.lang)})[0],ar=vs.filter(function(x){return /^ar/i.test(x.lang)})[0];
+ voiceInfo.checked=true;
+ if(fa){voiceInfo.voice=fa;voiceInfo.lang=fa.lang;voiceInfo.note=null}
+ else if(ar){voiceInfo.voice=ar;voiceInfo.lang=ar.lang;voiceInfo.note='صدای فارسی روی این گوشی نصب نیست؛ از صدای عربی استفاده می‌شود و تلفظ ممکن است دقیق نباشد.'}
+ else{voiceInfo.voice=null;voiceInfo.note='صدای فارسی روی این گوشی نصب نیست؛ پاسخ‌ها فقط نوشتاری نمایش داده می‌شوند.'}}
+if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice}
+// iOS only allows speech after a user tap: "unlock" it on every tap that sends/starts a command.
+function unlockSpeech(){try{if('speechSynthesis' in window){var u=new SpeechSynthesisUtterance(' ');u.volume=0;speechSynthesis.speak(u)}}catch(e){}}
+function speak(t){return new Promise(function(res){
+ if(muted||!('speechSynthesis' in window)||!voiceInfo.voice)return res();
+ try{var u=new SpeechSynthesisUtterance(voiceInfo.voice.lang&&/^ar/i.test(voiceInfo.voice.lang)?M.fromPersianDigits(t):t);u.voice=voiceInfo.voice;u.lang=voiceInfo.lang;u.rate=.95;
+  var done=false,fin=function(){if(!done){done=true;res()}};u.onend=fin;u.onerror=fin;setTimeout(fin,15000);speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){res()}})}
 async function say(t,tone){addMsg(t,tone==='ok'?'ok':tone==='err'?'er':'');setAv('speaking');await speak(t);setAv(tone==='ok'?'success':tone==='err'?'error':'idle');if(tone)setTimeout(function(){setAv('idle')},1600)}
 function chips(r){var e=$('#rec');if(!r||!Object.keys(r).length){e.innerHTML='';return}var L={name:'مشتری',date:'روز',time:'ساعت',service:'خدمت'};e.innerHTML='<span class="dim">شناسایی شد:</span> '+Object.keys(r).map(function(k){var v=r[k];return '<span class="chip">'+L[k]+': '+esc(k==='date'?M.formatJalali(v):k==='time'?M.formatTime(v):v)+'</span>'}).join(' ')}
 async function exec(a){
@@ -191,7 +206,8 @@ function listen(){var C=window.SpeechRecognition||window.webkitSpeechRecognition
  r.onerror=function(e){setAv('error');addMsg(e.error==='not-allowed'?'دسترسی به میکروفن داده نشد. از ورودی متنی استفاده کنید.':'تشخیص گفتار ناموفق بود. می‌توانید متن را تایپ کنید.','er');setTimeout(function(){setAv('idle')},1500)};
  r.onend=function(){recog=null;if(aState==='listening')setAv('idle')};
  try{r.start()}catch(e){recog=null;setAv('idle')}}
-function openPanel(){var p=$('#panel');if(p.style.display==='flex')return;p.style.display='flex';$('#fab').style.display='none';setAv(aState)}
+var noted=false;
+function openPanel(){var p=$('#panel');if(p.style.display==='flex')return;p.style.display='flex';pickVoice();if(!noted&&voiceInfo.note){noted=true;addMsg('ℹ️ '+voiceInfo.note)}$('#fab').style.display='none';setAv(aState)}
 function closePanel(){try{if(recog)recog.stop();speechSynthesis.cancel()}catch(e){}$('#panel').style.display='none';$('#fab').style.display='block'}
 
 /* ---------- events ---------- */
@@ -215,15 +231,15 @@ document.addEventListener('click',function(e){
  else if(t.id==='imp')$('#impf').click();
  else if(t.id==='pclose')closePanel();
  else if(t.id==='pmute'){muted=!muted;t.textContent=muted?'🔇':'🔊';try{speechSynthesis.cancel()}catch(x){}}
- else if(t.id==='pmic')listen();
- else if(t.id==='pyes')handle('بله');else if(t.id==='pno')handle('نه')});
+ else if(t.id==='pmic'){unlockSpeech();listen()}
+ else if(t.id==='pyes'){unlockSpeech();handle('بله')}else if(t.id==='pno'){unlockSpeech();handle('نه')}});
 function readSvs(){var sv=db.settings.services;document.querySelectorAll('[data-sn]').forEach(function(i){var k=+i.dataset.sn,n=i.value.trim();if(sv[k]){var old=sv[k];sv[k].keywords=old.keywords.indexOf(old.name)>-1?[n].concat(old.keywords.filter(function(w){return w!==old.name})):old.keywords;sv[k].name=n}});
  var er=null;document.querySelectorAll('[data-sd]').forEach(function(i){var k=+i.dataset.sd,v=+i.value;if(!(v>=5))er='مدت هر خدمت را درست وارد کنید.';else sv[k].duration=v});
  db.settings.work_start=($('#ws')||{value:db.settings.work_start}).value;db.settings.work_end=($('#we')||{value:db.settings.work_end}).value;
  if(sv.some(function(x){return !x.name}))er='نام خدمت نباید خالی باشد.';return er}
 document.addEventListener('input',function(e){if(e.target.id==='q'){q=e.target.value;var p=e.target.selectionStart;render();var n=$('#q');n.focus();n.setSelectionRange(p,p)}});
 document.addEventListener('change',function(e){if(e.target.id!=='impf')return;var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){var m=$('#bmsg');try{var d=JSON.parse(r.result);if(!d||!Array.isArray(d.appts))throw 0;if(!confirm('اطلاعات فعلی با پشتیبان جایگزین شود؟'))return;var snap=JSON.stringify(db);db.appts=d.appts;db.settings=Object.assign({},DEF,d.settings||{});if(!save()){db=JSON.parse(snap);throw 1}flash={ok:true,t:'پشتیبان بازیابی شد.'};render()}catch(x){m.className='err';m.textContent='فایل پشتیبان نامعتبر است یا ذخیره نشد.'}};r.readAsText(f)});
-$('#ptxt').addEventListener('submit',function(e){e.preventDefault();var i=$('#pin');var v=i.value;i.value='';handle(v)});
+$('#ptxt').addEventListener('submit',function(e){e.preventDefault();unlockSpeech();var i=$('#pin');var v=i.value;i.value='';handle(v)});
 function net(){$('#off').style.display=navigator.onLine?'none':'block'}window.addEventListener('online',net);window.addEventListener('offline',net);net();
 
 load();render();setAv('idle');
