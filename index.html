@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fa" dir="rtl">
+<html lang="fa" dir="rtl" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -7,192 +7,418 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<meta name="theme-color" content="#070707">
+<meta name="theme-color" content="#0a0a0a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="مهدوان کلاب">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<style>:root{--ink:#070707;--panel:#121212;--raised:#1b1b1b;--line:#2a2a2a;--s:#c9ccd1;--sd:#8a8e95;--sb:#f2f3f5;--red:#e07b7b;--grn:#7fd6a0}
+<style>:root{--bg:#0a0a0a;--panel:#141414;--raised:#1d1d1d;--line:#2b2b2b;--text:#ededed;--dim:#8d8d8d;--acc:#b08158;--acc2:#d1a477;--accd:#8a6340;--onacc:#150d06;--ok:#7fd6a0;--bad:#e27d7d;--warn:#f0c070;--glow:#c9895a;--tint:rgba(176,129,88,.16)}
+[data-theme=light]{--bg:#ececec;--panel:#ffffff;--raised:#f3f1ee;--line:#e1ded9;--text:#141414;--dim:#7d7d7d;--tint:rgba(176,129,88,.18);--ok:#2f9b5f;--bad:#c94a4a}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:var(--ink);color:#e8e9eb;font-family:Vazirmatn,Tahoma,system-ui,sans-serif;font-size:15px}
-body{padding-bottom:calc(76px + env(safe-area-inset-bottom));min-height:100dvh}
-.wrap{max-width:720px;margin:0 auto;padding:14px}
-header{display:flex;justify-content:center;padding:calc(10px + env(safe-area-inset-top)) 0 4px}header img{height:42px}
-.card{background:rgba(18,18,18,.92);border:1px solid var(--line);border-radius:18px;padding:14px;margin:0 0 12px;box-shadow:0 8px 30px rgba(0,0,0,.35);animation:fu .35s both}
-h2{font-size:15px;margin:0 0 8px}.dim{color:var(--sd);font-size:12px}.row{display:flex;gap:8px;align-items:center}.sp{justify-content:space-between}.grow{flex:1}.wrapf{flex-wrap:wrap}
-.btn{border:1px solid var(--line);background:var(--raised);color:var(--sb);border-radius:12px;padding:10px 14px;font:inherit;font-size:14px;cursor:pointer}
-.btn:active{transform:scale(.96)}.btn:disabled{opacity:.4}.pri{background:linear-gradient(#f2f3f5,#c9ccd1);color:#070707;font-weight:700;border-color:transparent}.dng{color:#f1a3a3;border-color:#5a2a2a}.sm{padding:6px 10px;font-size:12px}
-.in{width:100%;background:var(--ink);border:1px solid var(--line);color:var(--sb);border-radius:12px;padding:10px;font:inherit;font-size:16px;outline:none}.in:focus{border-color:var(--s)}
-label{display:block;font-size:12px;color:var(--sd);margin:8px 0 4px}
-.chip{display:inline-block;border:1px solid var(--line);border-radius:99px;padding:2px 10px;font-size:12px;color:var(--s)}.chip.h{border-color:#7a2f2f;color:var(--red)}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center}.stats b{font-size:24px;display:block}
-.ap{border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:8px;background:rgba(7,7,7,.6)}.ap.x{opacity:.5}.ap .t{font-weight:700}
-nav{position:fixed;inset:auto 0 0 0;display:grid;grid-template-columns:repeat(4,1fr);background:rgba(7,7,7,.95);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);backdrop-filter:blur(10px);z-index:30}
-nav button{background:none;border:0;color:var(--sd);padding:8px 0;font:inherit;font-size:11px}nav button.on{color:var(--sb)}nav span{display:block;font-size:20px}
-.g7{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.wd{text-align:center;font-size:11px;color:var(--sd)}
-.cell{min-height:64px;border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:4px;font:inherit;color:inherit;text-align:right;display:flex;flex-direction:column;gap:2px;overflow:hidden}
-.cell.t{border-color:var(--s)}.cell.sel{background:var(--raised)}.cell.o{opacity:.3}.cell b{font-size:13px}.cell.hol b{color:var(--red)}.cell i{font-style:normal;font-size:9px;color:var(--red);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cell u{text-decoration:none;font-size:9px;background:var(--raised);border-radius:4px;padding:0 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:50;display:flex;align-items:flex-end;justify-content:center}.modal>.card{width:100%;max-width:520px;max-height:92dvh;overflow:auto;margin:0;border-radius:22px 22px 0 0}
-.err{color:var(--red);font-size:13px;margin:6px 0}.ok{color:var(--grn);font-size:13px}.warn{color:#f5c16c;font-size:13px}
-#fab{position:fixed;left:14px;bottom:calc(86px + env(safe-area-inset-bottom));z-index:40;background:rgba(18,18,18,.95);border:1px solid var(--line);border-radius:99px;padding:3px;box-shadow:0 6px 24px rgba(0,0,0,.6)}
-#panel{position:fixed;inset:auto 0 0 0;margin:0 auto;max-width:520px;max-height:82dvh;z-index:55;background:var(--panel);border:1px solid var(--line);border-radius:24px 24px 0 0;display:flex;flex-direction:column}
-#msgs{flex:1;overflow:auto;padding:10px;display:flex;flex-direction:column;gap:6px}.m{max-width:88%;padding:8px 12px;border-radius:16px;font-size:14px;border:1px solid var(--line)}.m.u{align-self:flex-start;background:var(--raised);border-color:transparent}.m.ok{background:#0e2a1c;color:#a8ecc4}.m.er{background:#2a1010;color:#f5b5b5}
-.av{position:relative;display:inline-block}.av svg{display:block;border-radius:50%;background:var(--raised)}
-.av.idle svg{animation:br 4s ease-in-out infinite}.av .ring{position:absolute;inset:0;border-radius:50%;border:1px solid var(--sb);opacity:0}
-.av.listening .ring,.av.speaking .ring{animation:rg 1.6s ease-out infinite}.av.processing:after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid transparent;border-top-color:var(--s);animation:sp 1.2s linear infinite}
-.av.success svg{box-shadow:0 0 0 2px var(--grn)}.av.error svg{box-shadow:0 0 0 2px var(--red)}.av.idle svg{box-shadow:0 0 0 2px var(--sd)}.av.listening svg{box-shadow:0 0 0 2px var(--sb)}
-.av .mouth{transform-origin:60px 74px}.av.speaking .mouth{animation:tk .35s ease-in-out infinite}.av .eyes{transform-origin:60px 53px;animation:bl 5s infinite}
-@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}@keyframes br{50%{transform:scale(1.03)}}@keyframes rg{0%{transform:scale(.9);opacity:.7}100%{transform:scale(1.5);opacity:0}}@keyframes sp{to{transform:rotate(360deg)}}@keyframes tk{50%{transform:scaleY(1.6)}}@keyframes bl{0%,92%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
-#off{background:#5a3a10;text-align:center;padding:6px;font-size:13px;display:none}
-.row>.in{width:auto;min-width:0;flex:1}.row>#fm{flex:1.8}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:"Vazirmatn","Geeza Pro","SF Arabic",Tahoma,system-ui,sans-serif;font-size:15px}
+body{min-height:100dvh;padding-bottom:calc(104px + env(safe-area-inset-bottom))}
+button,input,select,textarea{font:inherit;color:inherit}
+header{background:#0a0a0a;color:#fff;border-radius:0 0 30px 30px;padding:calc(10px + env(safe-area-inset-top)) 20px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+header img{height:30px;display:block}#hdate{font-size:13px;color:#b7b7b7}
+#tbadge{display:none;background:var(--acc);color:var(--onacc);border:0;border-radius:99px;padding:3px 10px;font-size:12px;font-weight:700}
+.wrap{max-width:560px;margin:0 auto;padding:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:14px;margin:0 0 12px;animation:fu .3s both}
+h2{font-size:15px;margin:0 0 10px}.dim{color:var(--dim);font-size:12px}.row{display:flex;gap:8px;align-items:center}.sp{justify-content:space-between}.grow{flex:1}.wrapf{flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:var(--raised);color:var(--text);border-radius:99px;padding:10px 16px;font-size:14px;cursor:pointer;white-space:nowrap}
+.btn:active{transform:scale(.96)}.btn:disabled{opacity:.4}.pri{background:linear-gradient(145deg,var(--acc2),var(--acc));color:var(--onacc);font-weight:700;border-color:transparent}.dng{color:var(--bad);border-color:rgba(226,125,125,.35)}.sm{padding:6px 11px;font-size:12px}
+.in{width:100%;background:var(--bg);border:1px solid var(--line);color:var(--text);border-radius:14px;padding:10px 12px;font-size:16px;outline:none}.in:focus{border-color:var(--acc)}
+label{display:block;font-size:12px;color:var(--dim);margin:9px 0 4px}
+.chip{display:inline-block;border:1px solid var(--line);border-radius:99px;padding:2px 10px;font-size:12px;color:var(--dim)}.chip.h{border-color:rgba(226,125,125,.5);color:var(--bad)}.chip.a{border-color:var(--acc);color:var(--acc2)}
+.seg{display:flex;gap:4px;background:var(--panel);border:1px solid var(--line);border-radius:99px;padding:4px;margin-bottom:12px}.seg button{flex:1;border:0;background:none;color:var(--dim);border-radius:99px;padding:8px 4px;font-size:13px}.seg button.on{background:var(--acc);color:var(--onacc);font-weight:700}
+.ok{color:var(--ok);font-size:13px;margin:6px 0}.err{color:var(--bad);font-size:13px;margin:6px 0}.warn{color:var(--warn);font-size:13px}
+.num{font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate}
+/* nav pill */
+nav{position:fixed;left:14px;right:14px;bottom:calc(12px + env(safe-area-inset-bottom));max-width:520px;margin:0 auto;height:66px;border-radius:33px;background:#0b0b0b;border:1px solid #262626;display:grid;grid-template-columns:repeat(5,1fr);gap:4px;align-items:center;padding:6px;box-shadow:0 12px 34px rgba(0,0,0,.5);z-index:30}
+nav button{background:none;border:0;color:#8d8d8d;height:100%;border-radius:27px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:10px}
+nav svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav button.on{background:var(--acc);color:var(--onacc);font-weight:700}
+/* assistant home */
+#assist{max-width:560px;margin:0 auto;padding:0 14px}
+.stage{position:relative;height:262px;display:grid;place-items:center}
+.av2{position:relative;width:176px;height:176px}
+.av2 img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid var(--line);position:relative;z-index:2;background:#222;display:block;transition:border-color .3s,box-shadow .3s}
+.av2 .halo{position:absolute;inset:-52px;border-radius:50%;background:radial-gradient(circle,var(--glow) 0%,transparent 62%);opacity:.1;filter:blur(8px);transition:opacity .4s}
+.av2 .ring{position:absolute;inset:-8px;border-radius:50%;border:1.5px solid var(--glow);opacity:0;z-index:1}
+.av2.idle img{animation:br 4.5s ease-in-out infinite}
+.av2.listening .halo{opacity:.6;animation:hp 1.6s ease-in-out infinite}.av2.listening .ring{animation:rg 1.8s ease-out infinite}.av2.listening .r2{animation-delay:.9s}
+.av2.listening img{border-color:var(--glow);box-shadow:0 0 34px var(--glow)}
+.av2.processing .r1{opacity:1;border-color:transparent;border-top-color:var(--acc2);border-width:3px;animation:sp 1s linear infinite}
+.av2.speaking .halo{opacity:.38;animation:hp 1s ease-in-out infinite}.av2.speaking img{border-color:var(--acc)}
+.av2.success img{border-color:var(--ok);box-shadow:0 0 26px var(--ok)}.av2.error img{border-color:var(--bad);box-shadow:0 0 26px var(--bad)}
+.wave{position:absolute;left:50%;bottom:-26px;transform:translateX(-50%);display:none;gap:4px;height:22px;align-items:flex-end;z-index:3}
+.av2.speaking .wave,.av2.listening .wave{display:flex}
+.wave i{width:4px;height:100%;background:var(--glow);border-radius:3px;animation:wv .9s ease-in-out infinite;transform-origin:bottom}.wave i:nth-child(2){animation-delay:.12s}.wave i:nth-child(3){animation-delay:.24s}.wave i:nth-child(4){animation-delay:.36s}.wave i:nth-child(5){animation-delay:.48s}
+.say{text-align:center;margin-top:-4px}.say h1{font-size:21px;margin:0}.say p{margin:5px 0 0;color:var(--dim);font-size:13px}
+.accent{background:linear-gradient(135deg,var(--acc2),var(--acc));-webkit-background-clip:text;background-clip:text;color:transparent}
+#msgs{max-height:128px;overflow:auto;display:flex;flex-direction:column;gap:6px;margin:12px 0 4px;padding:0 2px}
+.m{max-width:90%;padding:8px 12px;border-radius:16px;font-size:14px;border:1px solid var(--line);background:var(--panel)}.m.u{align-self:flex-start;background:var(--raised);border-color:transparent}.m.ok{background:rgba(127,214,160,.12);color:var(--ok);border-color:transparent}.m.er{background:rgba(226,125,125,.12);color:var(--bad);border-color:transparent}
+.microw{display:flex;justify-content:center;align-items:center;gap:22px;margin:10px 0}
+.mic{width:80px;height:80px;border-radius:50%;display:grid;place-items:center;border:0;background:linear-gradient(145deg,var(--acc2),var(--acc));color:var(--onacc);box-shadow:0 10px 28px rgba(176,129,88,.38);transition:transform .15s}.mic svg{width:34px;height:34px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}.mic:active{transform:scale(.94)}
+.mic.live{animation:mp 1.3s ease-out infinite}
+.sidebtn{width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:var(--panel);display:grid;place-items:center;font-size:19px}
+#ptxt{margin:6px 0 12px}
+.big{font-size:38px;font-weight:700;line-height:1}
+.stats3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}.stats3>div{background:var(--raised);border-radius:16px;padding:10px 4px}.stats3 b{font-size:21px;display:block}.stats3 span{font-size:11px;color:var(--dim)}
+/* tables (excel-like) */
+.xlw{overflow-x:auto;border-radius:16px;border:1px solid var(--line);background:var(--panel)}
+table.xl{width:100%;border-collapse:collapse;font-size:13px}
+.xl th,.xl td{border:1px solid var(--line);padding:6px 6px;height:46px;text-align:right;vertical-align:middle}
+.xl th{background:var(--raised);font-size:11px;color:var(--dim);font-weight:600;height:36px;position:sticky;top:0}
+.xl td.tm{width:52px;text-align:center;color:var(--dim);background:var(--raised);font-size:12px;font-variant-numeric:tabular-nums}
+.xl tr.empty td.free{color:var(--dim);cursor:pointer;font-size:12px;background:repeating-linear-gradient(135deg,transparent 0 8px,rgba(128,128,128,.05) 8px 16px)}.xl .fr{display:flex;justify-content:space-between;align-items:center;min-height:30px}.xl tr.empty td.free b{color:var(--acc);font-size:18px;font-weight:400}
+.xl tr.empty.past{opacity:.45}
+.xl td.nm{background:var(--tint);cursor:pointer}.xl td.nm b{display:block;font-size:13px}.xl td.nm i{font-style:normal;font-size:11px;color:var(--dim)}
+.xl td.sv{font-size:12px}.xl td.pr{font-size:12px;white-space:nowrap}.xl td.ac{width:104px;text-align:center;white-space:nowrap}
+.xl tr.st-completed td.nm{background:rgba(127,214,160,.14)}
+.xl td.ac button{border:1px solid var(--line);background:var(--raised);border-radius:50%;width:30px;height:30px;font-size:13px;margin:1px}
+table.wk{min-width:0;table-layout:fixed}.wk th,.wk td{padding:2px}.wk td.tm,.wk th.tm{width:42px;font-size:10px}.wk td.fillc b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.wk td.fc{height:40px;cursor:pointer;padding:0}.wk td.off{background:rgba(226,125,125,.06)}.wk td.fillc{background:var(--tint);font-size:10.5px;line-height:1.25;padding:3px 4px;cursor:pointer;overflow:hidden;border-right:3px solid var(--acc)}.wk td.fillc.st-completed{border-right-color:var(--ok)}.wk td.tm,.wk th.tm{position:sticky;right:0;z-index:2}
+.wk th.today{color:var(--acc2)}.wk th b{display:block;font-size:14px;color:var(--text)}.wk th.hd b{color:var(--bad)}
+.foot{display:flex;justify-content:space-between;padding:10px 4px;font-size:13px;color:var(--dim)}
+/* month */
+.g7{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.wd{text-align:center;font-size:11px;color:var(--dim)}
+.cell{min-height:62px;border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:4px;color:inherit;text-align:right;display:flex;flex-direction:column;gap:2px;overflow:hidden}
+.cell.t{border-color:var(--acc)}.cell.sel{background:var(--raised)}.cell.o{opacity:.3}.cell b{font-size:13px}.cell.hol b{color:var(--bad)}.cell i{font-style:normal;font-size:9px;color:var(--bad);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cell u{text-decoration:none;font-size:9px;background:var(--tint);border-radius:4px;padding:0 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ap{border:1px solid var(--line);border-radius:16px;padding:10px 12px;margin-bottom:8px;background:var(--panel)}.ap.x{opacity:.5}.ap .t{font-weight:700}
+/* money & charts */
+.sum3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.sum3>div{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:10px 8px;text-align:center}.sum3 b{display:block;font-size:15px;margin-top:3px}.sum3 .in-{color:var(--ok)}.sum3 .ex-{color:var(--bad)}
+.led{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}.led:last-child{border:0}.led .am{font-weight:700;white-space:nowrap}.led .am.i{color:var(--ok)}.led .am.e{color:var(--bad)}
+svg.chart{width:100%;height:auto;display:block;direction:ltr}.chart .bar-a{fill:var(--acc)}.chart .bar-b{fill:var(--bad)}.chart text{fill:var(--dim);font-size:9px}.chart line{stroke:var(--line)}
+.hbar{height:8px;border-radius:6px;background:var(--raised);overflow:hidden;margin-top:4px}.hbar i{display:block;height:100%;background:linear-gradient(90deg,var(--accd),var(--acc2));border-radius:6px}
+/* tasks & timer */
+.ti{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}.ti:last-child{border:0}.ti input{width:22px;height:22px;accent-color:var(--acc)}.ti.d span{text-decoration:line-through;color:var(--dim)}.ti span{flex:1}
+.prog{height:8px;background:var(--raised);border-radius:6px;overflow:hidden;margin:8px 0 12px}.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--accd),var(--acc2))}
+.tdisp{font-size:64px;font-weight:700;text-align:center;letter-spacing:1px;font-variant-numeric:tabular-nums;direction:ltr;margin:6px 0}
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:50;display:none;align-items:flex-end;justify-content:center}.modal>.card{width:100%;max-width:520px;max-height:92dvh;overflow:auto;margin:0;border-radius:26px 26px 0 0;padding-bottom:calc(16px + env(safe-area-inset-bottom))}
+#off{background:#5a3a10;color:#fff;text-align:center;padding:6px;font-size:13px;display:none}
+@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}@keyframes br{50%{transform:scale(1.015)}}@keyframes hp{50%{opacity:.25}}@keyframes rg{0%{transform:scale(.95);opacity:.85}100%{transform:scale(1.6);opacity:0}}@keyframes sp{to{transform:rotate(360deg)}}@keyframes wv{0%,100%{transform:scaleY(.25)}50%{transform:scaleY(1)}}@keyframes mp{0%{box-shadow:0 0 0 0 var(--glow)}100%{box-shadow:0 0 0 24px transparent}}
 </style>
 </head>
 <body>
-<div id="off" role="status">آفلاین هستید — برنامه به کار خود ادامه می‌دهد چون اطلاعات روی همین دستگاه است.</div>
-<header><img src="logo.png" alt="MAHDAVAN CLUB"></header>
-<div class="wrap" id="view"></div>
-<nav><button data-tab="home"><span>▦</span>داشبورد</button><button data-tab="cal"><span>▤</span>تقویم</button><button data-tab="list"><span>☰</span>نوبت‌ها</button><button data-tab="settings"><span>⚙</span>تنظیمات</button></nav>
-<button id="fab" aria-label="باز کردن دستیار"></button>
-<section id="panel" style="display:none" aria-label="دستیار صوتی">
- <div class="row sp" style="padding:10px;border-bottom:1px solid var(--line)"><div id="avh"></div><b class="grow" style="padding:0 10px">دستیار مهدوان کلاب</b><button class="btn sm" id="pmute" aria-label="بی‌صدا">🔊</button><button class="btn sm" id="pclose" aria-label="بستن">✕</button></div>
+<div id="off" role="status">آفلاین هستید — برنامه کار می‌کند چون اطلاعات روی همین دستگاه است.</div>
+<header><img src="logo.png" alt="MAHDAVAN CLUB"><div class="row"><button id="tbadge" data-a="tmbadge"></button><span id="hdate"></span></div></header>
+
+<section id="assist">
+ <div class="stage"><div class="av2 idle" id="stage"><span class="halo"></span><span class="ring r1"></span><span class="ring r2"></span><img src="avatar.png" alt="دستیار"><span class="wave"><i></i><i></i><i></i><i></i><i></i></span></div></div>
+ <div class="say"><h1 class="accent" id="sttl">بفرمایید، می‌شنوم…</h1><p id="ssub">مثلاً بگویید «فردا ساعت پنج آقای احمدی اصلاح»</p></div>
  <div id="msgs"></div>
- <div id="rec" style="padding:0 12px 6px"></div>
- <div id="yn" class="row" style="display:none;padding:0 12px 6px"><button class="btn pri grow" id="pyes">بله، انجام بده</button><button class="btn grow" id="pno">نه</button></div>
- <form id="ptxt" class="row" style="padding:10px"><input class="in" id="pin" autocomplete="off" placeholder="بنویسید یا میکروفن را بزنید…"><button type="button" class="btn" id="pmic" aria-label="میکروفن">🎙</button><button class="btn pri" type="submit">ارسال</button></form>
+ <div id="rec" style="padding:0 2px 6px"></div>
+ <div id="yn" class="row" style="display:none;margin:6px 0"><button class="btn pri grow" id="pyes" data-a="yes">بله، انجام بده</button><button class="btn grow" id="pno" data-a="no">نه</button></div>
+ <div class="microw"><button class="sidebtn" id="pkb" data-a="kb" aria-label="کیبورد">⌨</button><button class="mic" id="pmic" data-a="mic" aria-label="میکروفن"><svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button><button class="sidebtn" id="pmute" data-a="mute" aria-label="بی‌صدا">🔊</button></div>
+ <form id="ptxt" class="row" style="display:none"><input class="in" id="pin" autocomplete="off" placeholder="بنویسید یا میکروفن را بزنید…"><button class="btn pri" type="submit">ارسال</button></form>
+ <div id="homeinfo"></div>
 </section>
-<div class="modal" id="modal" style="display:none"></div>
+
+<div class="wrap" id="view" style="display:none"></div>
+
+<nav>
+ <button data-a="tab" data-v="home" class="on"><svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>دستیار</button>
+ <button data-a="tab" data-v="table"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16M15 4v16"/></svg>نوبت‌ها</button>
+ <button data-a="tab" data-v="tasks"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="m8 12 3 3 5-6"/></svg>کارها</button>
+ <button data-a="tab" data-v="money"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M14.5 9.2c-.4-.8-1.4-1.2-2.5-1.2-1.4 0-2.5.7-2.5 1.8 0 2.6 5 1.2 5 3.8 0 1.1-1.1 1.9-2.5 1.9-1.2 0-2.2-.5-2.6-1.4M12 6.5V8m0 8v1.5"/></svg>حساب</button>
+ <button data-a="tab" data-v="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg>تنظیمات</button>
+</nav>
+<div class="modal" id="modal"></div>
 <script>var MC=(()=>{var F=Object.defineProperty;var lt=Object.getOwnPropertyDescriptor;var mt=Object.getOwnPropertyNames;var gt=Object.prototype.hasOwnProperty;var ft=(t,e)=>{for(var n in e)F(t,n,{get:e[n],enumerable:!0})},pt=(t,e,n,i)=>{if(e&&typeof e=="object"||typeof e=="function")for(let r of mt(e))!gt.call(t,r)&&r!==n&&F(t,r,{get:()=>e[r],enumerable:!(i=lt(e,r))||i.enumerable});return t};var yt=t=>pt(F({},"__esModule",{value:!0}),t);var Rt={};ft(Rt,{DEFAULT_SERVICES:()=>v,JALALI_MONTHS:()=>$,WEEKDAYS:()=>j,WEEKDAYS_SHORT:()=>St,addDays:()=>p,findConflicts:()=>H,formatJalali:()=>C,formatTime:()=>xt,freeSlots:()=>Z,fromMinutes:()=>b,fromPersianDigits:()=>K,getHolidays:()=>it,holidaysForISO:()=>vt,initialState:()=>E,isHoliday:()=>Dt,isJalaliLeap:()=>nt,isoToJalali:()=>T,jalaliMonthLength:()=>W,jalaliToISO:()=>h,normalize:()=>S,nowMinutesTehran:()=>Y,pad:()=>L,parseCommand:()=>q,parseDate:()=>at,parseISO:()=>R,parseName:()=>ut,parseService:()=>Q,parseTime:()=>ot,step:()=>Nt,toGregorian:()=>et,toISO:()=>z,toJalali:()=>tt,toMinutes:()=>l,toPersianDigits:()=>x,todayTehran:()=>kt,weekdayIndex:()=>w});var M=[-61,9,38,199,426,686,756,818,1111,1181,1210,1635,2060,2097,2192,2262,2324,2394,2456,3178],d=(t,e)=>~~(t/e),f=(t,e)=>t-~~(t/e)*e;function P(t){let e=M.length,n=t+621,i=-14,r=M[0];if(t<r||t>=M[e-1])throw new Error(`Invalid Jalali year ${t}`);let s=0;for(let m=1;m<e;m+=1){let g=M[m];if(s=g-r,t<g)break;i+=d(s,33)*8+d(f(s,33),4),r=g}let o=t-r;i+=d(o,33)*8+d(f(o,33)+3,4),f(s,33)===4&&s-o===4&&(i+=1);let a=d(n,4)-d((d(n,100)+1)*3,4)-150,c=20+i-a;s-o<6&&(o=o-s+d(s+4,33)*33);let u=f(f(o+1,33)-1,4);return u===-1&&(u=4),{leap:u,gy:n,march:c}}function U(t,e,n){let i=d((t+d(e-8,6)+100100)*1461,4)+d(153*f(e+9,12)+2,5)+n-34840408;return i=i-d(d(t+100100+d(e-8,6),100)*3,4)+752,i}function X(t){let e=4*t+139361631;e=e+d(d(4*t+183187720,146097)*3,4)*4-3908;let n=d(f(e,1461),4)*5+308,i=d(f(n,153),5)+1,r=f(d(n,153),12)+1;return{gy:d(e,1461)-100100+d(8-r,6),gm:r,gd:i}}function ht(t,e,n){let i=P(t);return U(i.gy,3,i.march)+(e-1)*31-d(e,7)*(e-7)+n-1}function bt(t){let e=X(t).gy,n=e-621,i=P(n),r=U(e,3,i.march),s=t-r;if(s>=0){if(s<=185)return{jy:n,jm:1+d(s,31),jd:f(s,31)+1};s-=186}else n-=1,s+=179,i.leap===1&&(s+=1);return{jy:n,jm:7+d(s,30),jd:f(s,30)+1}}function tt(t,e,n){return bt(U(t,e,n))}function et(t,e,n){let{gy:i,gm:r,gd:s}=X(ht(t,e,n));return{gy:i,gm:r,gd:s}}function nt(t){return P(t).leap===0}function W(t,e){return e<=6?31:e<=11||nt(t)?30:29}var $=["\u0641\u0631\u0648\u0631\u062F\u06CC\u0646","\u0627\u0631\u062F\u06CC\u0628\u0647\u0634\u062A","\u062E\u0631\u062F\u0627\u062F","\u062A\u06CC\u0631","\u0645\u0631\u062F\u0627\u062F","\u0634\u0647\u0631\u06CC\u0648\u0631","\u0645\u0647\u0631","\u0622\u0628\u0627\u0646","\u0622\u0630\u0631","\u062F\u06CC","\u0628\u0647\u0645\u0646","\u0627\u0633\u0641\u0646\u062F"],j=["\u0634\u0646\u0628\u0647","\u06CC\u06A9\u0634\u0646\u0628\u0647","\u062F\u0648\u0634\u0646\u0628\u0647","\u0633\u0647\u200C\u0634\u0646\u0628\u0647","\u0686\u0647\u0627\u0631\u0634\u0646\u0628\u0647","\u067E\u0646\u062C\u0634\u0646\u0628\u0647","\u062C\u0645\u0639\u0647"],St=["\u0634","\u06CC","\u062F","\u0633","\u0686","\u067E","\u062C"],L=t=>String(t).padStart(2,"0");function R(t){let[e,n,i]=t.split("-").map(Number);return{y:e,m:n,d:i}}function z(t,e,n){return`${t}-${L(e)}-${L(n)}`}function p(t,e){let{y:n,m:i,d:r}=R(t),s=new Date(Date.UTC(n,i-1,r+e));return z(s.getUTCFullYear(),s.getUTCMonth()+1,s.getUTCDate())}function w(t){let{y:e,m:n,d:i}=R(t);return(new Date(Date.UTC(e,n-1,i)).getUTCDay()+1)%7}function T(t){let{y:e,m:n,d:i}=R(t);return tt(e,n,i)}function h(t,e,n){let i=et(t,e,n);return z(i.gy,i.gm,i.gd)}function kt(t=new Date){return new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Tehran",year:"numeric",month:"2-digit",day:"2-digit"}).format(t)}function Y(t=new Date){let e=new Intl.DateTimeFormat("en-GB",{timeZone:"Asia/Tehran",hour:"2-digit",minute:"2-digit",hour12:!1}).formatToParts(t);return Number(e.find(n=>n.type==="hour").value)%24*60+Number(e.find(n=>n.type==="minute").value)}var rt="\u06F0\u06F1\u06F2\u06F3\u06F4\u06F5\u06F6\u06F7\u06F8\u06F9",x=t=>String(t).replace(/\d/g,e=>rt[Number(e)]),K=t=>t.replace(/[۰-۹]/g,e=>String(rt.indexOf(e))).replace(/[٠-٩]/g,e=>String(e.charCodeAt(0)-1632));function C(t,e={weekday:!0,year:!0}){let n=T(t),i=[];return e.weekday&&i.push(j[w(t)]+"\u060C"),i.push(x(n.jd),$[n.jm-1]),e.year&&i.push(x(n.jy)),i.join(" ")}var xt=t=>x(t.slice(0,5));var l=t=>{let[e,n]=t.split(":").map(Number);return e*60+n},b=t=>`${String(Math.floor(t/60)).padStart(2,"0")}:${String(t%60).padStart(2,"0")}`;function H(t,e){let n=l(e.start),i=l(e.end);return t.filter(r=>r.date===e.date&&r.status!=="cancelled"&&r.id!==e.id&&l(r.start)<i&&n<l(r.end))}function Z(t){let{date:e,existing:n,workStart:i,workEnd:r,duration:s,step:o=15,fromMinute:a=0}=t,c=[];for(let u=l(i);u+s<=l(r);u+=o){if(u<a)continue;let m={date:e,start:b(u),end:b(u+s)};H(n,m).length===0&&c.push(m.start)}return c}var $t=[[1,1,"\u0646\u0648\u0631\u0648\u0632",!0],[1,2,"\u0646\u0648\u0631\u0648\u0632",!0],[1,3,"\u0646\u0648\u0631\u0648\u0632",!0],[1,4,"\u0646\u0648\u0631\u0648\u0632",!0],[1,12,"\u0631\u0648\u0632 \u062C\u0645\u0647\u0648\u0631\u06CC \u0627\u0633\u0644\u0627\u0645\u06CC",!0],[1,13,"\u0633\u06CC\u0632\u062F\u0647\u200C\u0628\u0647\u200C\u062F\u0631",!0],[3,14,"\u0631\u062D\u0644\u062A \u0627\u0645\u0627\u0645 \u062E\u0645\u06CC\u0646\u06CC",!0],[3,15,"\u0642\u06CC\u0627\u0645 \u06F1\u06F5 \u062E\u0631\u062F\u0627\u062F",!0],[11,22,"\u067E\u06CC\u0631\u0648\u0632\u06CC \u0627\u0646\u0642\u0644\u0627\u0628 \u0627\u0633\u0644\u0627\u0645\u06CC",!0],[12,29,"\u0645\u0644\u06CC \u0634\u062F\u0646 \u0635\u0646\u0639\u062A \u0646\u0641\u062A",!0]],wt=[[1,9,"\u062A\u0627\u0633\u0648\u0639\u0627\u06CC \u062D\u0633\u06CC\u0646\u06CC",!0],[1,10,"\u0639\u0627\u0634\u0648\u0631\u0627\u06CC \u062D\u0633\u06CC\u0646\u06CC",!0],[2,20,"\u0627\u0631\u0628\u0639\u06CC\u0646 \u062D\u0633\u06CC\u0646\u06CC",!0],[2,28,"\u0631\u062D\u0644\u062A \u067E\u06CC\u0627\u0645\u0628\u0631 \u0648 \u0634\u0647\u0627\u062F\u062A \u0627\u0645\u0627\u0645 \u062D\u0633\u0646",!0],[3,17,"\u0645\u06CC\u0644\u0627\u062F \u067E\u06CC\u0627\u0645\u0628\u0631 \u0648 \u0627\u0645\u0627\u0645 \u0635\u0627\u062F\u0642",!0],[6,3,"\u0634\u0647\u0627\u062F\u062A \u062D\u0636\u0631\u062A \u0641\u0627\u0637\u0645\u0647",!0],[7,13,"\u0648\u0644\u0627\u062F\u062A \u0627\u0645\u0627\u0645 \u0639\u0644\u06CC",!0],[7,27,"\u0645\u0628\u0639\u062B \u067E\u06CC\u0627\u0645\u0628\u0631",!0],[8,15,"\u0646\u06CC\u0645\u0647 \u0634\u0639\u0628\u0627\u0646",!0],[9,21,"\u0634\u0647\u0627\u062F\u062A \u0627\u0645\u0627\u0645 \u0639\u0644\u06CC",!0],[10,1,"\u0639\u06CC\u062F \u0633\u0639\u06CC\u062F \u0641\u0637\u0631",!0],[10,2,"\u062A\u0639\u0637\u06CC\u0644\u06CC \u0628\u0647 \u0645\u0646\u0627\u0633\u0628\u062A \u0639\u06CC\u062F \u0641\u0637\u0631",!0],[10,25,"\u0634\u0647\u0627\u062F\u062A \u0627\u0645\u0627\u0645 \u0635\u0627\u062F\u0642",!0],[12,10,"\u0639\u06CC\u062F \u0633\u0639\u06CC\u062F \u0642\u0631\u0628\u0627\u0646",!0],[12,18,"\u0639\u06CC\u062F \u063A\u062F\u06CC\u0631 \u062E\u0645",!0]];function Tt(t){let e=new Date(t+"T12:00:00Z"),n=new Intl.DateTimeFormat("en-u-ca-islamic-civil-nu-latn",{timeZone:"UTC",month:"numeric",day:"numeric"}).formatToParts(e);return{m:Number(n.find(i=>i.type==="month").value),d:Number(n.find(i=>i.type==="day").value)}}function G(t,e,n){(t[e]??(t[e]=[])).push(n)}function it(t,e=[]){let n={};for(let[s,o,a,c]of $t)G(n,h(t,s,o),{title:a,holiday:c,kind:"national"});let i=h(t,1,1),r=0;for(let s=1;s<=12;s+=1)r+=W(t,s);for(let s=0;s<r;s+=1){let o=p(i,s),{m:a,d:c}=Tt(o);for(let[u,m,g,k]of wt)u===a&&m===c&&G(n,o,{title:g,holiday:k,kind:"religious",approximate:!0})}if(e.length){for(let s of e)n[s.gdate]&&(n[s.gdate]=n[s.gdate].filter(o=>!o.approximate));for(let s of e)G(n,s.gdate,{title:s.title,holiday:s.is_holiday,kind:s.kind??"religious"})}return n}var Dt=(t,e)=>(t[e]??[]).some(n=>n.holiday);function vt(t,e=[]){return it(T(t).jy,e)[t]??[]}var v=[{name:"\u0627\u0635\u0644\u0627\u062D",keywords:["\u0627\u0635\u0644\u0627\u062D","\u06A9\u0648\u062A\u0627\u0647\u06CC","\u06A9\u0648\u062A\u0627\u0647 \u06A9\u0631\u062F\u0646","\u06A9\u0627\u062A"],duration:30},{name:"\u0627\u0635\u0644\u0627\u062D \u0631\u06CC\u0634",keywords:["\u0627\u0635\u0644\u0627\u062D \u0631\u06CC\u0634","\u0631\u06CC\u0634"],duration:20},{name:"\u0631\u0646\u06AF \u0645\u0648",keywords:["\u0631\u0646\u06AF \u0645\u0648","\u0631\u0646\u06AF","\u062F\u06A9\u0644\u0631\u0647"],duration:90},{name:"\u06A9\u0631\u0627\u062A\u06CC\u0646",keywords:["\u06A9\u0631\u0627\u062A\u06CC\u0646","\u067E\u0631\u0648\u062A\u0626\u06CC\u0646"],duration:90}];function S(t){return K(t).replace(/ي/g,"\u06CC").replace(/ك/g,"\u06A9").replace(/[\u200c\u200f]/g," ").replace(/[؟?!،,.]/g,e=>e==="."?".":" ").replace(/\s+/g," ").trim()}var V={\u06CC\u06A9:1,\u062F\u0648:2,\u0633\u0647:3,\u0686\u0647\u0627\u0631:4,\u067E\u0646\u062C:5,\u0634\u0634:6,\u0634\u06CC\u0634:6,\u0647\u0641\u062A:7,\u0647\u0634\u062A:8,\u0646\u0647:9,\u062F\u0647:10,\u06CC\u0627\u0632\u062F\u0647:11,\u062F\u0648\u0627\u0632\u062F\u0647:12,\u0633\u06CC\u0632\u062F\u0647:13,\u0686\u0647\u0627\u0631\u062F\u0647:14,\u067E\u0627\u0646\u0632\u062F\u0647:15,\u0634\u0627\u0646\u0632\u062F\u0647:16,\u0647\u0641\u062F\u0647:17,\u0647\u062C\u062F\u0647:18,\u0646\u0648\u0632\u062F\u0647:19,\u0628\u06CC\u0633\u062A:20,"\u0628\u06CC\u0633\u062A \u0648 \u06CC\u06A9":21,"\u0628\u06CC\u0633\u062A \u0648 \u062F\u0648":22,"\u0628\u06CC\u0633\u062A \u0648 \u0633\u0647":23},I="(?<![\\u0600-\\u06FF])",D="(?![\\u0600-\\u06FF])",B=Object.keys(V).sort((t,e)=>e.length-t.length).join("|"),Ut=new RegExp(`${I}(?:\u0633\u0627\u0639\u062A\\s+)?(\\d{1,2}|${B})(?::(\\d{2}))?(?:\\s+\u0648\\s+(\u0646\u06CC\u0645|\u0631\u0628\u0639|\\d{1,2}\\s*\u062F\u0642\u06CC\u0642\u0647))?(?:\\s+(\u0635\u0628\u062D|\u0638\u0647\u0631|\u0639\u0635\u0631|\u0628\u0639\u062F ?\u0627\u0632 ?\u0638\u0647\u0631|\u0634\u0628))?${D}`),Et=/ساعت|\d:\d\d|(?:^|\s)(صبح|ظهر|عصر|بعد ?از ?ظهر|شب)(?:\s|$)/;function ot(t){let e=S(t);if(!Et.test(e))return;let n=[new RegExp(`\u0633\u0627\u0639\u062A\\s+(\\d{1,2}|${B})(?::(\\d{2}))?(?:\\s+\u0648\\s+(\u0646\u06CC\u0645|\u0631\u0628\u0639|\\d{1,2}\\s*\u062F\u0642\u06CC\u0642\u0647))?(?:\\s+(\u0635\u0628\u062D|\u0638\u0647\u0631|\u0639\u0635\u0631|\u0628\u0639\u062F ?\u0627\u0632 ?\u0638\u0647\u0631|\u0634\u0628))?${D}`),/(\d{1,2}):(\d{2})()()/,new RegExp(`${I}(\\d{1,2}|${B})()()\\s+(\u0635\u0628\u062D|\u0638\u0647\u0631|\u0639\u0635\u0631|\u0628\u0639\u062F ?\u0627\u0632 ?\u0638\u0647\u0631|\u0634\u0628)${D}`)];for(let i of n){let r=e.match(i);if(!r)continue;let s=/^\d+$/.test(r[1])?Number(r[1]):V[r[1]],o=r[2]?Number(r[2]):0;r[3]&&(o=r[3]==="\u0646\u06CC\u0645"?30:r[3]==="\u0631\u0628\u0639"?15:Number(r[3].replace(/\D/g,"")));let a=(r[4]||"").replace(/\s/g,"");if(!(s>23||o>59))return!a&&!r[2]&&s>=1&&s<=7?s+=12:a==="\u0635\u0628\u062D"&&s===12?s=0:(["\u0639\u0635\u0631","\u0628\u0639\u062F\u0627\u0632\u0638\u0647\u0631","\u0634\u0628"].includes(a)&&s<12||a==="\u0638\u0647\u0631"&&s<5)&&(s+=12),`${String(s).padStart(2,"0")}:${String(o).padStart(2,"0")}`}}function at(t,e){let n=S(t).replace("\u067E\u0633 \u0641\u0631\u062F\u0627","\u067E\u0633\u0641\u0631\u062F\u0627");if(/پسفردا/.test(n))return p(e,2);if(new RegExp(`${I}\u0641\u0631\u062F\u0627${D}`).test(n))return p(e,1);if(new RegExp(`${I}\u0627\u0645\u0631\u0648\u0632${D}`).test(n))return e;let i=T(e),r=n.match(new RegExp(`(\\d{1,2})\\s+(${$.join("|")})(?:\\s*\u0645\u0627\u0647)?(?:\\s+(\\d{4}))?`));if(r){let o=$.indexOf(r[2])+1,a=r[3]?Number(r[3]):i.jy,c=h(a,o,Number(r[1]));return!r[3]&&c<e&&(c=h(a+1,o,Number(r[1]))),c}let s=n.match(/(\d{4})\/(\d{1,2})\/(\d{1,2})/);if(s)return h(Number(s[1]),Number(s[2]),Number(s[3]));for(let o=0;o<7;o+=1){let a=j[o].replace("\u200C"," "),c=[a,a.replace(" ","")];if(o===4&&c.push("\u0686\u0647\u0627\u0631 \u0634\u0646\u0628\u0647"),c.some(u=>new RegExp(`${I}${u}${D}`).test(n))){for(let u=1;u<=7;u+=1)if(w(p(e,u))===o)return p(e,u)}}}function Q(t,e=v){let n=S(t),i;for(let r of e)for(let s of r.keywords)n.includes(s)&&(!i||s.length>i.len)&&(i={name:r.name,len:s.length});return i?.name}var st="(?:\u0622\u0642\u0627\u06CC|\u0627\u0642\u0627\u06CC|\u062E\u0627\u0646\u0645|\u062C\u0646\u0627\u0628|\u062F\u06A9\u062A\u0631|\u0645\u0647\u0646\u062F\u0633|\u0627\u0633\u062A\u0627\u062F|\u0633\u0631\u06A9\u0627\u0631 \u062E\u0627\u0646\u0645)",At=new Set(["\u0631\u0648","\u0631\u0627","\u0628\u0631\u0627\u06CC","\u0628\u0631\u0627","\u0641\u0631\u062F\u0627","\u0627\u0645\u0631\u0648\u0632","\u067E\u0633\u0641\u0631\u062F\u0627","\u0633\u0627\u0639\u062A","\u0648\u0627\u0633\u0647","\u06CC\u0647","\u06CC\u06A9","\u0646\u0648\u0628\u062A","\u062B\u0628\u062A","\u0644\u063A\u0648","\u06A9\u0646\u0633\u0644","\u062D\u0630\u0641","\u0628\u0630\u0627\u0631","\u0628\u0632\u0646","\u0628\u06AF\u06CC\u0631","\u0631\u0632\u0631\u0648","\u062A\u0648","\u062F\u0631","\u0628\u0647","\u0627\u0632"]);function ut(t,e=v){let n=S(t),i=n.match(new RegExp(`${st}\\s+(\\S+)(?:\\s+(\\S+))?`));if(!i)return;let r=o=>!o||At.has(o)||/\d/.test(o)||Object.keys(V).includes(o)||j.some(a=>a.replace("\u200C","")===o)||$.includes(o)||!!Q(o,e);return r(i[1])?void 0:`${n.match(new RegExp(st))[0].replace("\u0627\u0642\u0627\u06CC","\u0622\u0642\u0627\u06CC")} ${i[1]}${r(i[2])?"":" "+i[2]}`}var jt=/^(بله|آره|اره|بلی|تایید|تأیید|درسته|باشه|اوکی|اکی|ok|okay|ثبت کن|بزن|حتما|آری)(?:\s|$)/i,It=/^(نه|خیر|نخیر|نه ممنون|بیخیال|بی خیال|منصرف شدم|رها کن|فراموشش کن)(?:\s|$)/;function q(t,e,n=v){let i=S(t),r="unknown";return jt.test(i)?r="confirm_yes":It.test(i)?r="confirm_no":/لغو|کنسل|حذف|پاک کن/.test(i)?r="cancel":/جابجا|جا به جا|تغییر|عوض|منتقل/.test(i)?r="reschedule":/ثبت|نوبت بگیر|نوبت بده|رزرو|بذار|اضافه|بنویس|نوبت/.test(i)&&!/(چه|چند|لیست|برنامه)/.test(i)?r="create":/چه نوبت|چند نوبت|لیست|برنامه|نوبت.?ها|نوبتام|نوبت هام/.test(i)&&(r="list"),{intent:r,name:ut(i,n),date:at(i,e),time:ot(i),service:Q(i,n)}}var E=()=>({phase:"idle",slots:{}}),y=t=>x(t),_=(t,e)=>t===e?"\u0627\u0645\u0631\u0648\u0632":t===p(e,1)?"\u0641\u0631\u062F\u0627":t===p(e,2)?"\u067E\u0633\u200C\u0641\u0631\u062F\u0627":C(t),dt=(t,e)=>e.find(n=>n.name===t)?.duration??30,_t={name:"\u0646\u0648\u0628\u062A \u0628\u0631\u0627\u06CC \u0686\u0647 \u06A9\u0633\u06CC \u062B\u0628\u062A \u0634\u0648\u062F\u061F",date:"\u0628\u0631\u0627\u06CC \u0686\u0647 \u0631\u0648\u0632\u06CC\u061F",time:"\u0633\u0627\u0639\u062A \u0686\u0646\u062F\u061F",service:"\u0628\u0631\u0627\u06CC \u0686\u0647 \u062E\u062F\u0645\u062A\u06CC\u061F \u0645\u062B\u0644\u0627\u064B \u0627\u0635\u0644\u0627\u062D\u060C \u0631\u06CC\u0634\u060C \u0631\u0646\u06AF \u0645\u0648."};function Nt(t,e,n){let i=n.services.length?n.services:v,r=q(e,n.today,i),s=S(e);if(t.phase==="confirming")return r.intent==="confirm_yes"?{state:E(),say:"",action:Mt(t,i)}:r.intent==="confirm_no"?{state:E(),say:"\u0628\u0627\u0634\u0647\u060C \u0627\u0646\u062C\u0627\u0645 \u0646\u0634\u062F."}:{state:t,say:"\u0644\u0637\u0641\u0627\u064B \u0628\u06AF\u0648\u06CC\u06CC\u062F \xAB\u0628\u0644\u0647\xBB \u0628\u0631\u0627\u06CC \u062A\u0623\u06CC\u06CC\u062F \u06CC\u0627 \xAB\u0646\u0647\xBB \u0628\u0631\u0627\u06CC \u0627\u0646\u0635\u0631\u0627\u0641."};let o=t;if(t.phase==="idle"||r.intent==="create"||r.intent==="cancel"||r.intent==="reschedule"||r.intent==="list"){if(r.intent==="list")return{state:E(),say:"",action:{type:"list",date:r.date??n.today},recognized:{date:r.date??n.today}};if(r.intent==="unknown"||r.intent==="confirm_yes"||r.intent==="confirm_no"){if(t.phase==="idle")return{state:t,say:"\u0645\u062A\u0648\u062C\u0647 \u0646\u0634\u062F\u0645. \u0645\u062B\u0644\u0627\u064B \u0628\u06AF\u0648\u06CC\u06CC\u062F: \xAB\u0628\u0631\u0627\u06CC \u0641\u0631\u062F\u0627 \u0633\u0627\u0639\u062A \u067E\u0646\u062C\u060C \u0622\u0642\u0627\u06CC \u0627\u062D\u0645\u062F\u06CC \u0631\u0648 \u0628\u0631\u0627\u06CC \u0627\u0635\u0644\u0627\u062D \u062B\u0628\u062A \u06A9\u0646\xBB."}}else o={phase:"collecting",intent:r.intent,slots:{}}}let a={...o.slots};r.name&&(a.name=r.name),r.date&&(a.date=r.date),r.time&&(a.time=r.time),r.service&&(a.service=r.service),o.asking==="name"&&!r.name&&s&&r.intent==="unknown"&&!r.date&&!r.time&&(a.name=s.replace(/^(آقای|خانم)\s+/,u=>u).trim());let c={...a};if(o.intent==="create"){let m=["name","date","time","service"].find(N=>!a[N]);if(m)return{state:{...o,phase:"collecting",slots:a,asking:m},say:_t[m],recognized:c};let g=dt(a.service,i),k=a.time,J=b(l(k)+g),A=ct(a.date,k,J,n);if(A){let{time:N,...O}=a;return{state:{...o,slots:O,asking:"time"},say:A,recognized:c}}return{state:{...o,phase:"confirming",slots:a,asking:void 0},say:`\u0628\u0631\u0627\u06CC ${_(a.date,n.today)} \u0633\u0627\u0639\u062A ${y(k)}\u060C \u06CC\u06A9 \u0646\u0648\u0628\u062A ${a.service} \u0628\u0631\u0627\u06CC ${a.name} \u062B\u0628\u062A \u06A9\u0646\u0645\u061F`,recognized:c}}if(o.intent==="cancel"||o.intent==="reschedule"){let u=o.target??Ot(a,n,o.intent==="reschedule");if(Array.isArray(u)){if(u.length===0)return{state:E(),say:"\u0646\u0648\u0628\u062A \u0641\u0639\u0627\u0644\u06CC \u0628\u0627 \u0627\u06CC\u0646 \u0645\u0634\u062E\u0635\u0627\u062A \u067E\u06CC\u062F\u0627 \u0646\u06A9\u0631\u062F\u0645.",recognized:c};let N=u.slice(0,4).map(O=>`${_(O.date,n.today)} \u0633\u0627\u0639\u062A ${y(O.start)}`).join("\u060C ");return{state:{...o,slots:a,asking:"date"},say:`\u0686\u0646\u062F \u0646\u0648\u0628\u062A \u067E\u06CC\u062F\u0627 \u06A9\u0631\u062F\u0645: ${N}. \u06A9\u062F\u0627\u0645 \u0631\u0627 \u0645\u06CC\u200C\u06AF\u0648\u06CC\u06CC\u062F\u061F \u0631\u0648\u0632 \u06CC\u0627 \u0633\u0627\u0639\u062A \u0631\u0627 \u0628\u06AF\u0648\u06CC\u06CC\u062F.`,recognized:c}}if(o.intent==="cancel")return{state:{phase:"confirming",intent:"cancel",slots:a,target:u},say:`\u0646\u0648\u0628\u062A ${u.service} ${u.customer_name} \u062F\u0631 ${_(u.date,n.today)} \u0633\u0627\u0639\u062A ${y(u.start)} \u0644\u063A\u0648 \u0634\u0648\u062F\u061F`,recognized:c};if(!o.target)return{state:{...o,slots:{},target:u,asking:"date"},say:`\u0646\u0648\u0628\u062A ${u.customer_name} \u062F\u0631 ${_(u.date,n.today)} \u0633\u0627\u0639\u062A ${y(u.start)} \u0631\u0627 \u0628\u0647 \u0686\u0647 \u0631\u0648\u0632 \u0648 \u0633\u0627\u0639\u062A\u06CC \u0645\u0646\u062A\u0642\u0644 \u06A9\u0646\u0645\u061F`,recognized:c};let m=r.date??o.slots.date??u.date,g=r.time??o.slots.time;if(!g)return{state:{...o,slots:{...a,date:m},asking:"time"},say:"\u0633\u0627\u0639\u062A \u062C\u062F\u06CC\u062F \u0686\u0646\u062F \u0628\u0627\u0634\u062F\u061F",recognized:c};let k=l(u.end)-l(u.start),J=b(l(g)+k),A=ct(m,g,J,n,u.id);return A?{state:{...o,slots:{date:m},asking:"time"},say:A,recognized:c}:{state:{phase:"confirming",intent:"reschedule",slots:{date:m,time:g},target:u},say:`\u0646\u0648\u0628\u062A ${u.customer_name} \u0628\u0647 ${_(m,n.today)} \u0633\u0627\u0639\u062A ${y(g)} \u0645\u0646\u062A\u0642\u0644 \u0634\u0648\u062F\u061F`,recognized:c}}return{state:E(),say:"\u0645\u062A\u0648\u062C\u0647 \u0646\u0634\u062F\u0645. \u062F\u0648\u0628\u0627\u0631\u0647 \u0628\u06AF\u0648\u06CC\u06CC\u062F."}}function Ot(t,e,n){let i=e.appointments.filter(r=>r.status!=="cancelled"&&r.date>=e.today&&(!t.name||r.customer_name.includes(t.name.replace(/^(آقای|خانم|جناب|دکتر|مهندس)\s+/,"")))&&(!t.date||r.date===t.date)&&(!t.time||r.start===t.time));return i.length===1?i[0]:i}function ct(t,e,n,i,r){if(t<i.today)return"\u0627\u06CC\u0646 \u062A\u0627\u0631\u06CC\u062E \u06AF\u0630\u0634\u062A\u0647 \u0627\u0633\u062A. \u0628\u0631\u0627\u06CC \u0686\u0647 \u0631\u0648\u0632\u06CC \u062B\u0628\u062A \u06A9\u0646\u0645\u061F";if(i.work.days&&!i.work.days.includes(w(t)))return`${C(t)} \u0631\u0648\u0632 \u06A9\u0627\u0631\u06CC \u0646\u06CC\u0633\u062A. \u0631\u0648\u0632 \u062F\u06CC\u06AF\u0631\u06CC \u0628\u06AF\u0648\u06CC\u06CC\u062F.`;if(t===i.today&&l(e)<(i.nowMinutes??Y()))return"\u0627\u06CC\u0646 \u0633\u0627\u0639\u062A \u06AF\u0630\u0634\u062A\u0647 \u0627\u0633\u062A. \u0633\u0627\u0639\u062A \u062F\u06CC\u06AF\u0631\u06CC \u0628\u06AF\u0648\u06CC\u06CC\u062F.";if(l(e)<l(i.work.start)||l(n)>l(i.work.end))return`\u0633\u0627\u0639\u062A \u06A9\u0627\u0631\u06CC \u0627\u0632 ${y(i.work.start)} \u062A\u0627 ${y(i.work.end)} \u0627\u0633\u062A. \u0633\u0627\u0639\u062A \u062F\u06CC\u06AF\u0631\u06CC \u0628\u06AF\u0648\u06CC\u06CC\u062F.`;let s=H(i.appointments,{date:t,start:e,end:n,id:r});if(s.length){let o=Z({date:t,existing:i.appointments,workStart:i.work.start,workEnd:i.work.end,duration:l(n)-l(e),step:30}).slice(0,3),a=s[0];return`\u062F\u0631 \u0627\u06CC\u0646 \u0633\u0627\u0639\u062A \u0646\u0648\u0628\u062A ${a.customer_name} \u0627\u0632 ${y(a.start)} \u062A\u0627 ${y(a.end)} \u062B\u0628\u062A \u0634\u062F\u0647 \u0627\u0633\u062A.`+(o.length?` \u0633\u0627\u0639\u062A\u200C\u0647\u0627\u06CC \u062E\u0627\u0644\u06CC: ${o.map(y).join("\u060C ")}. \u06A9\u062F\u0627\u0645 \u0631\u0627 \u0628\u06AF\u0630\u0627\u0631\u0645\u061F`:" \u0633\u0627\u0639\u062A \u062F\u06CC\u06AF\u0631\u06CC \u0628\u06AF\u0648\u06CC\u06CC\u062F.")}}function Mt(t,e){if(t.intent==="cancel")return{type:"cancel",id:t.target.id};if(t.intent==="reschedule"){let i=l(t.target.end)-l(t.target.start);return{type:"reschedule",id:t.target.id,date:t.slots.date,start:t.slots.time,end:b(l(t.slots.time)+i)}}let n=t.slots;return{type:"create",name:n.name,date:n.date,start:n.time,end:b(l(n.time)+dt(n.service,e)),service:n.service}}return yt(Rt);})();
 </script>
 <script>(function(){
 'use strict';
-var M=MC, KEY='mahdavan_club_v1';
+var M=MC,KEY='mahdavan_club_v1';
 var $=function(s,r){return (r||document).querySelector(s)};
-var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
-var P=M.toPersianDigits, today=M.todayTehran();
-var DEF={work_start:'10:00',work_end:'21:00',work_days:[0,1,2,3,4,5],slot_step:15,services:M.DEFAULT_SERVICES};
-var db={appts:[],settings:JSON.parse(JSON.stringify(DEF))};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+var D=function(s){return M.fromPersianDigits(String(s))};            // all numbers are shown with English digits
+var esc=function(s){return D(String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]}))};
+var P=function(s){return String(s)},today=M.todayTehran();
+var fmt=function(n){return Math.round(+n||0).toLocaleString('en-US')};
+var num=function(s){return +(D(String(s==null?'':s)).replace(/[^\d.]/g,''))||0};
+var T=function(t){return D(M.formatTime(t))};
+var SV0=M.DEFAULT_SERVICES.map(function(s){return {name:s.name,keywords:s.keywords.slice(),duration:s.duration,price:0}});
+var DEF={work_start:'10:00',work_end:'21:00',work_days:[0,1,2,3,4,5],slot_step:15,table_step:30,theme:'dark',glow:'#c9895a',services:SV0};
+var db={appts:[],ledger:[],tasks:[],settings:JSON.parse(JSON.stringify(DEF))};
 var ST_FA={scheduled:'رزرو شده',completed:'انجام شد',cancelled:'لغو شده',no_show:'حاضر نشد'};
-var tab='home',cursor=today,selDay=today,q='',lt='upcoming',flash=null;
+var tab='home',sv='day',selDay=today,cursor=today,q='',lt='upcoming',flash=null,tsub='check',sp='7',mp='month';
 
 function uid(){return (window.crypto&&crypto.randomUUID)?crypto.randomUUID():String(Date.now())+Math.random().toString(16).slice(2)}
-function load(){try{var r=localStorage.getItem(KEY);if(r){var d=JSON.parse(r);db.appts=d.appts||[];db.settings=Object.assign({},DEF,d.settings||{})}}catch(e){flash={ok:false,t:'خواندن اطلاعات ذخیره‌شده ناموفق بود.'}}}
+function load(){try{var r=localStorage.getItem(KEY);if(r){var d=JSON.parse(r);db.appts=d.appts||[];db.ledger=d.ledger||[];db.tasks=d.tasks||[];db.settings=Object.assign({},JSON.parse(JSON.stringify(DEF)),d.settings||{});db.settings.services=(db.settings.services||SV0).map(function(s){return Object.assign({price:0},s)})}}catch(e){flash={ok:false,t:'خواندن اطلاعات ذخیره‌شده ناموفق بود.'}}}
 // save() returns true ONLY if the data was really written and can be read back.
 function save(){try{var s=JSON.stringify(db);localStorage.setItem(KEY,s);return localStorage.getItem(KEY)===s}catch(e){return false}}
+function restore(snap){db=JSON.parse(snap)}
 var hcache={};function hol(iso){var y=M.isoToJalali(iso).jy;if(!hcache[y])hcache[y]=M.getHolidays(y);return hcache[y][iso]||[]}
+var isH=function(o){return o.holiday};
 function act(){return db.appts.filter(function(a){return a.status!=='cancelled'})}
 function byDate(d){return act().filter(function(a){return a.date===d}).sort(function(x,y){return x.start<y.start?-1:1})}
+function find(id){return db.appts.filter(function(x){return x.id===id})[0]}
+function svOf(name){return db.settings.services.filter(function(s){return s.name===name})[0]}
+function svPrice(name){var s=svOf(name);return s?(+s.price||0):0}
 function dur(){return (db.settings.services[0]||{duration:30}).duration}
+function rng(n){var a=[];for(var i=1;i<=n;i++)a.push(i);return a}
 
-/* ---------- avatar ---------- */
-function avatar(state,size){
- return '<div class="av '+state+'" role="img" aria-label="دستیار"><span class="ring"></span><svg width="'+size+'" height="'+size+'" viewBox="0 0 120 120"><defs><linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9b8a0"/><stop offset="1" stop-color="#c49a80"/></linearGradient><clipPath id="cp"><circle cx="60" cy="60" r="60"/></clipPath></defs><g clip-path="url(#cp)"><rect width="120" height="120" fill="#161616"/><path d="M8 125C12 98 36 92 60 92S108 98 112 125Z" fill="#8f9399"/><path d="M52 92 60 118 68 92Z" fill="#7a7e84"/><path d="M46 90Q60 112 74 90" fill="none" stroke="#e5e7ea" stroke-width="1.2"/><rect x="49" y="78" width="22" height="18" rx="6" fill="#c0967c"/><circle cx="60" cy="14" r="9" fill="#3a2a22"/><ellipse cx="60" cy="54" rx="27" ry="31" fill="url(#sk)"/><path d="M32 50C30 26 46 20 60 20S90 28 88 50C84 38 74 34 60 34S36 38 32 50Z" fill="#3a2a22"/><path d="M34 62C36 86 48 90 60 90S84 86 86 62C80 72 72 70 60 70S40 72 34 62Z" fill="#9a5a34"/><path d="M43 45Q50 41 56 45M64 45Q70 41 77 45" stroke="#2b1f19" stroke-width="3" stroke-linecap="round" fill="none"/><g class="eyes"><ellipse cx="49" cy="53" rx="3.2" ry="3" fill="#1c1410"/><ellipse cx="71" cy="53" rx="3.2" ry="3" fill="#1c1410"/></g><path d="M60 54 57 64Q60 66 63 64Z" fill="#b98a70" opacity=".7"/>'+
- (state==='speaking'?'<ellipse class="mouth" cx="60" cy="74" rx="6" ry="3" fill="#4a2020"/>':state==='success'?'<path d="M51 72Q60 80 69 72" stroke="#4a2a22" stroke-width="2.4" stroke-linecap="round" fill="none"/>':state==='error'?'<path d="M52 76Q60 71 68 76" stroke="#4a2a22" stroke-width="2.4" stroke-linecap="round" fill="none"/>':'<path d="M53 74Q60 77 67 74" stroke="#4a2a22" stroke-width="2.2" stroke-linecap="round" fill="none"/>')+
- '</g></svg></div>'}
+/* ---------- ledger ---------- */
+function syncLedger(a){var i=-1;db.ledger.forEach(function(e,k){if(e.apptId===a.id)i=k});
+ if(a.status==='completed'){var t=a.customer_name+' — '+a.service;if(i<0)db.ledger.push({id:uid(),date:a.date,type:'income',amount:+a.price||0,title:t,src:'appt',apptId:a.id});else{db.ledger[i].amount=+a.price||0;db.ledger[i].date=a.date;db.ledger[i].title=t}}
+ else if(i>=0)db.ledger.splice(i,1)}
+function ledSum(from,to){var i=0,x=0,n=0;db.ledger.forEach(function(e){if(e.date>=from&&e.date<=to){if(e.type==='income'){i+=e.amount;n++}else x+=e.amount}});return {inc:i,exp:x,net:i-x,n:n}}
+function range(p){var j=M.isoToJalali(today);
+ if(p==='day')return [today,today,'امروز'];
+ if(p==='week')return [M.addDays(today,-6),today,'7 روز اخیر'];
+ if(p==='30')return [M.addDays(today,-29),today,'30 روز اخیر'];
+ if(p==='month')return [M.jalaliToISO(j.jy,j.jm,1),M.jalaliToISO(j.jy,j.jm,M.jalaliMonthLength(j.jy,j.jm)),M.JALALI_MONTHS[j.jm-1]];
+ var pm=j.jm-1,py=j.jy;if(pm<1){pm=12;py--}return [M.jalaliToISO(py,pm,1),M.jalaliToISO(py,pm,M.jalaliMonthLength(py,pm)),M.JALALI_MONTHS[pm-1]+' (ماه قبل)']}
+function eachDay(a,b){var r=[],d=a;while(d<=b){r.push(d);d=M.addDays(d,1)}return r}
+
+/* ---------- small ui helpers ---------- */
+function bars(items){var W=340,H=124,pl=8,pb=18,pt=14,n=items.length||1,mx=1,g='',k=Math.ceil(n/8);
+ items.forEach(function(i){mx=Math.max(mx,i.a||0,i.b||0)});var bw=(W-pl*2)/n;
+ items.forEach(function(it,i){var x=pl+i*bw,hh=H-pb-pt,h1=((it.a||0)/mx)*hh,two=it.b!==undefined,w=two?bw*.38:bw*.64;
+  g+='<rect class="bar-a" x="'+(x+bw*.08).toFixed(1)+'" y="'+(H-pb-h1).toFixed(1)+'" width="'+w.toFixed(1)+'" height="'+(it.a?Math.max(h1,1.5):0).toFixed(1)+'" rx="2"/>';
+  if(two){var h2=((it.b||0)/mx)*hh;g+='<rect class="bar-b" x="'+(x+bw*.08+w+1).toFixed(1)+'" y="'+(H-pb-h2).toFixed(1)+'" width="'+w.toFixed(1)+'" height="'+(it.b?Math.max(h2,1.5):0).toFixed(1)+'" rx="2"/>'}
+  if(i%k===0)g+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(H-4)+'" text-anchor="middle">'+esc(it.l)+'</text>'});
+ return '<svg class="chart" viewBox="0 0 '+W+' '+H+'"><line x1="'+pl+'" x2="'+(W-pl)+'" y1="'+(H-pb)+'" y2="'+(H-pb)+'"/><text x="'+pl+'" y="10">'+fmt(mx)+'</text>'+g+'</svg>'}
+function seg(items,cur,action){return '<div class="seg">'+items.map(function(x){return '<button data-a="'+action+'" data-v="'+x[0]+'" class="'+(cur===x[0]?'on':'')+'">'+x[1]+'</button>'}).join('')+'</div>'}
+function openModal(html){var m=$('#modal');m.innerHTML=D('<div class="card">'+html+'</div>');m.style.display='flex';m.onclick=function(e){if(e.target===m)closeModal()}}
+function closeModal(){var m=$('#modal');m.style.display='none';m.innerHTML=''}
+function jpick(id,iso){var j=M.isoToJalali(iso);return '<div class="row" id="'+id+'"><select class="in" data-j="d">'+rng(31).map(function(i){return '<option '+(i===j.jd?'selected':'')+'>'+i+'</option>'}).join('')+'</select><select class="in" data-j="m" style="flex:1.7">'+M.JALALI_MONTHS.map(function(n,i){return '<option value="'+(i+1)+'" '+(i+1===j.jm?'selected':'')+'>'+n+'</option>'}).join('')+'</select><select class="in" data-j="y">'+[j.jy-1,j.jy,j.jy+1,j.jy+2].map(function(y){return '<option '+(y===j.jy?'selected':'')+'>'+y+'</option>'}).join('')+'</select></div>'}
+function jval(id){var r=$('#'+id),y=+$('[data-j=y]',r).value,mo=+$('[data-j=m]',r).value,d=Math.min(+$('[data-j=d]',r).value,M.jalaliMonthLength(y,mo));return M.jalaliToISO(y,mo,d)}
+function shortName(n){return String(n).replace(/^(آقای|اقای|خانم|جناب|دکتر|مهندس|استاد)\s+/,'').slice(0,9)}
 
 /* ---------- views ---------- */
 function apRow(a,showDate){
- return '<div class="ap '+(a.status==='cancelled'?'x':'')+'"><div class="row sp"><div data-edit="'+a.id+'" style="cursor:pointer"><div class="t">'+esc(a.customer_name)+'</div><div class="dim">'+(showDate?M.formatJalali(a.date)+' · ':'')+M.formatTime(a.start)+'–'+M.formatTime(a.end)+' · '+esc(a.service)+'</div></div><span class="chip">'+ST_FA[a.status]+'</span></div>'+
- (a.status==='scheduled'?'<div class="row" style="margin-top:8px"><button class="btn sm" data-done="'+a.id+'">انجام شد</button><button class="btn sm dng" data-cancel="'+a.id+'">لغو</button></div>':'')+'</div>'}
-function home(){
- var td=byDate(today),up=act().filter(function(a){return a.date>today&&a.date<=M.addDays(today,7)}).sort(function(x,y){return (x.date+x.start)<(y.date+y.start)?-1:1});
- var free=M.freeSlots({date:today,existing:db.appts,workStart:db.settings.work_start,workEnd:db.settings.work_end,duration:dur(),step:Math.max(30,db.settings.slot_step),fromMinute:M.nowMinutesTehran()});
- var occ=hol(today),recent=db.appts.filter(function(a){return a.date<=today}).sort(function(x,y){return (y.date+y.start)<(x.date+x.start)?-1:1}).slice(0,5);
- return '<div class="card row">'+avatar('idle',68)+'<div class="grow"><div style="font-size:17px;font-weight:700">'+M.formatJalali(today)+'</div><div style="margin-top:4px">'+(occ.length?occ.map(function(o){return '<span class="chip '+(o.holiday?'h':'')+'">'+esc(o.title)+(o.holiday?' · تعطیل':'')+(o.approximate?' (تقریبی)':'')+'</span> '}).join(''):'<span class="dim">مناسبت رسمی ثبت نشده</span>')+'</div></div></div>'+
- '<div class="stats"><div class="card"><b>'+P(td.length)+'</b><span class="dim">امروز</span></div><div class="card"><b>'+P(up.length)+'</b><span class="dim">هفتهٔ پیش‌رو</span></div><div class="card"><b>'+P(free.length)+'</b><span class="dim">ساعت خالی</span></div></div>'+
- '<div class="row" style="margin-bottom:12px"><button class="btn pri grow" data-new="'+today+'">＋ نوبت جدید</button><button class="btn grow" id="openA">🎙 دستیار</button></div>'+
- '<div class="card"><h2>نوبت‌های امروز</h2>'+(td.length?td.map(function(a){return apRow(a)}).join(''):'<p class="dim">نوبتی برای امروز ثبت نشده.</p>')+'</div>'+
- '<div class="card"><h2>ساعت‌های خالی امروز <span class="dim">(بازهٔ '+P(dur())+' دقیقه‌ای)</span></h2>'+(free.length?free.slice(0,16).map(function(t){return '<span class="chip">'+M.formatTime(t)+'</span> '}).join(''):'<span class="dim">ساعت خالی باقی نمانده.</span>')+'</div>'+
- '<div class="card"><h2>نوبت‌های پیش‌رو</h2>'+(up.length?up.slice(0,6).map(function(a){return apRow(a,true)}).join(''):'<p class="dim">نوبتی برای ۷ روز آینده نیست.</p>')+'</div>'+
- '<div class="card"><h2>فعالیت اخیر مشتریان</h2>'+(recent.length?recent.map(function(a){return '<div class="row sp" style="font-size:13px;margin-bottom:4px"><span>'+esc(a.customer_name)+' · '+esc(a.service)+'</span><span class="dim">'+M.formatJalali(a.date,{year:false})+'</span></div>'}).join(''):'<p class="dim">هنوز فعالیتی نیست.</p>')+'</div>'}
-function cal(){
+ return '<div class="ap '+(a.status==='cancelled'?'x':'')+'"><div class="row sp"><div data-a="edit" data-v="'+a.id+'" style="cursor:pointer"><div class="t">'+esc(a.customer_name)+'</div><div class="dim">'+(showDate?M.formatJalali(a.date)+' · ':'')+a.start+'–'+a.end+' · '+esc(a.service)+(a.price?' · '+fmt(a.price):'')+'</div></div><span class="chip">'+ST_FA[a.status]+'</span></div>'+
+ (a.status==='scheduled'?'<div class="row" style="margin-top:8px"><button class="btn sm" data-a="done" data-v="'+a.id+'">انجام شد</button><button class="btn sm dng" data-a="cancel" data-v="'+a.id+'">لغو</button></div>':'')+'</div>'}
+function homeInfo(){
+ var td=byDate(today),now=M.nowMinutesTehran(),s=db.settings;
+ var nxt=td.filter(function(a){return a.status==='scheduled'&&M.toMinutes(a.end)>now})[0];
+ if(!nxt)nxt=act().filter(function(a){return a.date>today&&a.status==='scheduled'}).sort(function(x,y){return (x.date+x.start)<(y.date+y.start)?-1:1})[0];
+ var free=M.freeSlots({date:today,existing:db.appts,workStart:s.work_start,workEnd:s.work_end,duration:dur(),step:Math.max(30,s.slot_step),fromMinute:now});
+ var inc=ledSum(today,today).inc,occ=hol(today);
+ return '<div class="card row sp"><div><div class="dim">نوبت بعدی</div>'+(nxt?'<div class="big accent num">'+nxt.start+'</div></div><div style="text-align:left"><div>'+esc(nxt.customer_name)+'</div><div class="dim">'+esc(nxt.service)+(nxt.date!==today?' · '+M.formatJalali(nxt.date,{weekday:false,year:false}):'')+'</div></div>':'<div style="margin-top:6px">نوبتی ثبت نشده</div></div><div></div>')+'</div>'+
+ '<div class="stats3"><div><b class="num">'+td.length+'</b><span>نوبت امروز</span></div><div><b class="num">'+free.length+'</b><span>ساعت خالی</span></div><div><b class="num">'+fmt(inc)+'</b><span>درآمد امروز</span></div></div>'+
+ (occ.length?'<div style="margin-top:10px">'+occ.map(function(o){return '<span class="chip '+(o.holiday?'h':'')+'">'+esc(o.title)+(o.holiday?' · تعطیل':'')+(o.approximate?' (تقریبی)':'')+'</span> '}).join('')+'</div>':'')}
+
+function dayTable(){
+ var s=db.settings,step=+s.table_step||30,st=M.toMinutes(s.work_start),en=M.toMinutes(s.work_end),d=selDay,oc=hol(d);
+ var closed=oc.some(isH)||s.work_days.indexOf(M.weekdayIndex(d))<0,list=byDate(d),rows='',skip=0,used={},nowM=d===today?M.nowMinutesTehran():(d<today?9999:-1);
+ for(var t=st;t<en;t+=step){var tl=M.fromMinutes(t);
+  if(skip>0){skip--;rows+='<tr><td class="tm">'+tl+'</td></tr>';continue}
+  var a=list.filter(function(x){var b=M.toMinutes(x.start);return b>=t&&b<t+step})[0];
+  if(a){var span=Math.min(Math.max(1,Math.ceil((M.toMinutes(a.end)-t)/step)),Math.ceil((en-t)/step));skip=span-1;used[a.id]=1;
+   rows+='<tr class="st-'+a.status+'"><td class="tm">'+tl+'</td><td class="nm" rowspan="'+span+'" data-a="edit" data-v="'+a.id+'"><b>'+esc(a.customer_name)+'</b><i class="num">'+a.start+'–'+a.end+'</i></td><td class="sv" rowspan="'+span+'">'+esc(a.service)+'</td><td class="pr num" rowspan="'+span+'">'+(a.price?fmt(a.price):'—')+'</td><td class="ac" rowspan="'+span+'"><button data-a="edit" data-v="'+a.id+'" aria-label="ویرایش">✎</button>'+(a.status==='scheduled'?'<button data-a="done" data-v="'+a.id+'" aria-label="انجام شد">✓</button><button data-a="cancel" data-v="'+a.id+'" aria-label="لغو">✕</button>':'<br><span class="chip">'+ST_FA[a.status]+'</span>')+'</td></tr>';continue}
+  var cov=list.filter(function(x){return M.toMinutes(x.start)<t&&M.toMinutes(x.end)>t}).length;
+  if(cov){rows+='<tr><td class="tm">'+tl+'</td></tr>';continue}
+  rows+='<tr class="empty'+(t+step<=nowM?' past':'')+'"><td class="tm">'+tl+'</td><td class="free" colspan="4" data-a="slot" data-v="'+d+'|'+tl+'"><div class="fr"><span>خالی</span><b>＋</b></div></td></tr>'}
+ var outside=list.filter(function(a){return !used[a.id]}),tot=list.reduce(function(x,a){return x+(+a.price||0)},0);
+ return '<div class="row sp" style="margin-bottom:10px"><div class="row"><button class="btn sm" data-a="dnav" data-v="-1">›</button><button class="btn sm" data-a="dnav" data-v="1">‹</button><button class="btn sm" data-a="dnav" data-v="0">امروز</button></div><b>'+M.formatJalali(d)+'</b></div><button class="btn pri" style="width:100%;margin-bottom:10px" data-a="slot" data-v="'+d+'|'+s.work_start+'">＋ نوبت دستی (هر ساعتی)</button>'+
+ (oc.length?'<div style="margin-bottom:8px">'+oc.map(function(o){return '<span class="chip '+(o.holiday?'h':'')+'">'+esc(o.title)+(o.approximate?' (تقریبی)':'')+'</span> '}).join('')+'</div>':'')+(closed?'<div class="warn" style="margin-bottom:8px">این روز تعطیل یا غیرکاری است.</div>':'')+
+ '<div class="xlw"><table class="xl"><thead><tr><th>ساعت</th><th>مشتری</th><th>خدمت</th><th>مبلغ</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>'+
+ '<div class="foot"><span>'+list.length+' نوبت</span><span class="num">'+(tot?fmt(tot)+' تومان':'')+'</span></div>'+
+ (outside.length?'<div class="dim" style="margin:6px 0">خارج از ساعت جدول:</div>'+outside.map(function(a){return apRow(a)}).join(''):'')}
+function weekGrid(){
+ var s=db.settings,step=+s.table_step||30,st=M.toMinutes(s.work_start),en=M.toMinutes(s.work_end),wk=M.addDays(selDay,-M.weekdayIndex(selDay)),days=[],lists={};
+ for(var i=0;i<7;i++){var dd=M.addDays(wk,i);days.push(dd);lists[dd]=byDate(dd)}
+ var hdr='<tr><th class="tm"></th>'+days.map(function(d){var jd=M.isoToJalali(d),h=hol(d).some(isH)||M.weekdayIndex(d)===6;return '<th class="'+(d===today?'today ':'')+(h?'hd':'')+'">'+M.WEEKDAYS_SHORT[M.weekdayIndex(d)]+'<b>'+jd.jd+'</b></th>'}).join('')+'</tr>';
+ var skip=[0,0,0,0,0,0,0],rows='';
+ for(var t=st;t<en;t+=step){var tl=M.fromMinutes(t),tds='';
+  days.forEach(function(d,i){if(skip[i]>0){skip[i]--;return}
+   var a=lists[d].filter(function(x){var b=M.toMinutes(x.start);return b>=t&&b<t+step})[0];
+   if(a){var span=Math.min(Math.max(1,Math.ceil((M.toMinutes(a.end)-t)/step)),Math.ceil((en-t)/step));skip[i]=span-1;tds+='<td class="fillc st-'+a.status+'" rowspan="'+span+'" data-a="edit" data-v="'+a.id+'"><b>'+esc(shortName(a.customer_name))+'</b></td>';return}
+   if(lists[d].some(function(x){return M.toMinutes(x.start)<t&&M.toMinutes(x.end)>t})){tds+='<td class="fc"></td>';return}
+   var off=s.work_days.indexOf(M.weekdayIndex(d))<0||hol(d).some(isH);
+   tds+='<td class="fc'+(off?' off':'')+'" data-a="slot" data-v="'+d+'|'+tl+'"></td>'});
+  rows+='<tr><td class="tm">'+tl+'</td>'+tds+'</tr>'}
+ return '<div class="row sp" style="margin-bottom:10px"><div class="row"><button class="btn sm" data-a="dnav" data-v="-1">›</button><button class="btn sm" data-a="dnav" data-v="1">‹</button><button class="btn sm" data-a="dnav" data-v="0">این هفته</button></div><b>'+M.formatJalali(wk,{weekday:false,year:false})+' تا '+M.formatJalali(days[6],{weekday:false,year:false})+'</b></div><div class="xlw"><table class="xl wk"><thead>'+hdr+'</thead><tbody>'+rows+'</tbody></table></div><p class="dim">روی خانهٔ خالی بزنید تا نوبت بگذارید.</p>'}
+function monthView(){
  var j=M.isoToJalali(cursor),first=M.jalaliToISO(j.jy,j.jm,1),off=M.weekdayIndex(first),len=M.jalaliMonthLength(j.jy,j.jm),rows=Math.ceil((off+len)/7),start=M.addDays(first,-off),cells='';
- for(var i=0;i<rows*7;i++){var d=M.addDays(start,i),jd=M.isoToJalali(d),oc=hol(d),h=oc.some(function(o){return o.holiday})||M.weekdayIndex(d)===6,l=byDate(d);
-  cells+='<button class="cell '+(d===today?'t ':'')+(d===selDay?'sel ':'')+(jd.jm!==j.jm?'o ':'')+(h?'hol':'')+'" data-day="'+d+'"><b>'+P(jd.jd)+'</b>'+(oc[0]?'<i>'+esc(oc[0].title)+'</i>':'')+l.slice(0,2).map(function(a){return '<u>'+P(a.start)+' '+esc(a.customer_name)+'</u>'}).join('')+(l.length>2?'<span class="dim" style="font-size:9px">+'+P(l.length-2)+'</span>':'')+'</button>'}
- var so=hol(selDay),sl=byDate(selDay);
- return '<div class="row sp" style="margin-bottom:10px"><div class="row"><button class="btn" data-mv="-1">›</button><button class="btn" data-mv="1">‹</button><button class="btn" data-mv="0">امروز</button></div><b>'+M.JALALI_MONTHS[j.jm-1]+' '+P(j.jy)+'</b></div>'+
- '<div class="g7" style="margin-bottom:5px">'+M.WEEKDAYS_SHORT.map(function(w){return '<div class="wd">'+w+'</div>'}).join('')+'</div><div class="g7">'+cells+'</div>'+
- '<div class="card" style="margin-top:12px"><h2>'+M.formatJalali(selDay)+'</h2>'+so.map(function(o){return '<span class="chip '+(o.holiday?'h':'')+'">'+esc(o.title)+(o.approximate?' (تقریبی)':'')+'</span> '}).join('')+'<div style="margin-top:8px">'+(sl.length?sl.map(function(a){return apRow(a)}).join(''):'<p class="dim">نوبتی در این روز نیست.</p>')+'</div><button class="btn pri" style="width:100%" data-new="'+selDay+'">＋ نوبت در این روز</button></div>'+
- '<p class="dim">تعطیلات شمسی برای هر سال محاسبه می‌شود. مناسبت‌های قمری تقریبی هستند و ممکن است ۱ تا ۲ روز با اعلام رسمی تفاوت داشته باشند.</p>'}
-function list(){
+ for(var i=0;i<rows*7;i++){var d=M.addDays(start,i),jd=M.isoToJalali(d),oc=hol(d),h=oc.some(isH)||M.weekdayIndex(d)===6,l=byDate(d);
+  cells+='<button class="cell '+(d===today?'t ':'')+(d===selDay?'sel ':'')+(jd.jm!==j.jm?'o ':'')+(h?'hol':'')+'" data-a="calday" data-v="'+d+'"><b>'+jd.jd+'</b>'+(oc[0]?'<i>'+esc(oc[0].title)+'</i>':'')+l.slice(0,2).map(function(a){return '<u>'+a.start+' '+esc(shortName(a.customer_name))+'</u>'}).join('')+(l.length>2?'<span class="dim" style="font-size:9px">+'+(l.length-2)+'</span>':'')+'</button>'}
+ return '<div class="row sp" style="margin-bottom:10px"><div class="row"><button class="btn sm" data-a="mv" data-v="-1">›</button><button class="btn sm" data-a="mv" data-v="1">‹</button><button class="btn sm" data-a="mv" data-v="0">امروز</button></div><b>'+M.JALALI_MONTHS[j.jm-1]+' '+j.jy+'</b></div><div class="g7" style="margin-bottom:5px">'+M.WEEKDAYS_SHORT.map(function(w){return '<div class="wd">'+w+'</div>'}).join('')+'</div><div class="g7">'+cells+'</div><p class="dim">تعطیلات شمسی محاسبه می‌شود؛ مناسبت‌های قمری تقریبی‌اند و ممکن است 1 تا 2 روز با اعلام رسمی فرق داشته باشند.</p>'}
+function listView(){
  var l=db.appts.filter(function(a){return (!q||a.customer_name.indexOf(q)>-1||String(a.customer_phone||'').indexOf(q)>-1)&&(lt==='all'||(lt==='upcoming'?a.date>=today:a.date<today))}).sort(function(x,y){return (lt==='past'?-1:1)*((x.date+x.start)<(y.date+y.start)?-1:1)});
  var g={};l.forEach(function(a){(g[a.date]=g[a.date]||[]).push(a)});
- return '<div class="row" style="margin-bottom:8px"><input class="in" id="q" placeholder="جستجوی مشتری یا تلفن…" value="'+esc(q)+'"><button class="btn pri" data-new="'+today+'">＋</button></div><div class="row" style="margin-bottom:10px">'+[['upcoming','پیش‌رو'],['past','گذشته'],['all','همه']].map(function(x){return '<button class="btn '+(lt===x[0]?'pri':'')+'" data-lt="'+x[0]+'">'+x[1]+'</button>'}).join('')+'</div>'+
+ return '<div class="row" style="margin-bottom:8px"><input class="in" id="q" placeholder="جستجوی مشتری یا تلفن…" value="'+esc(q)+'"><button class="btn pri" data-a="slot" data-v="'+today+'|17:00">＋</button></div>'+seg([['upcoming','پیش‌رو'],['past','گذشته'],['all','همه']],lt,'lt')+
  (Object.keys(g).length?Object.keys(g).map(function(d){return '<div class="dim" style="margin:8px 0 4px">'+M.formatJalali(d)+'</div>'+g[d].map(function(a){return apRow(a)}).join('')}).join(''):'<div class="card dim" style="text-align:center">نوبتی پیدا نشد.</div>')}
-function settings(){
+function tableView(){return seg([['day','روزانه'],['week','هفتگی'],['month','ماهانه'],['list','لیست']],sv,'sv')+(sv==='day'?dayTable():sv==='week'?weekGrid():sv==='month'?monthView():listView())}
+
+/* ---------- tasks / stats / timer ---------- */
+var TMK='mahdavan_timer_v1',tm={mode:'down',total:1800,elapsed:0,startedAt:null,label:'',apptId:null,done:false};
+function tmLoad(){try{var t=JSON.parse(localStorage.getItem(TMK)||'null');if(t)tm=Object.assign(tm,t)}catch(e){}}
+function tmSave(){try{localStorage.setItem(TMK,JSON.stringify(tm))}catch(e){}}
+function tmElapsed(){return tm.elapsed+(tm.startedAt?(Date.now()-tm.startedAt)/1000:0)}
+function mmss(s){s=Math.max(0,Math.floor(s));var h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return (h?h+':'+(m<10?'0':''):(m<10?'0':''))+m+':'+(x<10?'0':'')+x}
+function tmShow(){var e=tmElapsed();return mmss(tm.mode==='down'?Math.max(0,tm.total-e):e)}
+function checkView(){var done=db.tasks.filter(function(t){return t.done}).length,n=db.tasks.length;
+ return '<div class="card"><div class="row"><input class="in" id="tin" placeholder="کار جدید…" enterkeyhint="done"><button class="btn pri" data-a="tadd">＋</button></div>'+(n?'<div class="dim" style="margin-top:12px">'+done+' از '+n+' انجام شد</div><div class="prog"><i style="width:'+Math.round(done/n*100)+'%"></i></div>':'<p class="dim">هنوز کاری نیست. مثلاً «خرید لوازم» یا «تمیز کردن وسایل».</p>')+
+ db.tasks.map(function(t){return '<div class="ti '+(t.done?'d':'')+'"><input type="checkbox" data-a="ttog" data-v="'+t.id+'" '+(t.done?'checked':'')+'><span>'+esc(t.text)+'</span><button class="btn sm dng" data-a="tdel" data-v="'+t.id+'">✕</button></div>'}).join('')+(done?'<button class="btn sm" style="margin-top:10px" data-a="tclear">پاک کردن انجام‌شده‌ها</button>':'')+'</div>'}
+function statsView(){
+ var r=range(sp==='7'?'week':sp==='30'?'30':'month'),days=eachDay(r[0],r[1]).slice(-40),inr=db.appts.filter(function(a){return a.date>=r[0]&&a.date<=r[1]});
+ var c={completed:0,cancelled:0,no_show:0,scheduled:0};inr.forEach(function(a){c[a.status]=(c[a.status]||0)+1});var inc=ledSum(r[0],r[1]);
+ var items=days.map(function(d){return {l:String(M.isoToJalali(d).jd),a:inr.filter(function(a){return a.date===d&&a.status==='completed'}).length}});
+ var bysv={};inr.filter(function(a){return a.status==='completed'}).forEach(function(a){bysv[a.service]=(bysv[a.service]||0)+1});var names=Object.keys(bysv).sort(function(a,b){return bysv[b]-bysv[a]}),mx=bysv[names[0]]||1;
+ var wd=[0,0,0,0,0,0,0];inr.filter(function(a){return a.status==='completed'||a.status==='scheduled'}).forEach(function(a){wd[M.weekdayIndex(a.date)]++});var bi=wd.indexOf(Math.max.apply(null,wd));
+ return seg([['7','7 روز'],['30','30 روز'],['month','این ماه']],sp,'sp')+
+ '<div class="sum3"><div><span class="dim">انجام‌شده</span><b class="num">'+c.completed+'</b></div><div><span class="dim">لغو / غایب</span><b class="num">'+(c.cancelled+c.no_show)+'</b></div><div><span class="dim">درآمد</span><b class="num in-">'+fmt(inc.inc)+'</b></div></div>'+
+ '<div class="card" style="margin-top:12px"><h2>نوبت‌های انجام‌شده در هر روز</h2>'+bars(items)+'</div>'+
+ '<div class="card"><h2>خدمات پرکار</h2>'+(names.length?names.map(function(n){return '<div style="margin-bottom:10px"><div class="row sp"><span>'+esc(n)+'</span><b class="num">'+bysv[n]+'</b></div><div class="hbar"><i style="width:'+Math.round(bysv[n]/mx*100)+'%"></i></div></div>'}).join(''):'<p class="dim">هنوز نوبت انجام‌شده‌ای در این بازه نیست.</p>')+'</div>'+
+ '<div class="card"><h2>خلاصه</h2><div class="led"><span>میانگین مبلغ هر مشتری</span><b class="num">'+fmt(inc.n?inc.inc/inc.n:0)+'</b></div><div class="led"><span>پرکارترین روز هفته</span><b>'+(Math.max.apply(null,wd)>0?M.WEEKDAYS[bi]:'—')+'</b></div><div class="led"><span>هزینه‌ها</span><b class="num ex-">'+fmt(inc.exp)+'</b></div><div class="led"><span>سود خالص</span><b class="num">'+fmt(inc.net)+'</b></div></div>'}
+function timerView(){
+ var running=!!tm.startedAt,pct=tm.mode==='down'?Math.min(100,tmElapsed()/tm.total*100):0,todayA=byDate(today).filter(function(a){return a.status==='scheduled'});
+ return '<div class="card"><div class="dim" style="text-align:center">'+esc(tm.label||'تایمر')+'</div><div class="tdisp" id="tdisp">'+tmShow()+'</div>'+(tm.mode==='down'?'<div class="prog"><i id="tprog" style="width:'+pct+'%"></i></div>':'')+
+ '<div class="row"><button class="btn pri grow" data-a="tmtoggle">'+(running?'⏸ توقف':'▶ شروع')+'</button><button class="btn" data-a="tmreset">↺ صفر</button></div>'+seg([['down','شمارش معکوس'],['up','کرونومتر']],tm.mode,'tmmode')+
+ '<div class="row"><input class="in" id="tmin" inputmode="numeric" placeholder="دقیقه (مثلاً 25)"><button class="btn" data-a="tmcustom">تنظیم</button></div></div>'+
+ '<div class="card"><h2>شروع سریع با خدمت</h2><div class="row wrapf">'+db.settings.services.map(function(s,i){return '<button class="btn sm" data-a="tmpre" data-v="'+i+'">'+esc(s.name)+' · '+s.duration+' دقیقه</button>'}).join('')+'</div></div>'+
+ (todayA.length?'<div class="card"><h2>نوبت‌های امروز</h2>'+todayA.map(function(a){return '<div class="led"><span>'+a.start+' — '+esc(a.customer_name)+'<br><span class="dim">'+esc(a.service)+'</span></span><button class="btn sm pri" data-a="tmappt" data-v="'+a.id+'">▶ شروع</button></div>'}).join('')+'</div>':'')}
+function tasksView(){return seg([['check','چک‌لیست'],['stats','آمار'],['timer','تایمر']],tsub,'tsub')+(tsub==='check'?checkView():tsub==='stats'?statsView():timerView())}
+
+/* ---------- money ---------- */
+function moneyView(){
+ var r=range(mp),s=ledSum(r[0],r[1]),days=eachDay(r[0],r[1]).slice(-31),items=days.map(function(d){var x=ledSum(d,d);return {l:String(M.isoToJalali(d).jd),a:x.inc,b:x.exp}});
+ var ents=db.ledger.filter(function(e){return e.date>=r[0]&&e.date<=r[1]}).sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:0}),g={};ents.forEach(function(e){(g[e.date]=g[e.date]||[]).push(e)});
+ return seg([['day','امروز'],['week','7 روز'],['month','این ماه'],['prev','ماه قبل']],mp,'mp')+'<div class="dim" style="margin:-4px 0 8px">'+esc(r[2])+'</div>'+
+ '<div class="sum3"><div><span class="dim">درآمد</span><b class="num in-">'+fmt(s.inc)+'</b></div><div><span class="dim">هزینه</span><b class="num ex-">'+fmt(s.exp)+'</b></div><div><span class="dim">خالص</span><b class="num">'+fmt(s.net)+'</b></div></div><div class="dim" style="text-align:center;margin:6px 0 12px">مبالغ به تومان</div>'+
+ '<div class="card"><h2>درآمد (نارنجی) و هزینه (قرمز) هر روز</h2>'+bars(items)+'</div>'+
+ '<div class="row" style="margin-bottom:12px"><button class="btn pri grow" data-a="walkin">＋ مشتری گذری</button><button class="btn grow" data-a="expense">＋ هزینه</button><button class="btn" data-a="csv" aria-label="دریافت اکسل">⬇</button></div>'+
+ '<div class="card">'+(ents.length?Object.keys(g).map(function(d){return '<div class="dim" style="margin:8px 0 2px">'+M.formatJalali(d)+'</div>'+g[d].map(function(e){return '<div class="led"><span>'+esc(e.title)+(e.src==='walkin'?' <span class="chip a">گذری</span>':'')+'</span><span class="row"><span class="am '+(e.type==='income'?'i':'e')+' num">'+(e.type==='income'?'+':'−')+fmt(e.amount)+'</span><button class="btn sm dng" data-a="ldel" data-v="'+e.id+'">✕</button></span></div>'}).join('')}).join(''):'<p class="dim">در این بازه تراکنشی نیست. با «انجام شد» زدن نوبت‌ها یا «مشتری گذری» درآمد ثبت می‌شود.</p>')+'</div>'}
+function askAmount(title,def,cb){
+ openModal('<h2>'+esc(title)+'</h2><label>مبلغ (تومان)</label><input class="in" id="amt" inputmode="numeric" value="'+(def||'')+'"><div class="err" id="merr"></div><div class="row" style="margin-top:10px"><button class="btn pri grow" id="mok">ثبت</button><button class="btn" data-a="closem">انصراف</button></div>');
+ setTimeout(function(){var i=$('#amt');if(i){i.focus();i.select()}},50);
+ $('#mok').onclick=function(){var v=num($('#amt').value);if(v<0)return;cb(v)}}
+function completeAppt(id){var a=find(id);if(!a)return;
+ askAmount('مبلغ دریافتی — '+a.customer_name,(+a.price>0?a.price:svPrice(a.service))||'',function(v){var snap=JSON.stringify(db);a.status='completed';a.price=v;syncLedger(a);
+  if(!save()){restore(snap);flash={ok:false,t:'ذخیره نشد؛ تغییر اعمال نشد.'}}else flash={ok:true,t:'ثبت شد: '+fmt(v)+' تومان'};closeModal();render()})}
+function openWalkin(){
+ var s=db.settings,first=s.services[0]||{name:'',price:0};
+ openModal('<h2>مشتری گذری</h2><label>خدمت</label><select class="in" id="wsv">'+s.services.map(function(x){return '<option>'+esc(x.name)+'</option>'}).join('')+'<option value="">سایر</option></select><label>نام (اختیاری)</label><input class="in" id="wnm"><label>مبلغ (تومان)</label><input class="in" id="wam" inputmode="numeric" value="'+(first.price||'')+'"><label>تاریخ</label>'+jpick('wd',today)+'<div class="err" id="merr"></div><div class="row" style="margin-top:12px"><button class="btn pri grow" id="mok">ثبت درآمد</button><button class="btn" data-a="closem">انصراف</button></div>');
+ var touched=false;$('#wam').oninput=function(){touched=true};$('#wsv').onchange=function(){if(!touched)$('#wam').value=svPrice(this.value)||''};
+ $('#mok').onclick=function(){var v=num($('#wam').value);if(!(v>0))return $('#merr').textContent='مبلغ را وارد کنید.';
+  var svn=$('#wsv').value,nm=$('#wnm').value.trim(),snap=JSON.stringify(db);
+  db.ledger.push({id:uid(),date:jval('wd'),type:'income',amount:v,title:(nm?nm+' — ':'')+(svn||'مشتری گذری'),src:'walkin'});
+  if(!save()){restore(snap);return $('#merr').textContent='ذخیره نشد.'}closeModal();flash={ok:true,t:'درآمد ثبت شد.'};render()}}
+function openExpense(){
+ openModal('<h2>ثبت هزینه</h2><label>عنوان</label><input class="in" id="etl" placeholder="مثلاً خرید لوازم"><label>مبلغ (تومان)</label><input class="in" id="eam" inputmode="numeric"><label>تاریخ</label>'+jpick('ed',today)+'<div class="err" id="merr"></div><div class="row" style="margin-top:12px"><button class="btn pri grow" id="mok">ثبت هزینه</button><button class="btn" data-a="closem">انصراف</button></div>');
+ $('#mok').onclick=function(){var v=num($('#eam').value),t=$('#etl').value.trim();if(!t)return $('#merr').textContent='عنوان را بنویسید.';if(!(v>0))return $('#merr').textContent='مبلغ را وارد کنید.';
+  var snap=JSON.stringify(db);db.ledger.push({id:uid(),date:jval('ed'),type:'expense',amount:v,title:t,src:'manual'});
+  if(!save()){restore(snap);return $('#merr').textContent='ذخیره نشد.'}closeModal();flash={ok:true,t:'هزینه ثبت شد.'};render()}}
+function exportCSV(){var r=range(mp),rows=[['تاریخ','نوع','عنوان','مبلغ (تومان)']];db.ledger.filter(function(e){return e.date>=r[0]&&e.date<=r[1]}).sort(function(a,b){return a.date<b.date?-1:1}).forEach(function(e){rows.push([D(M.formatJalali(e.date,{weekday:false})),e.type==='income'?'درآمد':'هزینه',e.title,e.amount])});
+ var csv='\ufeff'+rows.map(function(r){return r.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"'}).join(',')}).join('\n'),b=new Blob([csv],{type:'text/csv;charset=utf-8'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='mahdavan-accounts-'+today+'.csv';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},4000)}
+
+/* ---------- settings ---------- */
+function settingsView(){
  var s=db.settings;
- return '<div class="card"><h2>ساعت و روزهای کاری</h2><div class="row"><div class="grow"><label>شروع</label><input class="in" type="time" id="ws" value="'+s.work_start+'"></div><div class="grow"><label>پایان</label><input class="in" type="time" id="we" value="'+s.work_end+'"></div></div><label>روزهای کاری</label><div class="row wrapf">'+M.WEEKDAYS.map(function(w,i){return '<button class="btn sm '+(s.work_days.indexOf(i)>-1?'pri':'')+'" data-wd="'+i+'">'+w+'</button>'}).join('')+'</div></div>'+
- '<div class="card"><h2>خدمات و مدت (دقیقه)</h2><div id="svs">'+s.services.map(function(v,i){return '<div class="row" style="margin-bottom:6px"><input class="in" data-sn="'+i+'" value="'+esc(v.name)+'" style="flex:2"><input class="in" type="number" min="5" step="5" data-sd="'+i+'" value="'+v.duration+'" style="flex:1"><button class="btn dng sm" data-sx="'+i+'">✕</button></div>'}).join('')+'</div><button class="btn" id="sadd" style="width:100%;margin-bottom:8px">＋ افزودن خدمت</button><button class="btn pri" id="ssave" style="width:100%">ذخیرهٔ تنظیمات</button><div id="smsg"></div></div>'+
- '<div class="card"><h2>هوش مصنوعی (Gemini) — اختیاری</h2><p class="dim">با کلید رایگان Gemini می‌توانید با میکروفن همین برنامه حرف بزنید و جمله‌های آزاد بگویید. صدا و متن فرمان (به‌همراه نام مشتری) برای پردازش به گوگل فرستاده می‌شود. کلید فقط روی همین گوشی می‌ماند و در پشتیبان نیست.</p><label>کلید API (از aistudio.google.com ← Get API key)</label><input class="in" id="gk" type="password" dir="ltr" autocomplete="off" placeholder="'+(gcfg().key?'کلید ذخیره شده است — برای تغییر، کلید جدید را وارد کنید':'AIza…')+'"><label>مدل</label><input class="in" id="gm" dir="ltr" value="'+esc(gcfg().model)+'"><div class="row" style="margin-top:10px"><button class="btn pri grow" id="gsave">ذخیره</button><button class="btn grow" id="gtest">آزمایش اتصال</button><button class="btn dng" id="gdel">حذف</button></div><div id="gmsg"></div></div>'+
- '<div class="card"><h2>پشتیبان‌گیری</h2><p class="dim">اطلاعات فقط روی همین دستگاه ذخیره می‌شود. حتماً مرتب پشتیبان بگیرید؛ با پاک شدن اطلاعات Safari نوبت‌ها از بین می‌روند.</p><div class="row"><button class="btn grow" id="exp">⬇ دریافت پشتیبان</button><button class="btn grow" id="imp">⬆ بازیابی</button></div><input type="file" id="impf" accept=".json,application/json" hidden><div id="bmsg"></div><p class="dim" id="persist"></p></div>'}
-function render(){
- var v=tab==='home'?home():tab==='cal'?cal():tab==='list'?list():settings();
- $('#view').innerHTML=(flash?'<div class="'+(flash.ok?'ok':'err')+'" role="status">'+esc(flash.t)+'</div>':'')+v;flash=null;
- document.querySelectorAll('nav button').forEach(function(b){b.classList.toggle('on',b.dataset.tab===tab)});
- if(tab==='settings'&&navigator.storage&&navigator.storage.persisted)navigator.storage.persisted().then(function(p){var e=$('#persist');if(e)e.textContent=p?'ذخیره‌سازی پایدار فعال است.':'ذخیره‌سازی پایدار فعال نیست (مرورگر ممکن است در کمبود فضا اطلاعات را پاک کند).'})}
+ return '<div class="card"><h2>ساعت و روزهای کاری</h2><div class="row"><div class="grow"><label>شروع</label><input class="in" type="time" id="ws" value="'+s.work_start+'"></div><div class="grow"><label>پایان</label><input class="in" type="time" id="we" value="'+s.work_end+'"></div></div><label>روزهای کاری</label><div class="row wrapf">'+M.WEEKDAYS.map(function(w,i){return '<button class="btn sm '+(s.work_days.indexOf(i)>-1?'pri':'')+'" data-a="wd" data-v="'+i+'">'+w+'</button>'}).join('')+'</div>'+
+ '<div class="row"><div class="grow"><label>بازهٔ ردیف‌های جدول</label><select class="in" id="tst">'+[15,30,60].map(function(n){return '<option value="'+n+'" '+(+s.table_step===n?'selected':'')+'>'+n+' دقیقه</option>'}).join('')+'</select></div><div class="grow"><label>گام ساعت‌های خالی</label><select class="in" id="sst">'+[10,15,20,30,60].map(function(n){return '<option value="'+n+'" '+(+s.slot_step===n?'selected':'')+'>'+n+' دقیقه</option>'}).join('')+'</select></div></div></div>'+
+ '<div class="card"><h2>خدمات، مدت و قیمت</h2><div class="row dim" style="margin-bottom:4px"><span style="flex:2">نام</span><span style="flex:1">دقیقه</span><span style="flex:1.4">قیمت (تومان)</span><span style="width:40px"></span></div><div id="svs">'+s.services.map(function(v,i){return '<div class="row" style="margin-bottom:6px"><input class="in" data-sn="'+i+'" value="'+esc(v.name)+'" style="flex:2"><input class="in" type="number" min="5" step="5" data-sd="'+i+'" value="'+v.duration+'" style="flex:1"><input class="in" inputmode="numeric" data-sp="'+i+'" value="'+(v.price||'')+'" placeholder="0" style="flex:1.4"><button class="btn dng sm" data-a="sx" data-v="'+i+'">✕</button></div>'}).join('')+'</div><button class="btn" data-a="sadd" style="width:100%;margin-bottom:8px">＋ افزودن خدمت</button><button class="btn pri" data-a="ssave" style="width:100%">ذخیرهٔ تنظیمات</button><div id="smsg"></div></div>'+
+ '<div class="card"><h2>ظاهر</h2>'+seg([['dark','تیره'],['light','روشن']],s.theme,'theme')+'<label>رنگ درخشش هنگام روشن بودن میکروفن</label><div class="row"><input type="color" id="gc" value="'+s.glow+'" style="width:56px;height:42px;border:0;background:none;padding:0"><button class="btn sm" data-a="glowreset">پیش‌فرض (مسی)</button></div></div>'+
+ '<div class="card"><h2>هوش مصنوعی (Gemini) — اختیاری</h2><p class="dim">با کلید رایگان Gemini می‌توانید با میکروفن برنامه حرف بزنید و جمله‌های آزاد بگویید. صدا و متن فرمان (به‌همراه نام مشتری) برای پردازش به گوگل فرستاده می‌شود. کلید فقط روی همین گوشی می‌ماند و در پشتیبان نیست.</p><label>کلید API (از aistudio.google.com ← Get API key)</label><input class="in" id="gk" type="password" dir="ltr" autocomplete="off" placeholder="'+(gcfg().key?'کلید ذخیره شده است — برای تغییر، کلید جدید را وارد کنید':'AIza…')+'"><label>مدل</label><input class="in" id="gm" dir="ltr" value="'+esc(gcfg().model)+'"><div class="row" style="margin-top:10px"><button class="btn pri grow" data-a="gsave">ذخیره</button><button class="btn grow" data-a="gtest">آزمایش اتصال</button><button class="btn dng" data-a="gdel">حذف</button></div><div id="gmsg"></div></div>'+
+ '<div class="card"><h2>گزارش خطاهای Gemini</h2>'+(glogs().length?'<div style="max-height:180px;overflow:auto;font-size:12px;direction:ltr;text-align:left;white-space:pre-wrap;word-break:break-word" id="glogbox">'+esc(glogs().map(function(l){return l.t+'  '+l.k+'\n'+l.d}).join('\n\n'))+'</div><div class="row" style="margin-top:8px"><button class="btn grow" data-a="glogcopy">کپی گزارش</button><button class="btn dng" data-a="glogclear">پاک کردن</button></div>':'<p class="dim">خطایی ثبت نشده است. اگر Gemini خطا داد، اینجا با جزئیات کامل می‌آید تا برای رفع مشکل بفرستید.</p>')+'</div>'+
+ '<div class="card"><h2>پشتیبان‌گیری</h2><p class="dim">اطلاعات (نوبت‌ها، حساب‌ها، کارها) فقط روی همین دستگاه ذخیره می‌شود. حتماً مرتب پشتیبان بگیرید؛ با پاک شدن اطلاعات Safari از بین می‌روند.</p><div class="row"><button class="btn grow" data-a="exp">⬇ دریافت پشتیبان</button><button class="btn grow" data-a="imp">⬆ بازیابی</button></div><input type="file" id="impf" accept=".json,application/json" hidden><div id="bmsg"></div><p class="dim" id="persist"></p></div>'+
+ '<div style="text-align:center;padding:14px 0"><img src="logo2.png" alt="MAHDAVAN club" style="height:84px;opacity:.9"></div>'}
 
 /* ---------- appointment form ---------- */
-function openForm(a,date){
- var s=db.settings,f=a?Object.assign({},a):{id:null,customer_name:'',customer_phone:'',service:(s.services[0]||{}).name||'اصلاح',notes:'',date:date||today,start:'17:00',end:M.fromMinutes(17*60+((s.services[0]||{}).duration||30)),status:'scheduled'};
- var m=$('#modal');
- function body(){var j=M.isoToJalali(f.date),len=M.jalaliMonthLength(j.jy,j.jm),o='';
-  return '<div class="card"><h2>'+(a?'ویرایش نوبت':'نوبت جدید')+'</h2><label>نام مشتری</label><input class="in" id="fn" value="'+esc(f.customer_name)+'" list="cl"><datalist id="cl">'+Array.from(new Set(db.appts.map(function(x){return x.customer_name}))).map(function(n){return '<option value="'+esc(n)+'">'}).join('')+'</datalist>'+
+function openForm(a,date,time){
+ var s=db.settings,sv0=s.services[0]||{name:'اصلاح',duration:30,price:0},st=time||'17:00';
+ var f=a?Object.assign({},a):{id:null,customer_name:'',customer_phone:'',service:sv0.name,notes:'',date:date||today,start:st,end:M.fromMinutes(M.toMinutes(st)+sv0.duration),status:'scheduled',price:sv0.price||0};
+ if(f.price==null)f.price=svPrice(f.service);
+ var touched=!!a;
+ function body(){
+  return '<h2>'+(a?'ویرایش نوبت':'نوبت جدید')+'</h2><label>نام مشتری</label><input class="in" id="fn" value="'+esc(f.customer_name)+'" list="cl"><datalist id="cl">'+Array.from(new Set(db.appts.map(function(x){return x.customer_name}))).map(function(n){return '<option value="'+esc(n)+'">'}).join('')+'</datalist>'+
   '<label>تلفن (اختیاری)</label><input class="in" id="fp" inputmode="tel" dir="ltr" value="'+esc(f.customer_phone||'')+'"><label>خدمت</label><select class="in" id="fs">'+s.services.map(function(x){return '<option '+(x.name===f.service?'selected':'')+'>'+esc(x.name)+'</option>'}).join('')+'</select>'+
-  '<label>تاریخ</label><div class="row"><select class="in" id="fd">'+Array.from({length:len},function(_,i){return '<option value="'+(i+1)+'" '+(i+1===j.jd?'selected':'')+'>'+P(i+1)+'</option>'}).join('')+'</select><select class="in" id="fm" style="flex:1.6">'+M.JALALI_MONTHS.map(function(n,i){return '<option value="'+(i+1)+'" '+(i+1===j.jm?'selected':'')+'>'+n+'</option>'}).join('')+'</select><select class="in" id="fy">'+[j.jy-1,j.jy,j.jy+1,j.jy+2].map(function(y){return '<option value="'+y+'" '+(y===j.jy?'selected':'')+'>'+P(y)+'</option>'}).join('')+'</select></div><div class="dim" style="margin-top:4px">'+M.formatJalali(f.date)+'</div>'+
-  '<div class="row"><div class="grow"><label>شروع</label><input class="in" type="time" id="ft" value="'+f.start+'"></div><div class="grow"><label>پایان</label><input class="in" type="time" id="fe" value="'+f.end+'"></div></div>'+
+  '<label>مبلغ (تومان)</label><input class="in" id="fpr" inputmode="numeric" value="'+(f.price||'')+'" placeholder="0">'+
+  '<label>تاریخ</label>'+jpick('fdp',f.date)+'<div class="dim" style="margin-top:4px">'+M.formatJalali(f.date)+'</div>'+
+  '<div class="row"><div class="grow"><label>شروع</label><input class="in" type="time" id="ft" value="'+f.start+'"></div><div class="grow"><label>پایان</label><input class="in" type="time" id="fe" value="'+f.end+'"></div></div><div class="row" style="margin-top:8px"><span class="dim">جابه‌جایی:</span><button class="btn sm" id="nm30">−30</button><button class="btn sm" id="nm15">−15</button><button class="btn sm" id="np15">+15</button><button class="btn sm" id="np30">+30</button><span class="dim">دقیقه</span></div>'+
   (a?'<label>وضعیت</label><select class="in" id="fst">'+Object.keys(ST_FA).map(function(k){return '<option value="'+k+'" '+(k===f.status?'selected':'')+'>'+ST_FA[k]+'</option>'}).join('')+'</select>':'')+
-  '<label>یادداشت</label><textarea class="in" id="fo" rows="2">'+esc(f.notes||'')+'</textarea><div id="fer"></div><div class="row" style="margin-top:10px"><button class="btn pri grow" id="fsave">ذخیره</button><button class="btn" id="fx">انصراف</button></div></div>'}
- function pull(){f.customer_name=$('#fn').value;f.customer_phone=$('#fp').value;f.service=$('#fs').value;f.start=$('#ft').value||f.start;f.end=$('#fe').value||f.end;f.notes=$('#fo').value;if($('#fst'))f.status=$('#fst').value}
- function draw(){m.innerHTML=body();m.style.display='flex';
-  $('#fx').onclick=close;
-  $('#fs').onchange=function(){pull();var d=(s.services.filter(function(x){return x.name===f.service})[0]||{duration:30}).duration;f.end=M.fromMinutes(M.toMinutes(f.start)+d);draw()};
+  '<label>یادداشت</label><textarea class="in" id="fo" rows="2">'+esc(f.notes||'')+'</textarea><div id="fer"></div><div class="row" style="margin-top:10px"><button class="btn pri grow" id="fsave">ذخیره</button><button class="btn" data-a="closem">انصراف</button></div>'}
+ function pull(){f.customer_name=$('#fn').value;f.customer_phone=$('#fp').value;f.service=$('#fs').value;f.start=$('#ft').value||f.start;f.end=$('#fe').value||f.end;f.notes=$('#fo').value;f.price=num($('#fpr').value);f.date=jval('fdp');if($('#fst'))f.status=$('#fst').value}
+ function draw(){openModal(body());
+  $('#fpr').oninput=function(){touched=true};
+  $('#fs').onchange=function(){pull();var sv1=svOf(f.service)||{duration:30,price:0};f.end=M.fromMinutes(M.toMinutes(f.start)+sv1.duration);if(!touched)f.price=sv1.price||0;draw()};
   $('#ft').onchange=function(){var d=M.toMinutes(f.end)-M.toMinutes(f.start);pull();f.end=M.fromMinutes(Math.min(M.toMinutes(f.start)+d,1439));draw()};
-  ['fd','fm','fy'].forEach(function(id){$('#'+id).onchange=function(){pull();var y=+$('#fy').value,mo=+$('#fm').value,d=Math.min(+$('#fd').value,M.jalaliMonthLength(y,mo));f.date=M.jalaliToISO(y,mo,d);draw()}});
-  $('#fsave').onclick=function(){pull();var er=$('#fer');var name=f.customer_name.trim();var ph=M.fromPersianDigits(String(f.customer_phone||'').trim());
+  $$('#fdp select').forEach(function(x){x.onchange=function(){pull();draw()}});
+  [['nm30',-30],['nm15',-15],['np15',15],['np30',30]].forEach(function(p){$('#'+p[0]).onclick=function(){pull();var st0=M.toMinutes(f.start)+p[1],en0=M.toMinutes(f.end)+p[1];if(st0<0||en0>1439)return;f.start=M.fromMinutes(st0);f.end=M.fromMinutes(en0);draw()}});
+  $('#fsave').onclick=function(){pull();var er=$('#fer'),name=f.customer_name.trim(),ph=D(String(f.customer_phone||'').trim());
    function bad(t){er.className='err';er.textContent=t}
    if(!name)return bad('نام مشتری را وارد کنید.');
    if(ph&&!/^(\+|0)?[0-9]{7,14}$/.test(ph))return bad('شماره تلفن نامعتبر است.');
    if(!/^\d\d:\d\d$/.test(f.start)||!/^\d\d:\d\d$/.test(f.end))return bad('ساعت را وارد کنید.');
    if(M.toMinutes(f.end)<=M.toMinutes(f.start))return bad('ساعت پایان باید بعد از شروع باشد.');
    var cf=f.status==='cancelled'?[]:M.findConflicts(db.appts,{date:f.date,start:f.start,end:f.end,id:f.id});
-   if(cf.length)return bad('تداخل با نوبت '+cf[0].customer_name+' ('+M.formatTime(cf[0].start)+'–'+M.formatTime(cf[0].end)+')');
-   var rec=Object.assign({},f,{customer_name:name,customer_phone:ph||null,notes:f.notes.trim()||null,id:f.id||uid()});
-   var snap=JSON.stringify(db.appts);
+   if(cf.length)return bad('تداخل با نوبت '+cf[0].customer_name+' ('+cf[0].start+'–'+cf[0].end+')');
+   var rec=Object.assign({},f,{customer_name:name,customer_phone:ph||null,notes:(f.notes||'').trim()||null,price:+f.price||0,id:f.id||uid()});
+   var snap=JSON.stringify(db);
    if(a){db.appts=db.appts.map(function(x){return x.id===rec.id?rec:x})}else db.appts.push(rec);
-   if(!save()){db.appts=JSON.parse(snap);return bad('ذخیره نشد (حافظهٔ مرورگر پر یا غیرفعال است). نوبت ثبت نشد.')}
-   close();flash={ok:true,t:'نوبت ذخیره شد.'};render()};}
- function close(){m.style.display='none';m.innerHTML=''}
+   syncLedger(rec);
+   if(!save()){restore(snap);return bad('ذخیره نشد (حافظهٔ مرورگر پر یا غیرفعال است). نوبت ثبت نشد.')}
+   closeModal();flash={ok:true,t:'نوبت ذخیره شد.'};render()}}
  draw()}
-function mutate(id,fn,okmsg){var a=db.appts.filter(function(x){return x.id===id})[0];if(!a)return;var snap=JSON.stringify(db.appts);fn(a);if(!save()){db.appts=JSON.parse(snap);flash={ok:false,t:'ذخیره نشد؛ تغییر اعمال نشد.'}}else flash={ok:true,t:okmsg};render()}
+function mutate(id,fn,okmsg){var a=find(id);if(!a)return;var snap=JSON.stringify(db);fn(a);syncLedger(a);if(!save()){restore(snap);flash={ok:false,t:'ذخیره نشد؛ تغییر اعمال نشد.'}}else flash={ok:true,t:okmsg};render()}
 
+/* ---------- render ---------- */
+function render(){
+ var s=db.settings,root=document.documentElement;
+ root.setAttribute('data-theme',s.theme);root.style.setProperty('--glow',s.glow||'#c9895a');
+ $$('nav [data-a=tab]').forEach(function(b){b.classList.toggle('on',b.dataset.v===tab)});
+ $('#assist').style.display=tab==='home'?'':'none';$('#view').style.display=tab==='home'?'none':'';
+ $('#hdate').textContent=D(M.formatJalali(today));
+ if(tab==='home'){$('#homeinfo').innerHTML=D(homeInfo())}
+ else{var v=tab==='table'?tableView():tab==='tasks'?tasksView():tab==='money'?moneyView():settingsView();
+  $('#view').innerHTML=D((flash?'<div class="'+(flash.ok?'ok':'err')+'" role="status">'+esc(flash.t)+'</div>':'')+v);
+  if(tab==='settings'&&navigator.storage&&navigator.storage.persisted)navigator.storage.persisted().then(function(p){var e=$('#persist');if(e)e.textContent=p?'ذخیره‌سازی پایدار فعال است.':'ذخیره‌سازی پایدار فعال نیست (مرورگر ممکن است در کمبود فضا اطلاعات را پاک کند).'})}
+ if(tab==='home'&&flash){addMsg(flash.t,flash.ok?'ok':'er')}
+ flash=null;tmBadge()}
+function tmBadge(){var b=$('#tbadge');if(!b)return;if(tm.startedAt||tm.done){b.style.display='';b.textContent='⏱ '+tmShow()}else b.style.display='none'}
 
 /* ---------- Gemini (optional, free key) ---------- */
 var GKEY='mahdavan_gemini_v1';
 function gcfg(){try{var c=JSON.parse(localStorage.getItem(GKEY)||'{}');return {key:c.key||'',model:c.model||'gemini-2.5-flash',tts:c.tts||''}}catch(e){return {key:'',model:'gemini-2.5-flash',tts:''}}}
 function gsave(c){try{localStorage.setItem(GKEY,JSON.stringify(c));return true}catch(e){return false}}
 var GBASE='https://generativelanguage.googleapis.com/v1beta/';
-async function gpost(model,body){
+var GLOG='mahdavan_gemini_log';
+function glog(kind,detail){try{var l=JSON.parse(localStorage.getItem(GLOG)||'[]');l.unshift({t:new Date().toISOString().replace('T',' ').slice(0,19)+' UTC',k:kind,d:String(detail).slice(0,700)});localStorage.setItem(GLOG,JSON.stringify(l.slice(0,15)))}catch(e){}}
+function glogs(){try{return JSON.parse(localStorage.getItem(GLOG)||'[]')}catch(e){return []}}
+function gfail(kind,fa,detail,status,raw){glog(kind,fa+(detail?' | '+detail:''));var e=new Error(fa+(detail?'\n['+detail+']':''));e.kind=kind;e.status=status||0;e.raw=raw||'';return e}
+function gHint(st,msg,status){
+ if(st===400&&/API key not valid|API_KEY_INVALID/i.test(msg))return 'کلید API نامعتبر است. از aistudio.google.com/apikey یک کلید جدید بسازید و در تنظیمات بگذارید.';
+ if(st===400&&/location|region|not supported in your/i.test(msg))return 'گوگل Gemini را در کشور/منطقهٔ شما مسدود کرده است. VPN را روشن کنید (مثلاً آمریکا یا آلمان).';
+ if(st===400)return 'گوگل درخواست را نپذیرفت (۴۰۰). متن فنی خطا را در پایین ببینید.';
+ if(st===401)return 'کلید API معتبر نیست یا منقضی شده است.';
+ if(st===403)return /location|region|not available|unsupported/i.test(msg)?'گوگل Gemini را در منطقهٔ شما مسدود کرده است. VPN را روشن کنید (مثلاً آمریکا یا آلمان).':'دسترسی رد شد (۴۰۳): یا کلید اجازهٔ این مدل را ندارد، یا Gemini در منطقهٔ فعلی VPN شما محدود است. VPN را به کشور دیگری تغییر دهید.';
+ if(st===404)return 'این مدل دیگر وجود ندارد. در تنظیمات «آزمایش اتصال» را بزنید تا مدل‌ها خودکار به‌روز شوند.';
+ if(st===429)return 'سقف استفادهٔ رایگان (در دقیقه یا در روز) پر شده است. چند دقیقه صبر کنید یا فردا امتحان کنید.';
+ if(st>=500)return 'سرور گوگل شلوغ یا موقتاً در دسترس نیست. چند ثانیه بعد دوباره امتحان کنید.';
+ return 'خطای ناشناخته از Gemini.'}
+async function gcheck(r){if(r.ok)return;var msg='',st='';try{var j=await r.json();msg=(j.error&&j.error.message)||'';st=(j.error&&j.error.status)||''}catch(e){}
+ throw gfail('HTTP'+r.status,gHint(r.status,msg),r.status+' '+st+(msg?': '+msg:''),r.status,msg)}
+async function gfetch(url,opt,ms){
+ var ctl=new AbortController(),tmr=setTimeout(function(){ctl.abort()},ms||30000),r;
+ opt.signal=ctl.signal;
+ try{r=await fetch(url,opt)}catch(e){clearTimeout(tmr);
+  if(e&&e.name==='AbortError')throw gfail('TIMEOUT','جواب Gemini دیر رسید (بیش از '+Math.round((ms||30000)/1000)+' ثانیه). معمولاً یعنی اینترنت یا VPN کند و ناپایدار است. دوباره امتحان کنید یا VPN را عوض کنید.','timeout');
+  throw gfail('NETWORK',navigator.onLine?'به Gemini وصل نشد. اینترنت گوشی وصل است، پس احتمالاً VPN روشن نیست، قطع شده، یا Gemini از طریق آن مسدود است. VPN را بررسی کنید.':'اینترنت گوشی قطع است. اتصال را بررسی کنید.',(e&&e.message)||String(e))}
+ clearTimeout(tmr);await gcheck(r);return r}
+async function gpost(model,body,ms){
  var g=gcfg();if(!g.key)throw new Error('کلید Gemini در تنظیمات وارد نشده است.');
- var r;try{r=await fetch(GBASE+'models/'+encodeURIComponent(model)+':generateContent?key='+encodeURIComponent(g.key),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})}
- catch(e){throw new Error('اتصال به Gemini برقرار نشد. اینترنت یا VPN را بررسی کنید.')}
- if(!r.ok){var m='';try{m=(await r.json()).error.message}catch(e){}throw new Error('خطای Gemini ('+r.status+')'+(m?': '+m:''))}
- return r.json()}
+ var url=GBASE+'models/'+encodeURIComponent(model)+':generateContent?key='+encodeURIComponent(g.key),opt={method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)};
+ try{return await (await gfetch(url,opt,ms)).json()}
+ catch(e){if(e.kind==='NETWORK'||e.kind==='TIMEOUT'||e.kind==='HTTP503'||e.kind==='HTTP500'){await new Promise(function(r){setTimeout(r,700)});return await (await gfetch(url,opt,ms)).json()}throw e}}
 var THINK=[{thinkingConfig:{thinkingBudget:0}},{thinkingConfig:{thinkingLevel:'minimal'}},{}];
 function thinkIdx(){try{return +localStorage.getItem('mahdavan_think')||0}catch(e){return 0}}
-function parseOut(j){var txt='';try{txt=j.candidates[0].content.parts.map(function(p){return p.text||''}).join('')}catch(e){throw new Error('پاسخ Gemini خالی بود.')}
- try{return JSON.parse(txt.replace(/```json|```/g,'').trim())}catch(e){throw new Error('پاسخ Gemini قابل فهم نبود.')}}
+function parseOut(j){var txt='',c=j.candidates&&j.candidates[0];
+ try{txt=c.content.parts.map(function(p){return p.text||''}).join('')}catch(e){throw gfail('EMPTY','Gemini جواب خالی داد'+(c&&c.finishReason?' ('+c.finishReason+')':'')+'. دوباره امتحان کنید.',JSON.stringify(j).slice(0,300))}
+ txt=txt.replace(/```json|```/g,'').trim();var m=txt.match(/\{[\s\S]*\}/);
+ try{return JSON.parse(m?m[0]:txt)}catch(e){throw gfail('PARSE','جواب Gemini قابل فهم نبود'+(c&&c.finishReason==='MAX_TOKENS'?' (جواب نیمه‌کاره ماند)':'')+'. دوباره بگویید.',txt.slice(0,300))}}
 // Speed: ask the model not to "think" first. Models differ in how to say that, so try the variants and remember the one that works.
 async function geminiCall(parts){
  var last=null;
  for(var k=thinkIdx();k<THINK.length;k++){
   var cfg=Object.assign({responseMimeType:'application/json',temperature:0,maxOutputTokens:1024},THINK[k]);
   try{var j=await gpost(gcfg().model,{contents:[{role:'user',parts:parts}],generationConfig:cfg});try{localStorage.setItem('mahdavan_think',String(k))}catch(e){}return parseOut(j)}
-  catch(e){last=e;if(!/\(400\)/.test(e.message)||k===THINK.length-1)throw e}}
+  catch(e){last=e;if(e.status!==400||/API key|API_KEY|location|region/i.test(e.raw||'')||k===THINK.length-1)throw e}}
  throw last}
 // Model names change often: ask Google which models exist for this key and pick the newest flash + TTS model.
-async function listModels(){
- var r;try{r=await fetch(GBASE+'models?pageSize=200&key='+encodeURIComponent(gcfg().key))}catch(e){throw new Error('اتصال به Gemini برقرار نشد. اینترنت یا VPN را بررسی کنید.')}
- if(!r.ok){var m='';try{m=(await r.json()).error.message}catch(e){}throw new Error('خطای Gemini ('+r.status+')'+(m?': '+m:''))}
- var j=await r.json();return (j.models||[]).filter(function(m){return (m.supportedGenerationMethods||[]).indexOf('generateContent')>-1}).map(function(m){return m.name.replace('models/','')})}
+async function listModels(){var r=await gfetch(GBASE+'models?pageSize=200&key='+encodeURIComponent(gcfg().key),{method:'GET'},20000);var j=await r.json();return (j.models||[]).filter(function(m){return (m.supportedGenerationMethods||[]).indexOf('generateContent')>-1}).map(function(m){return m.name.replace('models/','')})}
 function gver(n){var m=n.match(/gemini-(\d+(?:\.\d+)?)/);return m?parseFloat(m[1]):0}
 function bestOf(names,test){return names.filter(test).sort(function(a,b){return gver(b)-gver(a)||a.length-b.length})[0]||''}
 async function autoModels(){
@@ -211,7 +437,7 @@ async function geminiSpeak(text){
  if(buf){lastTTS=0}else{
   if(!g.tts)throw new Error('مدل صدای Gemini برای این کلید پیدا نشد.');
   var t0=Date.now();
-  var j=await gpost(g.tts,{contents:[{parts:[{text:'با لحن دوستانه و به فارسی روان بخوان: '+text}]}],generationConfig:{responseModalities:['AUDIO'],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:'Kore'}}}}});
+  var j=await gpost(g.tts,{contents:[{parts:[{text:text}]}],generationConfig:{responseModalities:['AUDIO'],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:'Kore'}}}}},45000);
   var p,d;try{p=j.candidates[0].content.parts[0];d=p.inlineData||p.inline_data;if(!d||!d.data)throw 0}catch(e){throw new Error('Gemini صدایی برنگرداند.')}
   var rate=24000,mm=/rate=(\d+)/.exec(d.mimeType||d.mime_type||'');if(mm)rate=+mm[1];
   var bin=atob(d.data),n=bin.length>>1;buf=ttsCtx.createBuffer(1,Math.max(1,n),rate);var ch=buf.getChannelData(0);
@@ -219,7 +445,7 @@ async function geminiSpeak(text){
   lastTTS=Date.now()-t0;ttsCache[text]=buf;ttsKeys.push(text);if(ttsKeys.length>40)delete ttsCache[ttsKeys.shift()]}
  if(gen!==ttsGen)return; // user interrupted while audio was being prepared
  await new Promise(function(res){var src=ttsCtx.createBufferSource();src.buffer=buf;src.connect(ttsCtx.destination);var done=false;function fin(){if(!done){done=true;ttsStop=null;res()}}src.onended=fin;ttsStop=function(){try{src.stop()}catch(e){}fin()};src.start();setTimeout(fin,buf.duration*1000+1500)})}
-function noteTTS(e){if(ttsNoted)return;ttsNoted=true;addMsg('ℹ️ صدای Gemini در دسترس نیست ('+(e&&e.message?e.message:'خطا')+'). فقط متن نمایش داده می‌شود.')}
+function noteTTS(e){glog('TTS',e&&e.message?e.message:'خطا');if(ttsNoted)return;ttsNoted=true;addMsg('ℹ️ صدای Gemini در دسترس نیست: '+(e&&e.message?e.message:'خطا')+'\nفقط متن نمایش داده می‌شود. (جزئیات در تنظیمات ← گزارش خطاها)','er')}
 function aiPrompt(){
  var ph=dlg.phase==='confirming'?'waiting for yes/no confirmation':dlg.phase==='collecting'?('app is asking for missing info'+(dlg.asking?' (asked: '+dlg.asking+')':'')):'free (no pending question)';
  return ['You are the command interpreter of a Persian barbershop appointment app. The user speaks or writes Persian.',
@@ -234,13 +460,14 @@ function aiPrompt(){
  '- List: "چه نوبت‌هایی دارم {date}".',
  '- If waiting for confirmation: the only command is "بله" or "نه".',
  '- If the app is asking for missing info: the command is just the answer (e.g. "آقای رضایی", "ساعت 18:00", or the service name).',
- '- Keep names exactly as spoken, with title (آقای/خانم) if said.',
+ '- ALWAYS put a title before a customer name: use "آقای" unless the name is clearly female (then "خانم"). If the user says only a surname like "احمدی", write "آقای احمدی". Never leave a name without a title.',
+ '- If the user did not say a date, omit the date (the app will ask). Never invent a date.',
  '- If the message is a general question or chat (NOT an appointment action), set commands to [] and put a short, friendly Persian answer (max 2 sentences) in "reply". Never invent appointments. Otherwise reply must be "".'].join('\n')}
 async function aiInterpret(input){
  var parts=[{text:aiPrompt()}];
  if(input.text)parts.push({text:'User said: '+input.text});else parts.push({inline_data:{mime_type:'audio/wav',data:input.wav}});
  var o=await geminiCall(parts);return {heard:String(o.heard||''),commands:Array.isArray(o.commands)?o.commands:[],reply:String(o.reply||'')}}
-function sec(ms){return P((ms/1000).toFixed(1)).replace('.','٫')+' ثانیه'}
+function sec(ms){return (ms/1000).toFixed(1)+' ثانیه'}
 function addDim(t){var d=document.createElement('div');d.className='dim';d.style.cssText='font-size:11px;padding:0 6px';d.textContent=t;$('#msgs').appendChild(d);$('#msgs').scrollTop=1e6}
 async function interpret(input){
  setAv('processing');
@@ -249,7 +476,7 @@ async function interpret(input){
   if(!cmds.length){await say(out.reply||(input.text?'متوجه نشدم. مثلاً بگویید: «فردا ساعت پنج آقای احمدی را برای اصلاح ثبت کن».':'متوجه نشدم. دوباره بگویید یا بنویسید.'));addDim('⏱ فهمیدن: '+sec(tU)+(lastTTS?' · ساخت صدا: '+sec(lastTTS):''));return}
   for(var i=0;i<cmds.length;i++)await handle(String(cmds[i]),true);
   addDim('⏱ فهمیدن: '+sec(tU)+(lastTTS?' · ساخت صدا: '+sec(lastTTS):''))
- }catch(e){setAv('error');addMsg(e.message,'er');setTimeout(function(){setAv('idle')},1800)}}
+ }catch(e){setAv('error');addMsg('❌ '+e.message,'er');setTimeout(function(){setAv('idle')},1800)}}
 function b64(buf){var b=new Uint8Array(buf),s='',n=0x8000;for(var i=0;i<b.length;i+=n)s+=String.fromCharCode.apply(null,b.subarray(i,i+n));return btoa(s)}
 async function toWav(blob){
  var AC=window.AudioContext||window.webkitAudioContext,ac=new AC(),buf=await blob.arrayBuffer();
@@ -283,16 +510,17 @@ async function recordAI(){
    if(!aiHeard){setAv('idle');addMsg('صدایی شنیده نشد. نزدیک‌تر صحبت کنید یا بنویسید.','er');return}
    setAv('processing');
    try{var wav=await toWav(new Blob(chunks,{type:mr.mimeType}));await interpret({wav:wav})}
-   catch(e){setAv('error');addMsg(/Gemini|اتصال|کلید/.test(e.message)?e.message:'ضبط صدا قابل پردازش نبود. دوباره امتحان کنید یا بنویسید.','er');setTimeout(function(){setAv('idle')},1800)}};
+   catch(e){setAv('error');addMsg(e.kind||/Gemini|اتصال|کلید/.test(e.message)?'❌ '+e.message:'ضبط صدا قابل پردازش نبود. دوباره امتحان کنید یا بنویسید.','er');setTimeout(function(){setAv('idle')},1800)}};
   aiRec=mr;mr.start();setAv('listening');aiHeard=!startVAD(stream,mr);aiTimer=setTimeout(function(){if(aiRec&&aiRec.state==='recording')aiRec.stop()},12000);
  }catch(e){aiRec=null;setAv('error');addMsg('دسترسی به میکروفن داده نشد. در تنظیمات Safari اجازهٔ میکروفن را بدهید یا بنویسید.','er');setTimeout(function(){setAv('idle')},1800)}}
 function micOk(){return !!(window.SpeechRecognition||window.webkitSpeechRecognition)||(!!gcfg().key&&!!(navigator.mediaDevices&&window.MediaRecorder))}
-function updateMic(){var m=$('#pmic');if(m)m.style.display=micOk()?'':'none';var i=$('#pin');if(i)i.placeholder=micOk()?'بنویسید یا میکروفن را بزنید…':'دستور را بنویسید (میکروفن در دسترس نیست)'}
+function updateMic(){var i=$('#pin');if(i)i.placeholder=micOk()?'بنویسید یا میکروفن را بزنید…':'دستور را بنویسید (میکروفن در دسترس نیست)';var f=$('#ptxt');if(f&&!micOk())f.style.display='flex'}
+
 
 /* ---------- assistant ---------- */
 var dlg=M.initialState(),aState='idle',recog=null,muted=false,busy=false;
-function setAv(s){aState=s;var h=$('#avh');if(h)h.innerHTML=avatar(s,48);$('#fab').innerHTML=avatar(s,54)}
-function addMsg(t,cls){var d=document.createElement('div');d.className='m '+(cls||'');d.textContent=t;$('#msgs').appendChild(d);$('#msgs').scrollTop=1e6}
+function setAv(s){aState=s;$$('.av2').forEach(function(e){e.className='av2 '+s});var L={idle:'بفرمایید، می‌شنوم…',listening:'در حال شنیدن…',processing:'در حال پردازش…',speaking:'در حال پاسخ…',success:'انجام شد ✓',error:'خطا'};$('#sttl').textContent=L[s]||L.idle;$('#ssub').style.visibility=s==='idle'?'visible':'hidden';$('#pmic').classList.toggle('live',s==='listening')}
+function addMsg(t,cls){var d=document.createElement('div');d.className='m '+(cls||'');d.textContent=D(t);var b=$('#msgs');b.appendChild(d);b.scrollTop=1e6}
 var voiceInfo={checked:false,voice:null,lang:'fa-IR',note:null};
 function pickVoice(){
  if(!('speechSynthesis' in window)){voiceInfo.note='این مرورگر خواندن صوتی را پشتیبانی نمی‌کند؛ پاسخ‌ها فقط نوشتاری هستند.';return}
@@ -309,13 +537,13 @@ function speak(t){if(gcfg().key&&!muted)return geminiSpeak(t.length>400?t.slice(
  if(muted||!('speechSynthesis' in window)||!voiceInfo.voice)return res();
  try{var u=new SpeechSynthesisUtterance(voiceInfo.voice.lang&&/^ar/i.test(voiceInfo.voice.lang)?M.fromPersianDigits(t):t);u.voice=voiceInfo.voice;u.lang=voiceInfo.lang;u.rate=.95;
   var done=false,fin=function(){if(!done){done=true;res()}};u.onend=fin;u.onerror=fin;setTimeout(fin,15000);speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){res()}})}
-async function say(t,tone){addMsg(t,tone==='ok'?'ok':tone==='err'?'er':'');setAv('speaking');speaking=true;try{await speak(t)}finally{speaking=false};setAv(tone==='ok'?'success':tone==='err'?'error':'idle');if(tone)setTimeout(function(){setAv('idle')},1600)}
+async function say(t,tone){addMsg(t,tone==='ok'?'ok':tone==='err'?'er':'');setAv('speaking');speaking=true;try{await speak(D(t))}finally{speaking=false};setAv(tone==='ok'?'success':tone==='err'?'error':'idle');if(tone)setTimeout(function(){setAv('idle')},1600)}
 function chips(r){var e=$('#rec');if(!r||!Object.keys(r).length){e.innerHTML='';return}var L={name:'مشتری',date:'روز',time:'ساعت',service:'خدمت'};e.innerHTML='<span class="dim">شناسایی شد:</span> '+Object.keys(r).map(function(k){var v=r[k];return '<span class="chip">'+L[k]+': '+esc(k==='date'?M.formatJalali(v):k==='time'?M.formatTime(v):v)+'</span>'}).join(' ')}
 async function exec(a){
  if(a.type==='list'){var l=byDate(a.date);return say(l.length?M.formatJalali(a.date)+': '+l.map(function(x){return M.formatTime(x.start)+' '+x.customer_name+' ('+x.service+')'}).join('، '):M.formatJalali(a.date)+' نوبتی ثبت نشده است.')}
  setAv('processing');var snap=JSON.stringify(db.appts);
  try{
-  if(a.type==='create'){db.appts.push({id:uid(),customer_name:a.name,customer_phone:null,service:a.service,notes:null,date:a.date,start:a.start,end:a.end,status:'scheduled'});if(!save())throw 0;render();await say('نوبت '+a.name+' برای '+M.formatJalali(a.date)+' ساعت '+M.formatTime(a.start)+' ثبت شد.','ok')}
+  if(a.type==='create'){db.appts.push({id:uid(),customer_name:a.name,customer_phone:null,service:a.service,notes:null,date:a.date,start:a.start,end:a.end,status:'scheduled',price:svPrice(a.service)});if(!save())throw 0;render();await say('نوبت '+a.name+' برای '+M.formatJalali(a.date)+' ساعت '+M.formatTime(a.start)+' ثبت شد.','ok')}
   else if(a.type==='cancel'){db.appts.forEach(function(x){if(x.id===a.id)x.status='cancelled'});if(!save())throw 0;render();await say('نوبت لغو شد.','ok')}
   else if(a.type==='reschedule'){db.appts.forEach(function(x){if(x.id===a.id){x.date=a.date;x.start=a.start;x.end=a.end}});if(!save())throw 0;render();await say('نوبت منتقل شد.','ok')}
  }catch(e){db.appts=JSON.parse(snap);await say('انجام نشد: ذخیره‌سازی روی این دستگاه ناموفق بود.','err')}}
@@ -334,58 +562,100 @@ function listen(){if(ttsStop)ttsStop();if(gcfg().key&&navigator.mediaDevices&&wi
  r.onerror=function(e){setAv('error');addMsg(e.error==='not-allowed'?'دسترسی به میکروفن داده نشد. از ورودی متنی استفاده کنید.':'تشخیص گفتار ناموفق بود. می‌توانید متن را تایپ کنید.','er');setTimeout(function(){setAv('idle')},1500)};
  r.onend=function(){recog=null;if(aState==='listening')setAv('idle')};
  try{r.start()}catch(e){recog=null;setAv('idle')}}
-var noted=false;
-function openPanel(){var p=$('#panel');if(p.style.display==='flex')return;p.style.display='flex';pickVoice();if(!noted&&voiceInfo.note){noted=true;addMsg('ℹ️ '+voiceInfo.note)}$('#fab').style.display='none';setAv(aState)}
-function closePanel(){if(ttsStop)ttsStop();try{if(recog)recog.stop();speechSynthesis.cancel()}catch(e){}$('#panel').style.display='none';$('#fab').style.display='block'}
+
+
+/* ---------- timer engine ---------- */
+function beep(){try{unlockAudio();var c=ttsCtx;if(c){[0,.35,.7].forEach(function(d){var o=c.createOscillator(),g=c.createGain();o.frequency.value=880;g.gain.value=.2;o.connect(g);g.connect(c.destination);o.start(c.currentTime+d);o.stop(c.currentTime+d+.2)})}}catch(e){}try{if(navigator.vibrate)navigator.vibrate([200,100,200])}catch(e){}}
+function timerDone(){var ap=tm.apptId?find(tm.apptId):null;
+ openModal('<h2>⏱ زمان تمام شد</h2><p>'+esc(tm.label||'تایمر')+'</p><div class="row wrapf">'+(ap&&ap.status==='scheduled'?'<button class="btn pri grow" data-a="tmfin">ثبت «انجام شد»</button>':'')+'<button class="btn grow" data-a="tmplus">+5 دقیقه</button><button class="btn" data-a="closem">بستن</button></div>')}
+function tmStartDown(min,label,apptId){unlockAudio();tm={mode:'down',total:Math.max(1,min)*60,elapsed:0,startedAt:Date.now(),label:label||'',apptId:apptId||null,done:false};tmSave();render()}
+setInterval(function(){var d=$('#tdisp');if(d)d.textContent=tmShow();var p=$('#tprog');if(p&&tm.mode==='down')p.style.width=Math.min(100,tmElapsed()/tm.total*100)+'%';
+ if(tm.startedAt&&tm.mode==='down'&&tmElapsed()>=tm.total){tm.elapsed=tm.total;tm.startedAt=null;tm.done=true;tmSave();beep();timerDone();render()}
+ tmBadge()},500);
+
+/* ---------- settings helpers ---------- */
+function readSvs(){var s=db.settings,sv=s.services,er=null;
+ $$('[data-sn]').forEach(function(i){var k=+i.dataset.sn,n=i.value.trim();if(sv[k]){var old=sv[k];old.keywords=old.keywords.indexOf(old.name)>-1?[n].concat(old.keywords.filter(function(w){return w!==old.name})):old.keywords;old.name=n}});
+ $$('[data-sd]').forEach(function(i){var k=+i.dataset.sd,v=+D(i.value);if(!(v>=5))er='مدت هر خدمت را درست وارد کنید.';else sv[k].duration=v});
+ $$('[data-sp]').forEach(function(i){var k=+i.dataset.sp;sv[k].price=num(i.value)});
+ if($('#ws'))s.work_start=$('#ws').value;if($('#we'))s.work_end=$('#we').value;if($('#tst'))s.table_step=+$('#tst').value;if($('#sst'))s.slot_step=+$('#sst').value;
+ if(sv.some(function(x){return !x.name}))er='نام خدمت نباید خالی باشد.';return er}
 
 /* ---------- events ---------- */
-document.addEventListener('click',function(e){
- var t=e.target.closest('[data-tab],[data-new],[data-edit],[data-done],[data-cancel],[data-day],[data-mv],[data-lt],[data-wd],[data-sx],#openA,#sadd,#ssave,#exp,#imp,#fab,#pclose,#pmute,#pmic,#pyes,#pno,#gsave,#gtest,#gdel');if(!t)return;var d=t.dataset;
- if(d.tab){tab=d.tab;render();window.scrollTo(0,0)}
- else if(d.new!==undefined)openForm(null,d.new);
- else if(d.edit)openForm(db.appts.filter(function(x){return x.id===d.edit})[0]);
- else if(d.done)mutate(d.done,function(a){a.status='completed'},'نوبت انجام‌شده ثبت شد.');
- else if(d.cancel){if(confirm('این نوبت لغو شود؟'))mutate(d.cancel,function(a){a.status='cancelled'},'نوبت لغو شد.')}
- else if(d.day){selDay=d.day;render()}
- else if(d.mv!==undefined){var j=M.isoToJalali(cursor),n=+d.mv;if(!n){cursor=today;selDay=today}else{var mo=j.jm+n,y=j.jy+(mo>12?1:mo<1?-1:0);mo=mo>12?1:mo<1?12:mo;cursor=M.jalaliToISO(y,mo,1)}render()}
- else if(d.lt){lt=d.lt;render()}
- else if(d.wd!==undefined){var w=+d.wd,s=db.settings.work_days;db.settings.work_days=s.indexOf(w)>-1?s.filter(function(x){return x!==w}):s.concat(w).sort();t.classList.toggle('pri')}
- else if(d.sx!==undefined){db.settings.services.splice(+d.sx,1);render()}
- else if(t.id==='openA'||t.id==='fab')openPanel();
- else if(t.id==='sadd'){readSvs();db.settings.services.push({name:'خدمت جدید',keywords:['خدمت جدید'],duration:30});render()}
- else if(t.id==='ssave'){var er=readSvs();var m=$('#smsg');var s=db.settings;if(s.work_end<=s.work_start)er='ساعت پایان کار باید بعد از شروع باشد.';if(!er&&(!s.services.length))er='حداقل یک خدمت لازم است.';
-  if(er){m.className='err';m.textContent=er}else{m.className=save()?'ok':'err';m.textContent=save()?'تنظیمات ذخیره شد.':'ذخیره نشد.'}}
- else if(t.id==='exp'){var b=new Blob([JSON.stringify(db,null,1)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='mahdavan-backup-'+today+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},4000);$('#bmsg').className='ok';$('#bmsg').textContent='فایل پشتیبان آماده شد.'}
- else if(t.id==='imp')$('#impf').click();
-
- else if(t.id==='gsave'||t.id==='gtest'||t.id==='gdel'){var gm=$('#gmsg');function gs(ok,x){gm.className=ok?'ok':'err';gm.textContent=x}
-  var cur=gcfg(),nk=($('#gk').value||'').trim(),nm=($('#gm').value||'').trim()||'gemini-2.5-flash';
-  if(t.id==='gdel'){gs(gsave({key:'',model:nm}),'کلید حذف شد.');updateMic();return}
-  if(nk)cur.key=nk;cur.model=nm;
-  if(!gsave(cur))return gs(false,'ذخیره نشد.');updateMic();
-  if(t.id==='gsave')return gs(true,cur.key?'ذخیره شد. حالا دکمهٔ میکروفن دستیار با Gemini کار می‌کند.':'مدل ذخیره شد، ولی کلیدی وارد نشده است.');
-  unlockAudio();gs(true,'در حال تشخیص مدل‌ها و آزمایش…');
-  (async function(){var out=[];
-   try{await autoModels()}catch(e){return gs(false,e.message)}
-   try{var o=await geminiCall([{text:'Return ONLY this JSON: {"ok":true}'}]);if(!o.ok)throw new Error('پاسخ غیرمنتظره بود.');out.push('متن ✓ ('+gcfg().model+')')}catch(e){return gs(false,e.message)}
-   try{await geminiSpeak('سلام. صدای دستیار آماده است.');out.push('صدا ✓ ('+gcfg().tts+')')}catch(e){out.push('صدا ✗: '+e.message)}
-   gs(true,out.join(' — '))})()}
- else if(t.id==='pclose')closePanel();
- else if(t.id==='pmute'){muted=!muted;t.textContent=muted?'🔇':'🔊';if(ttsStop)ttsStop();try{speechSynthesis.cancel()}catch(x){}}
- else if(t.id==='pmic'){unlockSpeech();listen()}
- else if(t.id==='pyes'){unlockSpeech();handle('بله')}else if(t.id==='pno'){unlockSpeech();handle('نه')}});
-function readSvs(){var sv=db.settings.services;document.querySelectorAll('[data-sn]').forEach(function(i){var k=+i.dataset.sn,n=i.value.trim();if(sv[k]){var old=sv[k];sv[k].keywords=old.keywords.indexOf(old.name)>-1?[n].concat(old.keywords.filter(function(w){return w!==old.name})):old.keywords;sv[k].name=n}});
- var er=null;document.querySelectorAll('[data-sd]').forEach(function(i){var k=+i.dataset.sd,v=+i.value;if(!(v>=5))er='مدت هر خدمت را درست وارد کنید.';else sv[k].duration=v});
- db.settings.work_start=($('#ws')||{value:db.settings.work_start}).value;db.settings.work_end=($('#we')||{value:db.settings.work_end}).value;
- if(sv.some(function(x){return !x.name}))er='نام خدمت نباید خالی باشد.';return er}
-document.addEventListener('input',function(e){if(e.target.id==='q'){q=e.target.value;var p=e.target.selectionStart;render();var n=$('#q');n.focus();n.setSelectionRange(p,p)}});
-document.addEventListener('change',function(e){if(e.target.id!=='impf')return;var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){var m=$('#bmsg');try{var d=JSON.parse(r.result);if(!d||!Array.isArray(d.appts))throw 0;if(!confirm('اطلاعات فعلی با پشتیبان جایگزین شود؟'))return;var snap=JSON.stringify(db);db.appts=d.appts;db.settings=Object.assign({},DEF,d.settings||{});if(!save()){db=JSON.parse(snap);throw 1}flash={ok:true,t:'پشتیبان بازیابی شد.'};render()}catch(x){m.className='err';m.textContent='فایل پشتیبان نامعتبر است یا ذخیره نشد.'}};r.readAsText(f)});
+document.addEventListener('click',function(e){var t=e.target.closest('[data-a]');if(!t)return;doAct(t.dataset.a,t.dataset.v,t)});
+function doAct(a,v,el){
+ switch(a){
+  case 'tab':tab=v;render();window.scrollTo(0,0);break;
+  case 'sv':sv=v;render();break;
+  case 'dnav':{var n=+v;selDay=n?M.addDays(selDay,(sv==='week'?7:1)*n):today;cursor=selDay;render();break}
+  case 'mv':{var j=M.isoToJalali(cursor),n2=+v;if(!n2){cursor=today;selDay=today}else{var mo=j.jm+n2,y=j.jy+(mo>12?1:mo<1?-1:0);mo=mo>12?1:mo<1?12:mo;cursor=M.jalaliToISO(y,mo,1)}render();break}
+  case 'calday':selDay=v;cursor=v;sv='day';render();break;
+  case 'slot':{var p=v.split('|');openForm(null,p[0],p[1]);break}
+  case 'edit':openForm(find(v));break;
+  case 'done':completeAppt(v);break;
+  case 'cancel':if(confirm('این نوبت لغو شود؟'))mutate(v,function(x){x.status='cancelled'},'نوبت لغو شد.');break;
+  case 'lt':lt=v;render();break;
+  case 'tsub':tsub=v;render();break;
+  case 'sp':sp=v;render();break;
+  case 'mp':mp=v;render();break;
+  case 'closem':closeModal();break;
+  case 'tadd':{var tx=($('#tin').value||'').trim();if(!tx)break;var s1=JSON.stringify(db);db.tasks.push({id:uid(),text:tx,done:false});if(!save()){restore(s1);flash={ok:false,t:'ذخیره نشد.'}}render();var ti=$('#tin');if(ti)ti.focus();break}
+  case 'ttog':{var tk=db.tasks.filter(function(x){return x.id===v})[0];if(tk){tk.done=!tk.done;save()}render();break}
+  case 'tdel':db.tasks=db.tasks.filter(function(x){return x.id!==v});save();render();break;
+  case 'tclear':db.tasks=db.tasks.filter(function(x){return !x.done});save();render();break;
+  case 'walkin':openWalkin();break;
+  case 'expense':openExpense();break;
+  case 'csv':exportCSV();break;
+  case 'ldel':if(confirm('این تراکنش حذف شود؟ (اگر مربوط به یک نوبت باشد، وضعیت نوبت تغییر نمی‌کند.)')){var s2=JSON.stringify(db);db.ledger=db.ledger.filter(function(x){return x.id!==v});if(!save()){restore(s2);flash={ok:false,t:'ذخیره نشد.'}}render()}break;
+  case 'tmpre':{var sv_=db.settings.services[+v];if(sv_)tmStartDown(sv_.duration,sv_.name);break}
+  case 'tmappt':{var ap=find(v);if(ap)tmStartDown(M.toMinutes(ap.end)-M.toMinutes(ap.start),ap.customer_name+' — '+ap.service,ap.id);break}
+  case 'tmtoggle':unlockAudio();if(tm.startedAt){tm.elapsed=tmElapsed();tm.startedAt=null}else{if(tm.done){tm.done=false;tm.elapsed=0}tm.startedAt=Date.now()}tmSave();render();break;
+  case 'tmreset':tm.elapsed=0;tm.startedAt=null;tm.done=false;tmSave();render();break;
+  case 'tmmode':tm.mode=v;tm.elapsed=0;tm.startedAt=null;tm.done=false;tmSave();render();break;
+  case 'tmcustom':{var mi=num($('#tmin').value);if(mi>0){tm.total=mi*60;tm.mode='down';tm.elapsed=0;tm.startedAt=null;tm.done=false;tm.label='';tmSave();render()}break}
+  case 'tmbadge':tab='tasks';tsub='timer';render();break;
+  case 'tmfin':closeModal();if(tm.apptId)completeAppt(tm.apptId);break;
+  case 'tmplus':closeModal();tm.total=tm.total+300;tm.done=false;tm.startedAt=Date.now();tmSave();render();break;
+  case 'theme':db.settings.theme=v;save();render();break;
+  case 'glowreset':db.settings.glow='#c9895a';save();render();break;
+  case 'wd':{var w=+v,ds=db.settings.work_days;db.settings.work_days=ds.indexOf(w)>-1?ds.filter(function(x){return x!==w}):ds.concat(w).sort();el.classList.toggle('pri');break}
+  case 'sx':readSvs();db.settings.services.splice(+v,1);render();break;
+  case 'sadd':readSvs();db.settings.services.push({name:'خدمت جدید',keywords:['خدمت جدید'],duration:30,price:0});render();break;
+  case 'ssave':{var er=readSvs(),sm=$('#smsg'),st=db.settings;if(st.work_end<=st.work_start)er='ساعت پایان کار باید بعد از شروع باشد.';if(!er&&!st.services.length)er='حداقل یک خدمت لازم است.';
+   if(er){sm.className='err';sm.textContent=er}else{var okk=save();sm.className=okk?'ok':'err';sm.textContent=okk?'تنظیمات ذخیره شد.':'ذخیره نشد.'}break}
+  case 'exp':{var b=new Blob([JSON.stringify(db,null,1)],{type:'application/json'}),u=URL.createObjectURL(b),aa=document.createElement('a');aa.href=u;aa.download='mahdavan-backup-'+today+'.json';document.body.appendChild(aa);aa.click();aa.remove();setTimeout(function(){URL.revokeObjectURL(u)},4000);$('#bmsg').className='ok';$('#bmsg').textContent='فایل پشتیبان آماده شد.';break}
+  case 'imp':$('#impf').click();break;
+  case 'glogcopy':{var tx2=glogs().map(function(l){return l.t+'  '+l.k+'\n'+l.d}).join('\n\n');try{navigator.clipboard.writeText(tx2).then(function(){flash={ok:true,t:'گزارش کپی شد.'};render()},function(){prompt('گزارش را کپی کنید:',tx2)})}catch(x){prompt('گزارش را کپی کنید:',tx2)}break}
+  case 'glogclear':try{localStorage.removeItem(GLOG)}catch(x){}render();break;
+  case 'gsave':case 'gtest':case 'gdel':{var gm=$('#gmsg');var gs=function(ok,x){gm.className=ok?'ok':'err';gm.textContent=x};
+   var cur=gcfg(),nk=($('#gk').value||'').trim(),nm=($('#gm').value||'').trim()||'gemini-2.5-flash';
+   if(a==='gdel'){cur.key='';cur.tts='';gsave(cur);gs(true,'کلید حذف شد.');updateMic();break}
+   if(nk)cur.key=nk;cur.model=nm;if(!gsave(cur)){gs(false,'ذخیره نشد.');break}updateMic();
+   if(a==='gsave'){gs(true,cur.key?'ذخیره شد. حالا میکروفن دستیار با Gemini کار می‌کند.':'مدل ذخیره شد، ولی کلیدی وارد نشده است.');break}
+   unlockAudio();gs(true,'در حال تشخیص مدل‌ها و آزمایش…');
+   (async function(){var out=[];
+    try{await autoModels()}catch(e){return gs(false,e.message)}
+    try{var o=await geminiCall([{text:'Return ONLY this JSON: {"ok":true}'}]);if(!o.ok)throw new Error('پاسخ غیرمنتظره بود.');out.push('متن ✓ ('+gcfg().model+')')}catch(e){return gs(false,e.message)}
+    try{await geminiSpeak('سلام. صدای دستیار آماده است.');out.push('صدا ✓ ('+gcfg().tts+')')}catch(e){out.push('صدا ✗: '+e.message)}
+    gs(true,out.join(' — '))})();break}
+  case 'mic':unlockSpeech();if(!micOk()){$('#ptxt').style.display='flex';addMsg('میکروفن در این مرورگر در دسترس نیست؛ بنویسید یا از میکروفن کیبورد گوشی استفاده کنید.','er');break}listen();break;
+  case 'kb':{var f=$('#ptxt');f.style.display=f.style.display==='none'?'flex':'none';if(f.style.display==='flex')$('#pin').focus();break}
+  case 'mute':muted=!muted;el.textContent=muted?'🔇':'🔊';if(ttsStop)ttsStop();try{speechSynthesis.cancel()}catch(x){}break;
+  case 'yes':unlockSpeech();handle('بله');break;
+  case 'no':unlockSpeech();handle('نه');break;
+ }}
+document.addEventListener('input',function(e){
+ if(e.target.id==='q'){q=e.target.value;var p=e.target.selectionStart;render();var n=$('#q');if(n){n.focus();n.setSelectionRange(p,p)}}
+ if(e.target.id==='gc'){db.settings.glow=e.target.value;document.documentElement.style.setProperty('--glow',e.target.value);save()}});
+document.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.id==='tin'){e.preventDefault();doAct('tadd')}});
+document.addEventListener('change',function(e){if(e.target.id!=='impf')return;var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){var m=$('#bmsg');try{var d=JSON.parse(r.result);if(!d||!Array.isArray(d.appts))throw 0;if(!confirm('اطلاعات فعلی با پشتیبان جایگزین شود؟'))return;var snap=JSON.stringify(db);db.appts=d.appts;db.ledger=d.ledger||[];db.tasks=d.tasks||[];db.settings=Object.assign({},JSON.parse(JSON.stringify(DEF)),d.settings||{});db.settings.services=(db.settings.services||SV0).map(function(s){return Object.assign({price:0},s)});if(!save()){restore(snap);throw 1}flash={ok:true,t:'پشتیبان بازیابی شد.'};render()}catch(x){m.className='err';m.textContent='فایل پشتیبان نامعتبر است یا ذخیره نشد.'}};r.readAsText(f)});
 $('#ptxt').addEventListener('submit',function(e){e.preventDefault();unlockSpeech();var i=$('#pin');var v=i.value;i.value='';handle(v)});
 function net(){$('#off').style.display=navigator.onLine?'none':'block'}window.addEventListener('online',net);window.addEventListener('offline',net);net();
 
-load();render();setAv('idle');
-updateMic();
-$('#msgs').innerHTML='';addMsg('سلام! بگویید چه نوبتی ثبت یا لغو کنم. مثلاً: «برای فردا ساعت پنج، آقای احمدی رو برای اصلاح ثبت کن».');
+$('#msgs').innerHTML='';
+addMsg('سلام! بگویید چه نوبتی ثبت یا لغو کنم. مثلاً: «برای فردا ساعت پنج، آقای احمدی رو برای اصلاح ثبت کن».');
+load();tmLoad();render();setAv('idle');updateMic();
+setTimeout(function(){pickVoice();if(!gcfg().key&&voiceInfo.note)addMsg('ℹ️ '+voiceInfo.note)},600);
 if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();
 if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0)navigator.serviceWorker.register('sw.js').catch(function(){});
 })();
