@@ -102,7 +102,7 @@ svg.chart{width:100%;height:auto;display:block;direction:ltr}.chart .bar-a{fill:
 .two td.tm{width:46px;font-size:11px}.two td.fc{height:34px;padding:0 6px;cursor:pointer}.two td.free2{color:var(--dim);font-size:11px;background:repeating-linear-gradient(135deg,transparent 0 8px,rgba(128,128,128,.05) 8px 16px)}
 .two td.free2 span{opacity:.75}.two td.free2 b{float:left;color:var(--acc);font-size:16px;font-weight:400;line-height:1}.two td.free2.past{opacity:.4}.two td.off{background:rgba(226,125,125,.06)}
 .two td.fillc{background:var(--tint);cursor:pointer;overflow:hidden;padding:3px 6px;border-right:3px solid var(--acc);vertical-align:top}.two td.fillc.st-completed{border-right-color:var(--ok);background:rgba(127,214,160,.14)}
-.two td.fillc b{display:block;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.two td.fillc i{display:block;font-style:normal;font-size:10.5px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.two td.fillc b{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;font-size:12px;line-height:1.3;white-space:normal;overflow:hidden;overflow-wrap:anywhere;direction:ltr;text-align:right}.two td.fillc i{display:block;font-style:normal;font-size:10.5px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 .dot{display:inline-block;width:10px;height:10px;border-radius:50%;flex:none}
 .two th.bh{font-size:10px;height:24px;padding:2px;font-weight:600}.m2 td.fc{padding:0 3px}.m2 td.free2 b{float:none;display:block;text-align:center}.m2 td.fillc{padding:3px 4px}.m2 td.fillc i{font-size:9.5px}
@@ -155,7 +155,7 @@ var tab='home',sv='day',dv='two',cq='',cshow=40,bf='all',wb='',selDay=today,curs
 function uid(){return (window.crypto&&crypto.randomUUID)?crypto.randomUUID():String(Date.now())+Math.random().toString(16).slice(2)}
 function load(){try{var r=localStorage.getItem(KEY);if(r){var d=JSON.parse(r);db.appts=d.appts||[];db.ledger=d.ledger||[];db.tasks=d.tasks||[];db.customers=d.customers||[];db.settings=Object.assign({},JSON.parse(JSON.stringify(DEF)),d.settings||{});normalizeDb()}}catch(e){flash={ok:false,t:'خواندن اطلاعات ذخیره‌شده ناموفق بود.'}}}
 // save() returns true ONLY if the data was really written and can be read back.
-function save(){try{var s=JSON.stringify(db);localStorage.setItem(KEY,s);return localStorage.getItem(KEY)===s}catch(e){return false}}
+function save(){try{var s=JSON.stringify(db);localStorage.setItem(KEY,s);var ok=localStorage.getItem(KEY)===s;if(ok&&window.MCSync)MCSync.touch();return ok}catch(e){return false}}
 function restore(snap){db=JSON.parse(snap)}
 var hcache={};function hol(iso){var y=M.isoToJalali(iso).jy;if(!hcache[y])hcache[y]=M.getHolidays(y);return hcache[y][iso]||[]}
 var isH=function(o){return o.holiday};
@@ -211,6 +211,7 @@ function openModal(html){var m=$('#modal');m.innerHTML=D('<div class="card">'+ht
 function closeModal(){var m=$('#modal');m.style.display='none';m.innerHTML=''}
 function jpick(id,iso){var j=M.isoToJalali(iso);return '<div class="row" id="'+id+'"><select class="in" data-j="d">'+rng(31).map(function(i){return '<option '+(i===j.jd?'selected':'')+'>'+i+'</option>'}).join('')+'</select><select class="in" data-j="m" style="flex:1.7">'+M.JALALI_MONTHS.map(function(n,i){return '<option value="'+(i+1)+'" '+(i+1===j.jm?'selected':'')+'>'+n+'</option>'}).join('')+'</select><select class="in" data-j="y">'+[j.jy-1,j.jy,j.jy+1,j.jy+2].map(function(y){return '<option '+(y===j.jy?'selected':'')+'>'+y+'</option>'}).join('')+'</select></div>'}
 function jval(id){var r=$('#'+id),y=+$('[data-j=y]',r).value,mo=+$('[data-j=m]',r).value,d=Math.min(+$('[data-j=d]',r).value,M.jalaliMonthLength(y,mo));return M.jalaliToISO(y,mo,d)}
+function fullName(n){return String(n).replace(/^(آقای|اقای|خانم|جناب|دکتر|مهندس|استاد)\s+/,'')}
 function shortName(n){return String(n).replace(/^(آقای|اقای|خانم|جناب|دکتر|مهندس|استاد)\s+/,'').slice(0,9)}
 
 /* ---------- views ---------- */
@@ -257,7 +258,7 @@ function twoDay(){
   cols.forEach(function(c,i){if(skip[i]>0){skip[i]--;return}
    var list=lists[c.d+'|'+c.b.id],a=list.filter(function(x){var q=M.toMinutes(x.start);return q>=t&&q<t+step})[0];
    if(a){var span=Math.min(Math.max(1,Math.ceil((M.toMinutes(a.end)-t)/step)),Math.ceil((en-t)/step));skip[i]=span-1;
-    tds+='<td class="fillc st-'+a.status+'" rowspan="'+span+'" data-a="edit" data-v="'+a.id+'"'+(a.status==='completed'?'':' style="border-right-color:'+c.b.color+'"')+'><b>'+(a.status==='completed'?'✓ ':'')+esc(nb>1?shortName(a.customer_name):a.customer_name)+'</b><i>'+(nb>1?a.start:esc(a.service)+' · '+a.start)+'</i></td>';return}
+    tds+='<td class="fillc st-'+a.status+'" rowspan="'+span+'" data-a="edit" data-v="'+a.id+'"'+(a.status==='completed'?'':' style="border-right-color:'+c.b.color+'"')+'><b>'+(a.status==='completed'?'✓ ':'')+esc(nb>1?fullName(a.customer_name):a.customer_name)+'</b>'+(nb>1?'':'<i>'+esc(a.service)+' · '+a.start+'</i>')+'</td>';return}
    if(list.some(function(x){return M.toMinutes(x.start)<t&&M.toMinutes(x.end)>t})){tds+='<td class="fc"></td>';return}
    var off=s.work_days.indexOf(M.weekdayIndex(c.d))<0||hol(c.d).some(isH)||c.b.active===false,past=c.d<today||(c.d===today&&t+step<=nowM);
    tds+='<td class="fc free2'+(off?' off':'')+(past?' past':'')+'" data-a="slot" data-v="'+c.d+'|'+tl+'|'+c.b.id+'">'+(nb>1?'':'<span>خالی</span>')+'<b>＋</b></td>'});
@@ -276,7 +277,7 @@ function weekGrid(){
  for(var t=st;t<en;t+=step){var tl=M.fromMinutes(t),tds='';
   days.forEach(function(d,i){if(skip[i]>0){skip[i]--;return}
    var a=lists[d].filter(function(x){var q=M.toMinutes(x.start);return q>=t&&q<t+step})[0];
-   if(a){var span=Math.min(Math.max(1,Math.ceil((M.toMinutes(a.end)-t)/step)),Math.ceil((en-t)/step));skip[i]=span-1;tds+='<td class="fillc st-'+a.status+'" rowspan="'+span+'" data-a="edit" data-v="'+a.id+'"><b>'+esc(shortName(a.customer_name))+'</b></td>';return}
+   if(a){var span=Math.min(Math.max(1,Math.ceil((M.toMinutes(a.end)-t)/step)),Math.ceil((en-t)/step));skip[i]=span-1;tds+='<td class="fillc st-'+a.status+'" rowspan="'+span+'" data-a="edit" data-v="'+a.id+'"><b>'+esc(fullName(a.customer_name))+'</b></td>';return}
    if(lists[d].some(function(x){return M.toMinutes(x.start)<t&&M.toMinutes(x.end)>t})){tds+='<td class="fc"></td>';return}
    var off=s.work_days.indexOf(M.weekdayIndex(d))<0||hol(d).some(isH);
    tds+='<td class="fc'+(off?' off':'')+'" data-a="slot" data-v="'+d+'|'+tl+'|'+bid+'"></td>'});
@@ -368,7 +369,7 @@ function settingsView(){
  '<div class="card"><h2>هوش مصنوعی (Gemini) — اختیاری</h2><p class="dim">با کلید رایگان Gemini می‌توانید با میکروفن برنامه حرف بزنید و جمله‌های آزاد بگویید. صدا و متن فرمان (به‌همراه نام مشتری) برای پردازش به گوگل فرستاده می‌شود. کلید فقط روی همین گوشی می‌ماند و در پشتیبان نیست.</p><label>کلید API (از aistudio.google.com ← Get API key)</label><input class="in" id="gk" type="password" dir="ltr" autocomplete="off" placeholder="'+(gcfg().key?'کلید ذخیره شده است — برای تغییر، کلید جدید را وارد کنید':'AIza…')+'"><label>مدل</label><input class="in" id="gm" dir="ltr" value="'+esc(gcfg().model)+'"><div class="row" style="margin-top:10px"><button class="btn pri grow" data-a="gsave">ذخیره</button><button class="btn grow" data-a="gtest">آزمایش اتصال</button><button class="btn dng" data-a="gdel">حذف</button></div><div id="gmsg"></div></div>'+
  '<div class="card"><h2>آزمایش میکروفن</h2><p class="dim">۳ ثانیه حرف بزنید؛ بعد می‌توانید همان صدایی را که به Gemini فرستاده می‌شود گوش بدهید. اگر Gemini همیشه می‌گوید «واضح نیست»، اول این را امتحان کنید.</p><button class="btn pri" data-a="miccheck" style="width:100%">🎙 شروع آزمایش (۳ ثانیه)</button><div id="micres" style="margin-top:10px"></div></div>'+
  '<div class="card"><h2>گزارش خطاهای Gemini</h2>'+(glogs().length?'<div style="max-height:180px;overflow:auto;font-size:12px;direction:ltr;text-align:left;white-space:pre-wrap;word-break:break-word" id="glogbox">'+esc(glogs().map(function(l){return l.t+'  '+l.k+'\n'+l.d}).join('\n\n'))+'</div><div class="row" style="margin-top:8px"><button class="btn grow" data-a="glogcopy">کپی گزارش</button><button class="btn dng" data-a="glogclear">پاک کردن</button></div>':'<p class="dim">خطایی ثبت نشده است. اگر Gemini خطا داد، اینجا با جزئیات کامل می‌آید تا برای رفع مشکل بفرستید.</p>')+'</div>'+
- '<div class="card"><h2>پشتیبان‌گیری</h2><p class="dim">اطلاعات (نوبت‌ها، حساب‌ها، کارها) فقط روی همین دستگاه ذخیره می‌شود. حتماً مرتب پشتیبان بگیرید؛ با پاک شدن اطلاعات Safari از بین می‌روند.</p><div class="row"><button class="btn grow" data-a="exp">⬇ دریافت پشتیبان</button><button class="btn grow" data-a="imp">⬆ بازیابی</button></div><input type="file" id="impf" accept=".json,application/json" hidden><div id="bmsg"></div><p class="dim" id="persist"></p></div>'+
+ (window.MCSync?MCSync.card():'')+'<div class="card"><h2>پشتیبان‌گیری</h2><p class="dim">اطلاعات (نوبت‌ها، حساب‌ها، کارها) فقط روی همین دستگاه ذخیره می‌شود. حتماً مرتب پشتیبان بگیرید؛ با پاک شدن اطلاعات Safari از بین می‌روند.</p><div class="row"><button class="btn grow" data-a="exp">⬇ دریافت پشتیبان</button><button class="btn grow" data-a="imp">⬆ بازیابی</button></div><input type="file" id="impf" accept=".json,application/json" hidden><div id="bmsg"></div><p class="dim" id="persist"></p></div>'+
  '<div style="text-align:center;padding:14px 0"><img src="logo2.png" alt="MAHDAVAN club" style="height:84px;opacity:.9"></div>'}
 
 /* ---------- appointment form ---------- */
@@ -850,6 +851,9 @@ function readSvs(){var s=db.settings,sv=s.services,er=null;
 document.addEventListener('click',function(e){var t=e.target.closest('[data-a]');if(!t)return;doAct(t.dataset.a,t.dataset.v,t)});
 function doAct(a,v,el){
  switch(a){
+  case 'sblogin':MCSync.login();break;
+  case 'sblogout':MCSync.logout();break;
+  case 'sbsync':MCSync.sync(true);break;
   case 'tab':tab=v;render();window.scrollTo(0,0);break;
   case 'sv':sv=v;render();break;
   case 'dv':dv=v;render();break;
@@ -938,6 +942,124 @@ setTimeout(function(){pickVoice();if(!gcfg().key&&voiceInfo.note)addMsg('ℹ️ 
 if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();
 if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0)navigator.serviceWorker.register('sw.js').catch(function(){});
 })();
+</script>
+<script>
+/* ---------- cloud sync (Supabase REST; no external library) ---------- */
+var MCSync=(function(){
+var URL0='https://dillgdsipzuhialhfatc.supabase.co',KEY0='sb_publishable_oGw4NjfwKr4qWDz8VAgfKw_BzUfkr-p';
+var SK='mahdavan_sb_session',MK='mahdavan_sb_meta';
+function lsGet(k){try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}
+var sess=lsGet(SK),meta=lsGet(MK)||{base:null,dirty:false},st={msg:'',ok:true},busy=false,timer=null,ver=0;
+function $e(id){return document.getElementById(id)}
+function setMsg(t,ok){st.msg=t;st.ok=ok!==false;var el=$e('sbmsg');if(el){el.textContent=t;el.style.color=st.ok?'var(--ok)':'var(--bad)'}}
+function hm(){var d=new Date();return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)}
+
+async function http(path,opt){
+ var ac=(typeof AbortController!=='undefined')?new AbortController():null,tm=ac?setTimeout(function(){ac.abort()},20000):null;
+ try{
+  opt=opt||{};if(ac)opt.signal=ac.signal;
+  var r=await fetch(URL0+path,opt),t=await r.text(),j=null;
+  try{j=t?JSON.parse(t):null}catch(e){}
+  if(!r.ok){var er=new Error((j&&(j.msg||j.error_description||j.message))||('HTTP '+r.status));er.status=r.status;er.code=j&&(j.error_code||j.code)||'';throw er}
+  return j}
+ finally{if(tm)clearTimeout(tm)}}
+function hdr(tk){return {apikey:KEY0,Authorization:'Bearer '+tk,'Content-Type':'application/json',Prefer:'return=representation'}}
+function nice(e){
+ var m=String(e&&e.message||e),c=String(e&&e.code||'');
+ if(/Invalid login credentials/i.test(m))return 'ایمیل یا رمز اشتباه است.';
+ if(/not confirmed/i.test(m))return 'ایمیل تأیید نشده. در Supabase کاربر را با Auto Confirm بسازید.';
+ if(c==='PGRST205'||c==='42P01'||/app_data/.test(m)&&/find|exist/i.test(m))return 'جدول ساخته نشده. اسکریپت supabase-setup.sql را در SQL Editor اجرا کنید.';
+ if(e&&e.name==='AbortError')return 'پاسخ نیامد (اینترنت یا VPN). بعداً دوباره تلاش می‌شود.';
+ if(e&&e.name==='TypeError')return 'اتصال به Supabase برقرار نشد (اینترنت یا VPN). اطلاعات روی گوشی محفوظ است.';
+ if(e&&e.status===401||e&&e.status===403)return 'نشست منقضی شد؛ دوباره وارد شوید.';
+ return 'خطا: '+m.slice(0,160)}
+
+function saveSess(j){
+ sess={access_token:j.access_token,refresh_token:j.refresh_token,expires_at:Math.floor(Date.now()/1000)+(j.expires_in||3600),uid:(j.user&&j.user.id)||(sess&&sess.uid),email:(j.user&&j.user.email)||(sess&&sess.email)};
+ lsSet(SK,sess)}
+async function token(){
+ if(!sess)throw new Error('NOLOGIN');
+ if(sess.expires_at-60>Date.now()/1000)return sess.access_token;
+ var j=await http('/auth/v1/token?grant_type=refresh_token',{method:'POST',headers:{apikey:KEY0,'Content-Type':'application/json'},body:JSON.stringify({refresh_token:sess.refresh_token})});
+ saveSess(j);return sess.access_token}
+
+async function pull(){
+ var tk=await token(),rows=await http('/rest/v1/app_data?select=data,updated_at&user_id=eq.'+sess.uid,{headers:hdr(tk)});
+ return rows&&rows[0]||null}
+async function push(){
+ var tk=await token(),v=ver,now=new Date().toISOString(),rows;
+ if(meta.base){
+  rows=await http('/rest/v1/app_data?user_id=eq.'+sess.uid+'&updated_at=eq.'+encodeURIComponent(meta.base),{method:'PATCH',headers:hdr(tk),body:JSON.stringify({data:db,updated_at:now})});
+  if(!rows||!rows.length){var c=new Error('CONFLICT');c.conflict=true;throw c}}
+ else{
+  try{rows=await http('/rest/v1/app_data',{method:'POST',headers:hdr(tk),body:JSON.stringify({user_id:sess.uid,data:db,updated_at:now})})}
+  catch(e){if(e.status===409)e.conflict=true;throw e}}
+ meta.base=rows[0].updated_at;meta.dirty=(ver!==v);lsSet(MK,meta)}
+
+function isEmpty(d){return !((d.appts&&d.appts.length)||(d.customers&&d.customers.length)||(d.ledger&&d.ledger.length)||(d.tasks&&d.tasks.length))}
+function desc(d){d=d||{};return (d.appts||[]).length+' نوبت، '+(d.customers||[]).length+' مشتری، '+(d.ledger||[]).length+' ردیف حساب'}
+function apply(r){
+ localStorage.setItem(KEY,JSON.stringify(r.data||{}));load();
+ meta.base=r.updated_at;meta.dirty=false;lsSet(MK,meta);render()}
+function modalOpen(){var m=$e('modal');return !!(m&&m.style.display&&m.style.display!=='none')}
+
+async function run(depth){
+ var r=await pull();
+ if(!r){await push();return 'ok'}
+ if(r.updated_at===meta.base){if(meta.dirty)await push();return 'ok'}
+ // remote differs from what this device last saw
+ if(!meta.dirty&&meta.base){if(modalOpen())return 'wait';apply(r);return 'ok'}
+ if(isEmpty(db)){apply(r);return 'ok'}
+ if(JSON.stringify(r.data)===JSON.stringify(db)){meta.base=r.updated_at;meta.dirty=false;lsSet(MK,meta);return 'ok'}
+ var useCloud=confirm('اطلاعات ابر با اطلاعات این دستگاه فرق دارد.\n\nابر: '+desc(r.data)+'\nاین دستگاه: '+desc(db)+'\n\nتأیید (OK) = استفاده از نسخهٔ ابر (اطلاعات این دستگاه جایگزین می‌شود)\nانصراف (Cancel) = نگه داشتن نسخهٔ این دستگاه و جایگزین کردن ابر');
+ if(useCloud){apply(r);return 'ok'}
+ meta.base=r.updated_at;meta.dirty=true;lsSet(MK,meta);await push();return 'ok'}
+
+async function sync(manual){
+ if(!sess)return;
+ if(busy){if(manual)setMsg('همگام‌سازی در حال انجام است…');return}
+ busy=true;if(manual)setMsg('در حال همگام‌سازی…');
+ try{
+  var res;
+  try{res=await run(0)}catch(e){if(e&&e.conflict){res=await run(1)}else throw e}
+  if(res==='wait'){if(manual)setMsg('اول پنجرهٔ باز را ببندید.',false)}
+  else setMsg('همگام شد ✓ '+hm(),true)}
+ catch(e){
+  if(e&&(e.status===400||e.status===401)&&/refresh|token|JWT|Invalid/i.test(String(e.message))&&sess){sess=null;lsSet(SK,null);setMsg('نشست منقضی شد؛ دوباره وارد شوید.',false);try{render()}catch(x){}}
+  else setMsg(nice(e),false)}
+ finally{busy=false}}
+
+async function login(){
+ var em=($e('sbe')||{}).value,pw=($e('sbp')||{}).value;em=(em||'').trim();
+ if(!em||!pw)return setMsg('ایمیل و رمز را بنویسید.',false);
+ setMsg('در حال ورود…');
+ try{
+  var j=await http('/auth/v1/token?grant_type=password',{method:'POST',headers:{apikey:KEY0,'Content-Type':'application/json'},body:JSON.stringify({email:em,password:pw})});
+  saveSess(j);meta={base:null,dirty:false};lsSet(MK,meta);
+  await sync(true);try{render()}catch(x){}}
+ catch(e){setMsg(nice(e),false)}}
+function logout(){
+ if(!confirm('از حساب خارج می‌شوید؟ اطلاعات روی همین گوشی می‌ماند.'))return;
+ sess=null;meta={base:null,dirty:false};lsSet(SK,null);lsSet(MK,meta);st.msg='';render()}
+function touch(){
+ ver++;meta.dirty=true;lsSet(MK,meta);
+ if(sess){clearTimeout(timer);timer=setTimeout(function(){sync(false)},2500)}}
+
+function card(){
+ var h='<div class="card"><h2>همگام‌سازی ابری</h2>';
+ if(!sess)h+='<p class="dim">با ورود، اطلاعات روی ابر ذخیره می‌شود و در همهٔ دستگاه‌ها یکی است. اطلاعات فعلی همین دستگاه هم به ابر منتقل می‌شود. ایمیل و رمز همان کاربری است که در Supabase ساخته‌اید.</p><label>ایمیل</label><input class="in" id="sbe" type="email" dir="ltr" autocomplete="username" autocapitalize="off"><label>رمز</label><input class="in" id="sbp" type="password" dir="ltr" autocomplete="current-password"><button class="btn pri" data-a="sblogin" style="width:100%;margin-top:10px">ورود و همگام‌سازی</button>';
+ else h+='<p class="dim">وارد شده با: <span dir="ltr">'+esc(sess.email||'')+'</span></p><div class="row"><button class="btn pri grow" data-a="sbsync">همگام‌سازی حالا</button><button class="btn dng" data-a="sblogout">خروج</button></div>';
+ return h+'<div id="sbmsg" class="dim" style="margin-top:8px;color:'+(st.ok?'var(--ok)':'var(--bad)')+'">'+esc(st.msg||'')+'</div></div>'}
+
+function init(){
+ if(!sess)return;
+ setTimeout(function(){sync(false)},800);
+ document.addEventListener('visibilitychange',function(){if(!document.hidden)sync(false)});
+ window.addEventListener('online',function(){sync(false)});
+ setInterval(function(){if(!document.hidden)sync(false)},90000)}
+return {card:card,login:login,logout:logout,sync:sync,touch:touch,init:init}})();
+MCSync.init();
 </script>
 </body>
 </html>
