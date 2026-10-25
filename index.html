@@ -155,7 +155,7 @@ var tab='home',sv='day',dv='two',cq='',cshow=40,bf='all',wb='',selDay=today,curs
 function uid(){return (window.crypto&&crypto.randomUUID)?crypto.randomUUID():String(Date.now())+Math.random().toString(16).slice(2)}
 function load(){try{var r=localStorage.getItem(KEY);if(r){var d=JSON.parse(r);db.appts=d.appts||[];db.ledger=d.ledger||[];db.tasks=d.tasks||[];db.customers=d.customers||[];db.settings=Object.assign({},JSON.parse(JSON.stringify(DEF)),d.settings||{});normalizeDb()}}catch(e){flash={ok:false,t:'خواندن اطلاعات ذخیره‌شده ناموفق بود.'}}}
 // save() returns true ONLY if the data was really written and can be read back.
-function save(){try{var s=JSON.stringify(db);localStorage.setItem(KEY,s);var ok=localStorage.getItem(KEY)===s;if(ok&&window.MCSync)MCSync.touch();return ok}catch(e){return false}}
+function save(){try{var s=JSON.stringify(db);localStorage.setItem(KEY,s);var ok=localStorage.getItem(KEY)===s;if(ok&&MCSync)MCSync.touch();return ok}catch(e){return false}}
 function restore(snap){db=JSON.parse(snap)}
 var hcache={};function hol(iso){var y=M.isoToJalali(iso).jy;if(!hcache[y])hcache[y]=M.getHolidays(y);return hcache[y][iso]||[]}
 var isH=function(o){return o.holiday};
@@ -369,7 +369,7 @@ function settingsView(){
  '<div class="card"><h2>هوش مصنوعی (Gemini) — اختیاری</h2><p class="dim">با کلید رایگان Gemini می‌توانید با میکروفن برنامه حرف بزنید و جمله‌های آزاد بگویید. صدا و متن فرمان (به‌همراه نام مشتری) برای پردازش به گوگل فرستاده می‌شود. کلید فقط روی همین گوشی می‌ماند و در پشتیبان نیست.</p><label>کلید API (از aistudio.google.com ← Get API key)</label><input class="in" id="gk" type="password" dir="ltr" autocomplete="off" placeholder="'+(gcfg().key?'کلید ذخیره شده است — برای تغییر، کلید جدید را وارد کنید':'AIza…')+'"><label>مدل</label><input class="in" id="gm" dir="ltr" value="'+esc(gcfg().model)+'"><div class="row" style="margin-top:10px"><button class="btn pri grow" data-a="gsave">ذخیره</button><button class="btn grow" data-a="gtest">آزمایش اتصال</button><button class="btn dng" data-a="gdel">حذف</button></div><div id="gmsg"></div></div>'+
  '<div class="card"><h2>آزمایش میکروفن</h2><p class="dim">۳ ثانیه حرف بزنید؛ بعد می‌توانید همان صدایی را که به Gemini فرستاده می‌شود گوش بدهید. اگر Gemini همیشه می‌گوید «واضح نیست»، اول این را امتحان کنید.</p><button class="btn pri" data-a="miccheck" style="width:100%">🎙 شروع آزمایش (۳ ثانیه)</button><div id="micres" style="margin-top:10px"></div></div>'+
  '<div class="card"><h2>گزارش خطاهای Gemini</h2>'+(glogs().length?'<div style="max-height:180px;overflow:auto;font-size:12px;direction:ltr;text-align:left;white-space:pre-wrap;word-break:break-word" id="glogbox">'+esc(glogs().map(function(l){return l.t+'  '+l.k+'\n'+l.d}).join('\n\n'))+'</div><div class="row" style="margin-top:8px"><button class="btn grow" data-a="glogcopy">کپی گزارش</button><button class="btn dng" data-a="glogclear">پاک کردن</button></div>':'<p class="dim">خطایی ثبت نشده است. اگر Gemini خطا داد، اینجا با جزئیات کامل می‌آید تا برای رفع مشکل بفرستید.</p>')+'</div>'+
- (window.MCSync?MCSync.card():'')+'<div class="card"><h2>پشتیبان‌گیری</h2><p class="dim">اطلاعات (نوبت‌ها، حساب‌ها، کارها) فقط روی همین دستگاه ذخیره می‌شود. حتماً مرتب پشتیبان بگیرید؛ با پاک شدن اطلاعات Safari از بین می‌روند.</p><div class="row"><button class="btn grow" data-a="exp">⬇ دریافت پشتیبان</button><button class="btn grow" data-a="imp">⬆ بازیابی</button></div><input type="file" id="impf" accept=".json,application/json" hidden><div id="bmsg"></div><p class="dim" id="persist"></p></div>'+
+ (MCSync?MCSync.card():'')+'<div class="card"><h2>پشتیبان‌گیری</h2><p class="dim">اطلاعات (نوبت‌ها، حساب‌ها، کارها) فقط روی همین دستگاه ذخیره می‌شود. حتماً مرتب پشتیبان بگیرید؛ با پاک شدن اطلاعات Safari از بین می‌روند.</p><div class="row"><button class="btn grow" data-a="exp">⬇ دریافت پشتیبان</button><button class="btn grow" data-a="imp">⬆ بازیابی</button></div><input type="file" id="impf" accept=".json,application/json" hidden><div id="bmsg"></div><p class="dim" id="persist"></p></div>'+
  '<div style="text-align:center;padding:14px 0"><img src="logo2.png" alt="MAHDAVAN club" style="height:84px;opacity:.9"></div>'}
 
 /* ---------- appointment form ---------- */
@@ -941,9 +941,6 @@ load();tmLoad();render();setAv('idle');updateMic();
 setTimeout(function(){pickVoice();if(!gcfg().key&&voiceInfo.note)addMsg('ℹ️ '+voiceInfo.note)},600);
 if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();
 if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0)navigator.serviceWorker.register('sw.js').catch(function(){});
-})();
-</script>
-<script>
 /* ---------- cloud sync (Supabase REST; no external library) ---------- */
 var MCSync=(function(){
 var URL0='https://dillgdsipzuhialhfatc.supabase.co',KEY0='sb_publishable_oGw4NjfwKr4qWDz8VAgfKw_BzUfkr-p';
@@ -1060,6 +1057,8 @@ function init(){
  setInterval(function(){if(!document.hidden)sync(false)},90000)}
 return {card:card,login:login,logout:logout,sync:sync,touch:touch,init:init}})();
 MCSync.init();
+
+})();
 </script>
 </body>
 </html>
