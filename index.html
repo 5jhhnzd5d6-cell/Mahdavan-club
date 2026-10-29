@@ -110,7 +110,7 @@ svg.chart{width:100%;height:auto;display:block;direction:ltr}.chart .bar-a{fill:
 /* ===== GLASS v2 (matches the Gemini sketch) ===== */
 html{background:#0a0a0a}html[data-theme=light]{background:#e8e4df}
 html,body{background:transparent}
-html[data-theme=dark]{--panel:rgba(66,48,34,.38);--raised:rgba(255,255,255,.09);--line:rgba(255,255,255,.16);--tint:rgba(201,137,90,.24)}
+html[data-theme=dark]{--panel:rgba(66,48,34,.38);--raised:rgba(255,255,255,.09);--line:rgba(255,255,255,.16);--tint:rgba(var(--rgb),.24)}
 html[data-theme=light]{--panel:rgba(255,255,255,.5);--raised:rgba(255,255,255,.55);--line:rgba(0,0,0,.1)}
 #bg{position:fixed;inset:0;z-index:-1;overflow:hidden}
 #bg i{position:absolute;inset:-24px;background-size:cover;background-position:center 25%;opacity:0;transition:opacity .7s}
@@ -120,13 +120,13 @@ body[data-bg="1"] #bg i:nth-child(1),body[data-bg="2"] #bg i:nth-child(2){opacit
 body{padding-top:env(safe-area-inset-top)}
 .card,.ap,.xlw,.sum3>div,.seg,.cell,header,nav{-webkit-backdrop-filter:blur(28px) saturate(1.5);backdrop-filter:blur(28px) saturate(1.5)}
 .card,.ap,.xlw,.sum3>div,.seg,.cell{box-shadow:0 8px 28px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.14)}
-.card{border-color:rgba(214,170,125,.42);border-radius:26px}
+.card{border-color:rgba(var(--rgb2),.42);border-radius:26px}
 .modal>.card{background:rgba(24,18,14,.88)}
 .in{background:rgba(0,0,0,.26)}
-header{margin:10px 12px 4px;padding:12px 16px;border-radius:26px;background:var(--panel);border:1px solid rgba(214,170,125,.42);color:inherit;justify-content:center;position:relative}
+header{margin:10px 12px 4px;padding:12px 16px;border-radius:26px;background:var(--panel);border:1px solid rgba(var(--rgb2),.42);color:inherit;justify-content:center;position:relative}
 header img{height:28px}header .row{position:absolute;left:14px;top:50%;transform:translateY(-50%)}#hdate{display:none}
 html[data-theme=light] header img{filter:invert(1)}
-nav{background:rgba(60,44,32,.4);border:1px solid rgba(214,170,125,.4)}
+nav{background:rgba(60,44,32,.4);border:1px solid rgba(var(--rgb2),.4)}
 nav button.on{background:none;color:var(--acc2);box-shadow:none}
 .m{background:rgba(255,255,255,.09)}
 /* customers card */
@@ -136,13 +136,13 @@ nav button.on{background:none;color:var(--acc2);box-shadow:none}
 .qtabs button{background:none;border:0;padding:4px 0 8px;color:var(--dim);font-size:13px}.qtabs button.on{color:var(--acc2);border-bottom:2px solid var(--acc2);margin-bottom:-1px;font-weight:700}
 .qlist{max-height:186px;overflow:auto;position:relative;scrollbar-width:none}.qlist::-webkit-scrollbar{display:none}
 .qr{display:flex;align-items:center;gap:10px;padding:8px 6px;border-bottom:1px solid rgba(255,255,255,.08);border-right:3px solid transparent}
-.qr.on{background:rgba(201,137,90,.3);border-radius:16px;border-right-color:var(--acc2);border-bottom-color:transparent}.qr.pv{opacity:.55}
+.qr.on{background:rgba(var(--rgb),.3);border-radius:16px;border-right-color:var(--acc2);border-bottom-color:transparent}.qr.pv{opacity:.55}
 .av{width:38px;height:38px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:700;font-size:15px;background:linear-gradient(145deg,var(--acc2),var(--accd));color:var(--onacc)}
 .qr .grow{min-width:0;cursor:pointer}.qr b{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;font-size:14px;line-height:1.25;overflow-wrap:anywhere}
 .qr i{font-style:normal;font-size:11px;color:var(--dim)}
 .mini{font-size:10.5px;direction:ltr;padding:1px 7px;border-radius:99px;border:1px solid var(--line);color:var(--dim);white-space:nowrap;flex:none}
 .qr.on .mini{background:var(--acc2);color:var(--onacc);border-color:transparent;font-weight:700}
-.plus{width:34px;height:34px;border-radius:50%;border:0;background:rgba(201,137,90,.3);color:var(--acc2);font-size:21px;line-height:1;flex:none}
+.plus{width:34px;height:34px;border-radius:50%;border:0;background:rgba(var(--rgb),.3);color:var(--acc2);font-size:21px;line-height:1;flex:none}
 .qf{margin-top:8px;font-size:11.5px;color:var(--dim);display:flex;gap:12px;flex-wrap:wrap}
 /* assistant (compact) */
 .acard{padding:14px;margin:0}
@@ -159,7 +159,7 @@ nav button.on{background:none;color:var(--acc2);box-shadow:none}
 .abar{display:flex;align-items:center;gap:6px;padding:4px 4px 4px 8px;border-radius:99px;background:rgba(0,0,0,.28);border:1px solid var(--line);margin:0}
 .abar .in{flex:1;min-width:0;border:0;background:transparent;padding:8px}
 .abar .sidebtn{width:34px;height:34px;border:0;background:none;font-size:15px;flex:none}
-.send{width:36px;height:36px;border-radius:50%;border:0;background:rgba(201,137,90,.3);color:var(--acc2);font-size:18px;flex:none}
+.send{width:36px;height:36px;border-radius:50%;border:0;background:rgba(var(--rgb),.3);color:var(--acc2);font-size:18px;flex:none}
 /* landscape: menu on the left, top to bottom */
 @media (orientation:landscape) and (max-height:520px){
  body{padding:env(safe-area-inset-top) calc(14px + env(safe-area-inset-right)) 16px calc(100px + env(safe-area-inset-left))}
@@ -170,6 +170,48 @@ nav button.on{background:none;color:var(--acc2);box-shadow:none}
  #homeinfo{margin:0}.qlist{max-height:150px}.wrap{max-width:none;padding:10px 0}
  .modal{align-items:center}.modal>.card{border-radius:26px;max-height:92dvh}
 }
+
+:root{--rgb:176,129,88;--rgb2:209,164,119}
+/* light theme: readable */
+html[data-theme=light]{--panel:rgba(255,255,255,.8);--raised:rgba(255,255,255,.85);--line:rgba(0,0,0,.14);--text:#1a1410;--dim:#5b5249}
+html[data-theme=light] #bg::after{background:rgba(255,250,244,.64)}
+html[data-theme=light] header,html[data-theme=light] nav{background:rgba(255,255,255,.78);border-color:rgba(0,0,0,.14)}
+html[data-theme=light] nav button{color:#5b5249}html[data-theme=light] nav button.on{color:var(--acc2)}
+html[data-theme=light] .card{border-color:rgba(var(--rgb),.4)}
+html[data-theme=light] .in,html[data-theme=light] .abar{background:rgba(255,255,255,.75)}
+html[data-theme=light] .modal>.card{background:rgba(255,255,255,.95)}
+html[data-theme=light] .m{background:rgba(0,0,0,.06)}html[data-theme=light] .qr.on{background:rgba(var(--rgb),.22)}
+html[data-theme=light] h2,html[data-theme=light] label{color:var(--text)}
+/* logo */
+header{background:rgba(14,9,5,.5)}header img{height:40px;filter:drop-shadow(0 0 10px rgba(var(--rgb2),.6))}
+html[data-theme=light] header img{filter:invert(1)}html[data-theme=light] header{background:rgba(255,255,255,.78)}
+/* brand + robot */
+.brand{font-size:16px;display:block;letter-spacing:.3px;font-weight:800}
+#stage.av2{position:relative;width:78px;height:78px;display:block;flex:none}
+.rimg{position:absolute;inset:0;border-radius:50%;overflow:hidden;border:2px solid rgba(var(--rgb2),.6);box-shadow:0 4px 16px rgba(0,0,0,.35);background:#b9a6dd;animation:rfloat 4.5s ease-in-out infinite;transform-origin:50% 90%}
+.rimg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;border:0!important;border-radius:0!important;animation:none!important;box-shadow:none!important;z-index:1}
+.rimg .eye{position:absolute;top:34.7%;width:15%;height:15%;border-radius:50%;background:#15101c;z-index:3;transform:scaleY(0);animation:blink 5s infinite}
+.rimg .eye.l{left:26.5%}.rimg .eye.r{left:49.5%}
+.rimg .mouth{position:absolute;left:39%;top:58.3%;width:13%;height:5.5%;background:#2a2431;border-radius:0 0 60% 60%/0 0 100% 100%;z-index:3;transform:scaleY(0);transform-origin:top}
+#stage.listening .rimg{animation:rlisten 1.3s ease-in-out infinite;box-shadow:0 0 0 3px rgba(var(--rgb2),.55),0 0 22px var(--glow)}
+#stage.processing .rimg{animation:rthink 1s ease-in-out infinite}#stage.processing .eye{animation:blink 1.2s infinite}
+#stage.speaking .rimg{animation:rtalk .5s ease-in-out infinite}#stage.speaking .mouth{animation:talk .42s ease-in-out infinite alternate}
+#stage.success .rimg{animation:rnod .6s ease-in-out 2}#stage.error .rimg{animation:rshake .4s ease-in-out 2}
+@keyframes rfloat{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-3px) rotate(1.2deg)}}
+@keyframes rlisten{0%,100%{transform:rotate(-5deg) scale(1.04)}50%{transform:rotate(5deg) scale(1.07)}}
+@keyframes rthink{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+@keyframes rtalk{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px) scale(1.02)}}
+@keyframes rnod{0%,100%{transform:translateY(0)}50%{transform:translateY(5px) rotate(3deg)}}
+@keyframes rshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@keyframes blink{0%,91%,100%{transform:scaleY(0)}94%{transform:scaleY(1)}}
+@keyframes talk{0%{transform:scaleY(.15)}30%{transform:scaleY(1)}60%{transform:scaleY(.4)}100%{transform:scaleY(1.25)}}
+.ahead .grow{min-width:0;flex:1}
+/* settings widgets */
+.swl{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}.swc{width:34px;height:34px;border-radius:50%;border:2px solid transparent;box-shadow:0 0 0 1px var(--line)}.swc.on{border-color:var(--text);box-shadow:0 0 0 3px rgba(var(--rgb2),.5)}
+.sw{width:50px;height:30px;border-radius:99px;background:var(--raised);border:1px solid var(--line);position:relative;flex:none}.sw::after{content:"";position:absolute;top:2px;right:2px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.35);transition:right .2s}.sw.on{background:var(--acc)}.sw.on::after{right:22px}
+#toast{position:fixed;top:calc(10px + env(safe-area-inset-top));left:12px;right:12px;z-index:90;padding:12px 14px;border-radius:20px;background:rgba(30,22,16,.88);color:#fff;border:1px solid rgba(var(--rgb2),.5);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);font-size:13.5px;display:none;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.wk3{border:1px solid var(--line);border-radius:16px;padding:10px 12px;margin-bottom:8px;background:var(--raised)}.wk3 .l2{font-size:12px;color:var(--dim);margin-top:4px;line-height:1.7}
+.up{color:var(--ok)}.dn{color:var(--bad)}.chart .cur{opacity:.55}
 </style>
 </head>
 <body>
@@ -179,7 +221,8 @@ nav button.on{background:none;color:var(--acc2);box-shadow:none}
 <section id="assist">
  <div id="homeinfo"></div>
  <div class="card acard">
-  <div class="ahead"><div><b>دستیار</b><div><span id="sttl">بفرمایید، می‌شنوم…</span><span class="av2 idle" id="stage"><span class="wave"><i></i><i></i><i></i><i></i><i></i></span></span></div><p id="ssub">مثلاً «فردا ساعت پنج آقای احمدی اصلاح»</p></div>
+  <div class="ahead"><div class="robot av2 idle" id="stage"><span class="rimg"><img src="robot.jpg" alt=""><i class="eye l"></i><i class="eye r"></i><i class="mouth"></i></span></div>
+   <div class="grow"><b class="brand accent" dir="ltr">Ai Mahdavan Club</b><div id="sttl">بفرمایید، می‌شنوم…</div><p id="ssub">مثلاً «فردا ساعت پنج آقای احمدی اصلاح»</p></div>
    <button type="button" class="mic" id="pmic" data-a="mic" aria-label="میکروفن"><svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button></div>
   <div id="msgs"></div><div id="rec"></div>
   <div id="yn" class="row" style="display:none;margin:8px 0"><button class="btn pri grow" id="pyes" data-a="yes">بله، انجام بده</button><button class="btn grow" id="pno" data-a="no">نه</button></div>
@@ -306,6 +349,81 @@ function paintHome(keep){var q0=$('.qlist'),st=q0?q0.scrollTop:0;$('#homeinfo').
 function tickMini(){var n=M.nowMinutesTehran()*60+new Date().getSeconds();$$('.mini[data-t]').forEach(function(e){var p=e.dataset.t.split('|'),s=M.toMinutes(p[0])*60,en=M.toMinutes(p[1])*60,r,t;
  if(n>=en)t=Math.round((en-s)/60)+' د';else if(n>=s){r=en-n;t=p2(r/60|0)+':'+p2(r%60)}else{r=s-n;t=r>=3600?(r/3600|0)+'h'+p2((r%3600)/60|0):p2(r/60|0)+':'+p2(r%60)}e.textContent=t})}
 setInterval(tickMini,1000);setInterval(function(){if(tab==='home'&&!document.hidden&&$('#homeinfo'))paintHome(true)},15000);
+
+/* ---------- accent colour ---------- */
+var ACCS=['#b08158','#d4a24c','#e0654f','#c9527f','#9b6bd6','#4f8fd6','#4fb59a','#7bb04f'];
+function hexRgb(h){h=String(h).replace('#','');if(h.length===3)h=h.split('').map(function(c){return c+c}).join('');return [parseInt(h.slice(0,2),16)||0,parseInt(h.slice(2,4),16)||0,parseInt(h.slice(4,6),16)||0]}
+function mixc(c,t,p){return c.map(function(v,i){return Math.round(v+(t[i]-v)*p)})}
+function toHex(c){return '#'+c.map(function(v){return (v<16?'0':'')+v.toString(16)}).join('')}
+function applyAccent(){var s=db.settings,light=s.theme==='light',h=s.accent||'#b08158',c=hexRgb(h),a2=light?mixc(c,[0,0,0],.14):mixc(c,[255,255,255],.28),r=document.documentElement.style,l=(c[0]*299+c[1]*587+c[2]*114)/1000;
+ r.setProperty('--acc',h);r.setProperty('--acc2',toHex(a2));r.setProperty('--accd',toHex(mixc(c,[0,0,0],.3)));r.setProperty('--rgb',c.join(','));r.setProperty('--rgb2',a2.join(','));r.setProperty('--tint','rgba('+c.join(',')+',.22)');
+ r.setProperty('--glow',s.accent?toHex(mixc(c,[255,255,255],.12)):(s.glow||'#c9895a'));r.setProperty('--onacc',l>150?'#150d06':'#fff')}
+function appearanceCard(s){var cur=(s.accent||'#b08158').toLowerCase();
+ return '<div class="card"><h2>ظاهر</h2>'+seg([['dark','تیره'],['light','روشن']],s.theme,'theme')+'<label>رنگ اصلی برنامه</label><div class="swl">'+ACCS.map(function(c){return '<button class="swc '+(cur===c?'on':'')+'" style="background:'+c+'" data-a="acc" data-v="'+c+'" aria-label="رنگ"></button>'}).join('')+'</div><div class="row" style="margin-top:12px"><span class="dim">رنگ دلخواه:</span><input type="color" id="ac" value="'+cur+'" style="width:56px;height:40px;border:0;background:none;padding:0"><button class="btn sm" data-a="accreset">پیش‌فرض (مسی)</button></div></div>'}
+/* ---------- notifications + auto-complete ---------- */
+function nset(){var s=db.settings;s.notif=Object.assign({on:true,appt:true,task:true,timer:true,lead:0,auto:true},s.notif||{});return s.notif}
+function nstat(){if(!('Notification' in window))return 'این مرورگر اعلان سیستمی ندارد. در آیفون برنامه را از «افزودن به صفحهٔ اصلی» نصب کنید و از روی آیکون باز کنید (iOS 16.4 به بالا). تا آن موقع پیام‌ها داخل خود برنامه نشان داده می‌شوند.';
+ var p=Notification.permission;return p==='granted'?'اجازهٔ اعلان داده شده ✓':p==='denied'?'اعلان مسدود است؛ از تنظیمات آیفون ← اعلان‌ها ← مهدوان کلاب فعالش کنید.':'هنوز اجازه داده نشده؛ دکمهٔ زیر را بزنید.'}
+function swRow(txt,k,on){return '<div class="led"><span>'+txt+'</span><button class="sw '+(on?'on':'')+'" data-a="tgl" data-v="'+k+'" aria-label="روشن/خاموش"></button></div>'}
+function notifCard(s){var n=nset();
+ return '<div class="card"><h2>اعلان‌ها و ثبت خودکار</h2><p class="dim" id="nst">'+nstat()+'</p><div class="row wrapf"><button class="btn pri" data-a="nperm">فعال‌سازی اعلان</button><button class="btn" data-a="ntest">آزمایش</button></div>'+
+ swRow('اعلان‌ها (کلی)','on',n.on)+swRow('وقتی نوبت هر مشتری می‌رسد','appt',n.appt)+swRow('هشدار چک‌لیست','task',n.task)+swRow('پایان تایمر','timer',n.timer)+
+ '<label>زمان اعلان نوبت</label>'+seg([['0','سر وقت'],['5','۵ دقیقه قبل'],['10','۱۰ دقیقه قبل'],['15','۱۵ دقیقه قبل']],String(n.lead),'nlead')+
+ swRow('بعد از پایان وقت مشتری، خودکار «انجام شد» و در حسابداری ثبت شود','auto',n.auto)+
+ '<p class="dim" style="margin-top:8px">اعلان‌ها وقتی کار می‌کنند که برنامه باز باشد یا تازه بسته شده باشد؛ آیفون برنامه‌های بسته را متوقف می‌کند و ممکن است اعلان دیر برسد.</p></div>'}
+function toast(m){var e=$('#toast');if(!e){e=document.createElement('div');e.id='toast';document.body.appendChild(e)}e.textContent=D(m);e.style.display='block';clearTimeout(e._t);e._t=setTimeout(function(){e.style.display='none'},6000)}
+function notify(title,body,tag){if(!('Notification' in window)||Notification.permission!=='granted')return false;var o={body:D(body),tag:tag,icon:'icon-192.png',badge:'icon-192.png',dir:'rtl',lang:'fa'};
+ try{if(navigator.serviceWorker&&navigator.serviceWorker.ready){navigator.serviceWorker.ready.then(function(r){r.showNotification(title,o)});return true}}catch(e){}
+ try{new Notification(title,o);return true}catch(e){return false}}
+var NOTK='mahdavan_notified_v1',NS={};try{NS=JSON.parse(localStorage.getItem(NOTK)||'{}')}catch(e){}
+function nsave(){var n=Date.now(),k;for(k in NS)if(n-NS[k]>1728e5)delete NS[k];try{localStorage.setItem(NOTK,JSON.stringify(NS))}catch(e){}}
+function notifyOnce(key,title,body){if(NS[key])return;NS[key]=Date.now();nsave();if(!document.hidden)toast(title+' — '+body);notify(title,body,key)}
+function alarmDue(al){var p=String(al).split(' '),dd=Math.round((Date.parse(today)-Date.parse(p[0]))/864e5),d=dd*1440+M.nowMinutesTehran()-M.toMinutes(p[1]);return d>=0&&d<30}
+function autoComplete(now){var y=M.addDays(today,-1),list=db.appts.filter(function(a){if(a.status!=='scheduled')return false;return a.date===today?M.toMinutes(a.end)<=now:a.date===y});
+ if(!list.length)return;var m=$('#modal');if(m&&m.style.display==='flex')return;var snap=JSON.stringify(db),names=[];
+ list.forEach(function(a){a.status='completed';a.price=(+a.price>0?+a.price:svPrice(a.service))||0;syncLedger(a);names.push(a.customer_name)});
+ if(save()){toast('وقت '+names.join('، ')+' تمام شد: خودکار «انجام شد» و در حسابداری ثبت شد.');render()}else restore(snap)}
+function checkAlerts(){if(!db||!db.settings)return;var n=nset(),now=M.nowMinutesTehran();
+ if(n.auto)autoComplete(now);
+ if(n.on&&n.appt)byDate(today).forEach(function(a){if(a.status!=='scheduled')return;var lead=+n.lead||0,trig=M.toMinutes(a.start)-lead;
+  if(now>=trig&&now<Math.min(M.toMinutes(a.end),trig+20))notifyOnce('a|'+a.id+'|'+a.date+'|'+a.start+'|'+lead,'مهدوان کلاب',lead>0?'نوبت '+a.customer_name+' تا '+lead+' دقیقه دیگر ('+a.start+')':'نوبت '+a.customer_name+' رسید ('+a.start+')')});
+ if(n.on&&n.task)db.tasks.forEach(function(t){if(t.alarm&&!t.done&&alarmDue(t.alarm))notifyOnce('t|'+t.id+'|'+t.alarm,'یادآوری چک‌لیست',t.text)});
+ if(n.on&&n.timer&&tm.startedAt&&tm.mode==='down'&&tmElapsed()>=tm.total)notifyOnce('m|'+tm.startedAt,'تایمر تمام شد',tm.label||'زمان تمام شد')}
+function newTask(tx){var o={id:uid(),text:tx,done:false},al=$('#tal'),v=al&&al.value;if(v){o.alarm=(M.toMinutes(v)<=M.nowMinutesTehran()?M.addDays(today,1):today)+' '+v}return o}
+setInterval(checkAlerts,10000);setTimeout(checkAlerts,2500);document.addEventListener('visibilitychange',function(){if(!document.hidden)checkAlerts()});
+document.addEventListener('input',function(e){if(e.target.id==='ac'){db.settings.accent=e.target.value;applyAccent()}});
+document.addEventListener('change',function(e){if(e.target.id==='ac'){db.settings.accent=e.target.value;save();render()}});
+/* ---------- weekly comparison ---------- */
+var MSEG=[['day','امروز'],['week','7 روز'],['month','این ماه'],['prev','ماه قبل'],['cmp','هفته‌ها']];
+function ab(v){return v>=1e6?(Math.round(v/1e5)/10)+'M':v>=1e3?Math.round(v/1e3)+'k':''+v}
+function barsX(items,two){var W=340,H=150,pl=6,pb=20,pt=18,n=items.length,mx=1,g='',gl='';items.forEach(function(i){mx=Math.max(mx,i.a||0,i.b||0)});var bw=(W-pl*2)/n,hh=H-pb-pt;
+ for(var k=1;k<=3;k++){var y=(H-pb-hh*k/3).toFixed(1);gl+='<line x1="'+pl+'" x2="'+(W-pl)+'" y1="'+y+'" y2="'+y+'" stroke-dasharray="2 3"/>'}
+ items.forEach(function(it,i){var x=pl+i*bw,w=two?bw*.36:bw*.6,h1=(it.a||0)/mx*hh,c=it.cur?' cur':'';
+  g+='<rect class="bar-a'+c+'" x="'+(x+bw*.1).toFixed(1)+'" y="'+(H-pb-h1).toFixed(1)+'" width="'+w.toFixed(1)+'" height="'+(it.a?Math.max(h1,1.5):0).toFixed(1)+'" rx="2"/>';
+  if(it.a)g+='<text x="'+(x+bw*.1+w/2).toFixed(1)+'" y="'+(H-pb-h1-3).toFixed(1)+'" text-anchor="middle">'+ab(it.a)+'</text>';
+  if(two){var h2=(it.b||0)/mx*hh;g+='<rect class="bar-b'+c+'" x="'+(x+bw*.1+w+1).toFixed(1)+'" y="'+(H-pb-h2).toFixed(1)+'" width="'+w.toFixed(1)+'" height="'+(it.b?Math.max(h2,1.5):0).toFixed(1)+'" rx="2"/>'}
+  g+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(H-5)+'" text-anchor="middle">'+esc(it.l)+'</text>'});
+ return '<svg class="chart" viewBox="0 0 '+W+' '+H+'">'+gl+'<line x1="'+pl+'" x2="'+(W-pl)+'" y1="'+(H-pb)+'" y2="'+(H-pb)+'"/>'+g+'</svg>'}
+function weekStat(st,en){var x=ledSum(st,en),cn=db.appts.filter(function(a){return a.date>=st&&a.date<=en&&a.status==='completed'}).length;return {st:st,en:en,inc:x.inc,exp:x.exp,net:x.net,cn:cn,avg:cn?Math.round(x.inc/cn):0}}
+function pct(a,b){return b>0?Math.round((a-b)/b*100):null}
+function pchip(p){return p===null?'<span class="dim">—</span>':'<b class="'+(p>=0?'up':'dn')+' num">'+(p>=0?'▲ ':'▼ ')+Math.abs(p)+'%</b>'}
+function weeksView(){var wi=M.weekdayIndex(today),ws=M.addDays(today,-wi),W=[],i;
+ for(i=7;i>=0;i--){var st=M.addDays(ws,-7*i);W.push(weekStat(st,i===0?today:M.addDays(st,6)))}
+ var cur=W[7],prv=W[6],prvSame=weekStat(prv.st,M.addDays(prv.st,wi)),done=W.slice(0,7),best=done.slice().sort(function(a,b){return b.inc-a.inc})[0],avg=Math.round(done.reduce(function(s,w){return s+w.inc},0)/7);
+ var lab=function(w){var j=M.isoToJalali(w.st);return j.jd+'/'+j.jm},fd=function(d){return M.formatJalali(d,{weekday:false,year:false})};
+ var pi=pct(cur.inc,prvSame.inc),pe=pct(cur.exp,prvSame.exp),pc=pct(cur.cn,prvSame.cn);
+ var txt=['این هفته (از '+fd(cur.st)+' تا امروز) '+fmt(cur.inc)+' تومان درآمد از '+cur.cn+' مشتری داشته‌ای'+(pi===null?'.':'؛ '+Math.abs(pi)+'٪ '+(pi>=0?'بیشتر':'کمتر')+' از همین روزهای هفتهٔ قبل ('+fmt(prvSame.inc)+').'),
+  'هزینهٔ این هفته '+fmt(cur.exp)+' و خالص '+fmt(cur.net)+' تومان است'+(pe===null?'.':'؛ هزینه '+Math.abs(pe)+'٪ '+(pe>=0?'بیشتر':'کمتر')+' از مدت مشابه هفتهٔ قبل.'),
+  best&&best.inc>0?'بهترین هفتهٔ ۷ هفتهٔ گذشته از '+fd(best.st)+' بود با '+fmt(best.inc)+' تومان؛ میانگین هفتگی '+fmt(avg)+' تومان.':'هنوز دادهٔ کافی از هفته‌های قبل نیست.',
+  cur.cn?'میانگین درآمد هر مشتری این هفته '+fmt(cur.avg)+' تومان است'+(prv.avg?' (هفتهٔ قبل '+fmt(prv.avg)+').':'.'):''].filter(Boolean);
+ var inc=W.map(function(w,k){return {l:lab(w),a:w.inc,b:w.exp,cur:k===7}}),cus=W.map(function(w,k){return {l:lab(w),a:w.cn,cur:k===7}});
+ var blocks=W.slice().reverse().map(function(w,k,arr){var p=arr[k+1]?pct(w.inc,arr[k+1].inc):null,c=k===0;
+  return '<div class="wk3"><div class="row sp"><b>'+fd(w.st)+' تا '+fd(w.en)+(c?' <span class="chip a">این هفته</span>':'')+'</b>'+(c?'':pchip(p))+'</div><div class="l2">'+w.cn+' مشتری · درآمد <b class="num">'+fmt(w.inc)+'</b> · هزینه <b class="num">'+fmt(w.exp)+'</b> · خالص <b class="num">'+fmt(w.net)+'</b>'+(w.avg?' · میانگین هر مشتری <b class="num">'+fmt(w.avg)+'</b>':'')+'</div></div>'}).join('');
+ return seg(MSEG,mp,'mp')+'<div class="card"><h2>شرح مقایسهٔ هفته‌ها</h2>'+txt.map(function(x){return '<p style="margin:0 0 8px;line-height:1.9">'+x+'</p>'}).join('')+'<div class="sum3" style="margin-top:6px"><div><span class="dim">درآمد</span><b>'+pchip(pi)+'</b></div><div><span class="dim">هزینه</span><b>'+pchip(pe)+'</b></div><div><span class="dim">مشتری</span><b>'+pchip(pc)+'</b></div></div><div class="dim" style="text-align:center;margin-top:6px">نسبت به همین روزهای هفتهٔ قبل</div></div>'+
+ '<div class="card"><h2>درآمد (رنگ اصلی) و هزینه (قرمز) هر هفته</h2>'+barsX(inc,true)+'<div class="dim">هفتهٔ جاری کم‌رنگ است چون هنوز تمام نشده.</div></div>'+
+ '<div class="card"><h2>تعداد مشتری هر هفته</h2>'+barsX(cus,false)+'</div>'+
+ '<div class="card"><h2>جزئیات هر هفته</h2>'+blocks+'</div>'}
+
 function dayTableOne(){
  var s=db.settings,d=selDay,oc=hol(d),closed=oc.some(isH)||s.work_days.indexOf(M.weekdayIndex(d))<0,multi=barbers().length>1,bs=(multi&&bf!=='all')?[bOf(bf)]:barbers();
  return '<div class="row sp" style="margin-bottom:10px"><div class="row"><button class="btn sm" data-a="dnav" data-v="-1">›</button><button class="btn sm" data-a="dnav" data-v="1">‹</button><button class="btn sm" data-a="dnav" data-v="0">امروز</button></div><b>'+M.formatJalali(d)+'</b></div>'+'<button class="btn pri" style="width:100%;margin-bottom:10px" data-a="slot" data-v="'+d+'|'+s.work_start+'|'+(multi&&bf!=='all'?bf:'auto')+'">＋ نوبت دستی (هر ساعتی)</button>'+
@@ -381,8 +499,8 @@ function tmElapsed(){return tm.elapsed+(tm.startedAt?(Date.now()-tm.startedAt)/1
 function mmss(s){s=Math.max(0,Math.floor(s));var h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return (h?h+':'+(m<10?'0':''):(m<10?'0':''))+m+':'+(x<10?'0':'')+x}
 function tmShow(){var e=tmElapsed();return mmss(tm.mode==='down'?Math.max(0,tm.total-e):e)}
 function checkView(){var done=db.tasks.filter(function(t){return t.done}).length,n=db.tasks.length;
- return '<div class="card"><div class="row"><input class="in" id="tin" placeholder="کار جدید…" enterkeyhint="done"><button class="btn pri" data-a="tadd">＋</button></div>'+(n?'<div class="dim" style="margin-top:12px">'+done+' از '+n+' انجام شد</div><div class="prog"><i style="width:'+Math.round(done/n*100)+'%"></i></div>':'<p class="dim">هنوز کاری نیست. مثلاً «خرید لوازم» یا «تمیز کردن وسایل».</p>')+
- db.tasks.map(function(t){return '<div class="ti '+(t.done?'d':'')+'"><input type="checkbox" data-a="ttog" data-v="'+t.id+'" '+(t.done?'checked':'')+'><span>'+esc(t.text)+'</span><button class="btn sm dng" data-a="tdel" data-v="'+t.id+'">✕</button></div>'}).join('')+(done?'<button class="btn sm" style="margin-top:10px" data-a="tclear">پاک کردن انجام‌شده‌ها</button>':'')+'</div>'}
+ return '<div class="card"><div class="row"><input class="in" id="tin" placeholder="کار جدید…" enterkeyhint="done"><button class="btn pri" data-a="tadd">＋</button></div><div class="row" style="margin-top:8px"><span class="dim">هشدار (اختیاری):</span><input type="time" class="in" id="tal" style="width:auto"><span class="dim">اعلان در همان ساعت</span></div>'+(n?'<div class="dim" style="margin-top:12px">'+done+' از '+n+' انجام شد</div><div class="prog"><i style="width:'+Math.round(done/n*100)+'%"></i></div>':'<p class="dim">هنوز کاری نیست. مثلاً «خرید لوازم» یا «تمیز کردن وسایل».</p>')+
+ db.tasks.map(function(t){return '<div class="ti '+(t.done?'d':'')+'"><input type="checkbox" data-a="ttog" data-v="'+t.id+'" '+(t.done?'checked':'')+'><span>'+esc(t.text)+(t.alarm?' <span class="chip a">⏰ '+(t.alarm.slice(0,10)===today?'':'فردا ')+t.alarm.slice(-5)+'</span>':'')+'</span><button class="btn sm dng" data-a="tdel" data-v="'+t.id+'">✕</button></div>'}).join('')+(done?'<button class="btn sm" style="margin-top:10px" data-a="tclear">پاک کردن انجام‌شده‌ها</button>':'')+'</div>'}
 function statsView(){
  var r=range(sp==='7'?'week':sp==='30'?'30':'month'),days=eachDay(r[0],r[1]).slice(-40),inr=db.appts.filter(function(a){return a.date>=r[0]&&a.date<=r[1]});
  var c={completed:0,cancelled:0,no_show:0,scheduled:0};inr.forEach(function(a){c[a.status]=(c[a.status]||0)+1});var inc=ledSum(r[0],r[1]);
@@ -406,9 +524,10 @@ function tasksView(){return seg([['check','چک‌لیست'],['stats','آمار'
 
 /* ---------- money ---------- */
 function moneyView(){
+ if(mp==='cmp')return weeksView();
  var r=range(mp),s=ledSum(r[0],r[1]),days=eachDay(r[0],r[1]).slice(-31),items=days.map(function(d){var x=ledSum(d,d);return {l:String(M.isoToJalali(d).jd),a:x.inc,b:x.exp}});
  var ents=db.ledger.filter(function(e){return e.date>=r[0]&&e.date<=r[1]}).sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:0}),g={};ents.forEach(function(e){(g[e.date]=g[e.date]||[]).push(e)});
- return seg([['day','امروز'],['week','7 روز'],['month','این ماه'],['prev','ماه قبل']],mp,'mp')+'<div class="dim" style="margin:-4px 0 8px">'+esc(r[2])+'</div>'+
+ return seg(MSEG,mp,'mp')+'<div class="dim" style="margin:-4px 0 8px">'+esc(r[2])+'</div>'+
  '<div class="sum3"><div><span class="dim">درآمد</span><b class="num in-">'+fmt(s.inc)+'</b></div><div><span class="dim">هزینه</span><b class="num ex-">'+fmt(s.exp)+'</b></div><div><span class="dim">خالص</span><b class="num">'+fmt(s.net)+'</b></div></div><div class="dim" style="text-align:center;margin:6px 0 12px">مبالغ به تومان</div>'+
  '<div class="card"><h2>درآمد (نارنجی) و هزینه (قرمز) هر روز</h2>'+bars(items)+'</div>'+
  '<div class="row" style="margin-bottom:12px"><button class="btn pri grow" data-a="walkin">＋ مشتری گذری</button><button class="btn grow" data-a="expense">＋ هزینه</button><button class="btn" data-a="csv" aria-label="دریافت اکسل">⬇</button></div>'+
@@ -443,7 +562,7 @@ function settingsView(){
  '<div class="row"><div class="grow"><label>بازهٔ ردیف‌های جدول</label><select class="in" id="tst">'+[15,30,60].map(function(n){return '<option value="'+n+'" '+(+s.table_step===n?'selected':'')+'>'+n+' دقیقه</option>'}).join('')+'</select></div><div class="grow"><label>گام ساعت‌های خالی</label><select class="in" id="sst">'+[10,15,20,30,60].map(function(n){return '<option value="'+n+'" '+(+s.slot_step===n?'selected':'')+'>'+n+' دقیقه</option>'}).join('')+'</select></div></div></div>'+
  '<div class="card"><h2>اصلاح‌کارها</h2><p class="dim">هر نفر برنامهٔ جدا دارد. اگر وقت یکی پر باشد، نوبت خودکار پیش نفر آزاد ثبت می‌شود. «غایب» یعنی فعلاً نوبت جدید به او داده نشود.</p>'+barbers().map(function(b,i){return '<div class="row" style="margin-bottom:8px"><span class="dot" style="background:'+b.color+'"></span><input class="in" data-bn="'+i+'" value="'+esc(b.name)+'"><button class="btn sm '+(b.active!==false?'pri':'')+'" data-a="bact" data-v="'+i+'">'+(b.active!==false?'حاضر':'غایب')+'</button></div>'}).join('')+(barbers().length<4?'<button class="btn" data-a="badd" style="width:100%;margin-bottom:8px">＋ افزودن اصلاح‌کار</button>':'')+'<button class="btn pri" data-a="ssave" style="width:100%">ذخیرهٔ نام‌ها</button></div>'+
  '<div class="card"><h2>خدمات، مدت و قیمت</h2><div class="row dim" style="margin-bottom:4px"><span style="flex:2">نام</span><span style="flex:1">دقیقه</span><span style="flex:1.4">قیمت (تومان)</span><span style="width:40px"></span></div><div id="svs">'+s.services.map(function(v,i){return '<div class="row" style="margin-bottom:6px"><input class="in" data-sn="'+i+'" value="'+esc(v.name)+'" style="flex:2"><input class="in" type="number" min="5" step="5" data-sd="'+i+'" value="'+v.duration+'" style="flex:1"><input class="in" inputmode="numeric" data-sp="'+i+'" value="'+(v.price||'')+'" placeholder="0" style="flex:1.4"><button class="btn dng sm" data-a="sx" data-v="'+i+'">✕</button></div>'}).join('')+'</div><button class="btn" data-a="sadd" style="width:100%;margin-bottom:8px">＋ افزودن خدمت</button><button class="btn pri" data-a="ssave" style="width:100%">ذخیرهٔ تنظیمات</button><div id="smsg"></div></div>'+
- '<div class="card"><h2>ظاهر</h2>'+seg([['dark','تیره'],['light','روشن']],s.theme,'theme')+'<label>رنگ درخشش هنگام روشن بودن میکروفن</label><div class="row"><input type="color" id="gc" value="'+s.glow+'" style="width:56px;height:42px;border:0;background:none;padding:0"><button class="btn sm" data-a="glowreset">پیش‌فرض (مسی)</button></div></div>'+
+ appearanceCard(s)+notifCard(s)+
  '<div class="card"><h2>هوش مصنوعی (Gemini) — اختیاری</h2><p class="dim">با کلید رایگان Gemini می‌توانید با میکروفن برنامه حرف بزنید و جمله‌های آزاد بگویید. صدا و متن فرمان (به‌همراه نام مشتری) برای پردازش به گوگل فرستاده می‌شود. کلید فقط روی همین گوشی می‌ماند و در پشتیبان نیست.</p><label>کلید API (از aistudio.google.com ← Get API key)</label><input class="in" id="gk" type="password" dir="ltr" autocomplete="off" placeholder="'+(gcfg().key?'کلید ذخیره شده است — برای تغییر، کلید جدید را وارد کنید':'AIza…')+'"><label>مدل</label><input class="in" id="gm" dir="ltr" value="'+esc(gcfg().model)+'"><div class="row" style="margin-top:10px"><button class="btn pri grow" data-a="gsave">ذخیره</button><button class="btn grow" data-a="gtest">آزمایش اتصال</button><button class="btn dng" data-a="gdel">حذف</button></div><div id="gmsg"></div></div>'+
  '<div class="card"><h2>آزمایش میکروفن</h2><p class="dim">۳ ثانیه حرف بزنید؛ بعد می‌توانید همان صدایی را که به Gemini فرستاده می‌شود گوش بدهید. اگر Gemini همیشه می‌گوید «واضح نیست»، اول این را امتحان کنید.</p><button class="btn pri" data-a="miccheck" style="width:100%">🎙 شروع آزمایش (۳ ثانیه)</button><div id="micres" style="margin-top:10px"></div></div>'+
  '<div class="card"><h2>گزارش خطاهای Gemini</h2>'+(glogs().length?'<div style="max-height:180px;overflow:auto;font-size:12px;direction:ltr;text-align:left;white-space:pre-wrap;word-break:break-word" id="glogbox">'+esc(glogs().map(function(l){return l.t+'  '+l.k+'\n'+l.d}).join('\n\n'))+'</div><div class="row" style="margin-top:8px"><button class="btn grow" data-a="glogcopy">کپی گزارش</button><button class="btn dng" data-a="glogclear">پاک کردن</button></div>':'<p class="dim">خطایی ثبت نشده است. اگر Gemini خطا داد، اینجا با جزئیات کامل می‌آید تا برای رفع مشکل بفرستید.</p>')+'</div>'+
@@ -503,7 +622,7 @@ function mutate(id,fn,okmsg){var a=find(id);if(!a)return;var snap=JSON.stringify
 /* ---------- render ---------- */
 function render(){
  var s=db.settings,root=document.documentElement;
- root.setAttribute('data-theme',s.theme);root.style.setProperty('--glow',s.glow||'#c9895a');
+ root.setAttribute('data-theme',s.theme);root.style.setProperty('--glow',s.glow||'#c9895a');applyAccent();
  $$('nav [data-a=tab]').forEach(function(b){b.classList.toggle('on',b.dataset.v===tab)});
  $('#assist').style.display=tab==='home'?'':'none';$('#view').style.display=tab==='home'?'none':'';
  $('#hdate').textContent=D(M.formatJalali(today));
@@ -959,7 +1078,7 @@ function doAct(a,v,el){
   case 'sp':sp=v;render();break;
   case 'mp':mp=v;render();break;
   case 'closem':closeModal();break;
-  case 'tadd':{var tx=($('#tin').value||'').trim();if(!tx)break;var s1=JSON.stringify(db);db.tasks.push({id:uid(),text:tx,done:false});if(!save()){restore(s1);flash={ok:false,t:'ذخیره نشد.'}}render();var ti=$('#tin');if(ti)ti.focus();break}
+  case 'tadd':{var tx=($('#tin').value||'').trim();if(!tx)break;var s1=JSON.stringify(db);db.tasks.push(newTask(tx));if(!save()){restore(s1);flash={ok:false,t:'ذخیره نشد.'}}render();var ti=$('#tin');if(ti)ti.focus();break}
   case 'ttog':{var tk=db.tasks.filter(function(x){return x.id===v})[0];if(tk){tk.done=!tk.done;save()}render();break}
   case 'tdel':db.tasks=db.tasks.filter(function(x){return x.id!==v});save();render();break;
   case 'tclear':db.tasks=db.tasks.filter(function(x){return !x.done});save();render();break;
@@ -1000,6 +1119,12 @@ function doAct(a,v,el){
     try{await geminiSpeak('سلام. صدای دستیار آماده است.');out.push('صدا ✓ ('+gcfg().tts+')')}catch(e){out.push('صدا ✗: '+e.message)}
     gs(true,out.join(' — '))})();break}
   case 'mic':unlockSpeech();if(!micOk()){$('#ptxt').style.display='flex';addMsg('میکروفن در این مرورگر در دسترس نیست؛ بنویسید یا از میکروفن کیبورد گوشی استفاده کنید.','er');break}listen();break;
+  case 'acc':db.settings.accent=v;save();render();break;
+  case 'accreset':db.settings.accent='';db.settings.glow='#c9895a';save();render();break;
+  case 'tgl':{var nn=nset();nn[v]=!nn[v];save();render();break}
+  case 'nlead':nset().lead=+v;save();render();break;
+  case 'nperm':{if(!('Notification' in window)){render();break}Notification.requestPermission().then(function(){render()});break}
+  case 'ntest':{var okn=notify('مهدوان کلاب','اعلان آزمایشی ✓','test'+Date.now());toast(okn?'اعلان آزمایشی فرستاده شد.':'اعلان سیستمی فعال نیست؛ این پیام داخل برنامه است.');break}
   case 'sug':unlockSpeech();handle(v);break;
   case 'hb':hb=v;render();break;
   case 'kb':{var f=$('#ptxt');f.style.display=f.style.display==='none'?'flex':'none';if(f.style.display==='flex')$('#pin').focus();break}
