@@ -367,7 +367,7 @@ function nstat(){if(!('Notification' in window))return 'این مرورگر اع
 function swRow(txt,k,on){return '<div class="led"><span>'+txt+'</span><button class="sw '+(on?'on':'')+'" data-a="tgl" data-v="'+k+'" aria-label="روشن/خاموش"></button></div>'}
 function notifCard(s){var n=nset();
  return '<div class="card"><h2>اعلان‌ها و ثبت خودکار</h2><p class="dim" id="nst">'+nstat()+'</p><div class="row wrapf"><button class="btn pri" data-a="nperm">فعال‌سازی اعلان</button><button class="btn" data-a="ntest">آزمایش</button></div>'+
- swRow('اعلان‌ها (کلی)','on',n.on)+swRow('وقتی نوبت هر مشتری می‌رسد','appt',n.appt)+swRow('هشدار چک‌لیست','task',n.task)+swRow('پایان تایمر','timer',n.timer)+
+ pushBlock(n)+swRow('اعلان‌ها (کلی)','on',n.on)+swRow('وقتی نوبت هر مشتری می‌رسد','appt',n.appt)+swRow('هشدار چک‌لیست','task',n.task)+swRow('پایان تایمر','timer',n.timer)+
  '<label>زمان اعلان نوبت</label>'+seg([['0','سر وقت'],['5','۵ دقیقه قبل'],['10','۱۰ دقیقه قبل'],['15','۱۵ دقیقه قبل']],String(n.lead),'nlead')+
  swRow('بعد از پایان وقت مشتری، خودکار «انجام شد» و در حسابداری ثبت شود','auto',n.auto)+
  '<p class="dim" style="margin-top:8px">اعلان‌ها وقتی کار می‌کنند که برنامه باز باشد یا تازه بسته شده باشد؛ آیفون برنامه‌های بسته را متوقف می‌کند و ممکن است اعلان دیر برسد.</p></div>'}
@@ -377,7 +377,7 @@ function notify(title,body,tag){if(!('Notification' in window)||Notification.per
  try{new Notification(title,o);return true}catch(e){return false}}
 var NOTK='mahdavan_notified_v1',NS={};try{NS=JSON.parse(localStorage.getItem(NOTK)||'{}')}catch(e){}
 function nsave(){var n=Date.now(),k;for(k in NS)if(n-NS[k]>1728e5)delete NS[k];try{localStorage.setItem(NOTK,JSON.stringify(NS))}catch(e){}}
-function notifyOnce(key,title,body){if(NS[key])return;NS[key]=Date.now();nsave();if(!document.hidden)toast(title+' — '+body);notify(title,body,key)}
+function notifyOnce(key,title,body){if(NS[key])return;NS[key]=Date.now();nsave();if(!document.hidden)toast(title+' — '+body);if(!nset().push)notify(title,body,key)}
 function alarmDue(al){var p=String(al).split(' '),dd=Math.round((Date.parse(today)-Date.parse(p[0]))/864e5),d=dd*1440+M.nowMinutesTehran()-M.toMinutes(p[1]);return d>=0&&d<30}
 function autoComplete(now){var y=M.addDays(today,-1),list=db.appts.filter(function(a){if(a.status!=='scheduled')return false;return a.date===today?M.toMinutes(a.end)<=now:a.date===y});
  if(!list.length)return;var m=$('#modal');if(m&&m.style.display==='flex')return;var snap=JSON.stringify(db),names=[];
@@ -423,6 +423,53 @@ function weeksView(){var wi=M.weekdayIndex(today),ws=M.addDays(today,-wi),W=[],i
  '<div class="card"><h2>درآمد (رنگ اصلی) و هزینه (قرمز) هر هفته</h2>'+barsX(inc,true)+'<div class="dim">هفتهٔ جاری کم‌رنگ است چون هنوز تمام نشده.</div></div>'+
  '<div class="card"><h2>تعداد مشتری هر هفته</h2>'+barsX(cus,false)+'</div>'+
  '<div class="card"><h2>جزئیات هر هفته</h2>'+blocks+'</div>'}
+
+
+/* ---------- real push (Supabase) ---------- */
+var VAPID='BP2dqLT_GD0aJ6DidxSGyOECS5PgYPlnHeSfZwCBYxF1nDswTrgdU3QMV0P14-vjIjnX-gM-iQcrqeqNMxO1SM8';
+function b64u(s){var p='='.repeat((4-s.length%4)%4),b=(s+p).replace(/-/g,'+').replace(/_/g,'/'),r=atob(b),o=new Uint8Array(r.length),i;for(i=0;i<r.length;i++)o[i]=r.charCodeAt(i);return o}
+function pmsg(m,ok){var e=$('#pmsg');if(e){e.textContent=m;e.style.color=ok===false?'var(--bad)':'var(--ok)'}}
+function pushBlock(n){return '<h2 style="margin-top:6px">اعلان واقعی (حتی با برنامهٔ بسته)</h2><p class="dim">'+(n.push?'فعال است ✓ — ':'غیرفعال است — ')+'سرور Supabase اعلان می‌فرستد؛ حتی وقتی برنامه بسته یا گوشی قفل است می‌رسد. راه‌اندازی سرور یک‌بار لازم است.</p><div class="row wrapf">'+(n.push?'<button class="btn" data-a="pushtest">آزمایش</button><button class="btn dng" data-a="pushoff">غیرفعال</button>':'<button class="btn pri" data-a="pushon">فعال‌سازی اعلان واقعی</button>')+'</div><div id="pmsg" class="dim" style="margin:6px 0 12px"></div>'}
+async function pushEnable(){try{
+ if(!MCSync.logged()){pmsg('اول در کارت «همگام‌سازی ابری» همین صفحه وارد شوید.',false);return}
+ if(!('serviceWorker' in navigator)||!('PushManager' in window)||!('Notification' in window)){pmsg('فقط وقتی کار می‌کند که برنامه از روی آیکون صفحهٔ اصلی باز شده باشد (iOS 16.4 به بالا).',false);return}
+ var p=await Notification.requestPermission();if(p!=='granted'){pmsg('اجازه داده نشد. از تنظیمات آیفون ← اعلان‌ها ← مهدوان کلاب فعالش کنید.',false);return}
+ var reg=await navigator.serviceWorker.ready,sub=await reg.pushManager.getSubscription();
+ if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64u(VAPID)});
+ await MCSync.pushReg(sub);nset().push=true;save();render();pmsg('فعال شد ✓ — حالا «آزمایش» را بزنید.')
+}catch(e){pmsg('خطا: '+String(e&&e.message||e).slice(0,160),false)}}
+async function pushOff(){try{var reg=await navigator.serviceWorker.ready,sub=await reg.pushManager.getSubscription();if(sub){try{await MCSync.pushDel(sub.endpoint)}catch(e){}await sub.unsubscribe()}nset().push=false;save();render();pmsg('غیرفعال شد.')}catch(e){pmsg('خطا: '+String(e&&e.message||e).slice(0,160),false)}}
+async function pushTest(){try{pmsg('در حال ارسال…');var r=await MCSync.callFn('send-reminders',{test:true});pmsg(r&&r.sent?'فرستاده شد؛ چند ثانیه صبر کنید ✓':'ارسال نشد: '+((r&&r.error)||'اشتراکی پیدا نشد'),!!(r&&r.sent))}catch(e){pmsg('خطا: '+String(e&&e.message||e).slice(0,160)+' (تابع send-reminders در Supabase ساخته شده؟)',false)}}
+/* ---------- customer files: stats, filters, reminder messages ---------- */
+var cf='all',DEFTPL='سلام {نام} عزیز 🌿 مدتی هست ندیدمت. هر وقت خواستی برات نوبت رزرو می‌کنم. مهدوان کلاب';
+function dayDiff(a,b){return Math.round((Date.parse(a)-Date.parse(b))/864e5)}
+function custStats(c){var ap=custAppts(c),done=ap.filter(function(a){return a.status==='completed'}).sort(function(x,y){return x.date<y.date?-1:1}),last=done.length?done[done.length-1]:null,iv=[],sv={},i;
+ for(i=1;i<done.length;i++){var d=dayDiff(done[i].date,done[i-1].date);if(d>0)iv.push(d)}
+ var avg=iv.length?Math.round(iv.reduce(function(s,x){return s+x},0)/iv.length):0;
+ done.forEach(function(a){if(a.service)sv[a.service]=(sv[a.service]||0)+1});var fav=Object.keys(sv).sort(function(x,y){return sv[y]-sv[x]})[0]||'';
+ var ds=last?dayDiff(today,last.date):null,hasNext=ap.some(function(a){return a.status==='scheduled'&&a.date>=today}),lim=avg?Math.max(Math.round(avg*1.4),14):45;
+ return {done:done,last:last,ds:ds,avg:avg,fav:fav,ns:ap.filter(function(a){return a.status==='no_show'}).length,hasNext:hasNext,lim:lim,due:!!last&&!hasNext&&ds>=lim,vip:done.length>=6}}
+function msgText(c,kind,a){var tpl=kind==='appt'?'سلام {نام} عزیز، یادآوری نوبت شما: {تاریخ} ساعت {ساعت} — مهدوان کلاب':(db.settings.msgTpl||DEFTPL);return tpl.replace(/\{نام\}/g,c.name).replace(/\{تاریخ\}/g,a?M.formatJalali(a.date,{weekday:true}):'').replace(/\{ساعت\}/g,a?a.start:'')}
+function msgBtns(c,kind,a){var ph=c.phone;if(!ph)return '';var tx=encodeURIComponent(msgText(c,kind,a)),wa=/^09\d{9}$/.test(ph)?'98'+ph.slice(1):'';
+ return '<a class="btn sm" data-a="stop" href="sms:'+esc(ph)+'?&body='+tx+'">💬 پیامک</a>'+(wa?'<a class="btn sm" data-a="stop" href="https://wa.me/'+wa+'?text='+tx+'" target="_blank" rel="noopener">واتساپ</a>':'')}
+function cInfo(c){var s=custStats(c);if(!s.done.length)return '';
+ return '<div class="dim" style="margin-top:10px;line-height:1.9;font-size:12.5px">'+(s.fav?'خدمت پرتکرار: <b>'+esc(s.fav)+'</b> · ':'')+(s.avg?'معمولاً هر <b class="num">'+s.avg+'</b> روز یک‌بار می‌آید · ':'')+'آخرین مراجعه <b class="num">'+s.ds+'</b> روز پیش'+(s.ns?' · غیبت: <b class="num">'+s.ns+'</b>':'')+'</div>'+(s.due&&c.phone?'<div class="row" style="margin-top:8px"><span class="chip" style="color:var(--bad)">'+s.ds+' روز نیامده</span>'+msgBtns(c,'back')+'</div>':'')}
+function crow(c,s){var sub=s.last?'آخرین مراجعه '+s.ds+' روز پیش'+(s.avg?' · معمولاً هر '+s.avg+' روز':''):'هنوز مراجعه‌ای ثبت نشده';
+ return '<div class="ap" data-a="copen" data-v="'+c.id+'" style="cursor:pointer"><div class="row sp"><div class="grow"><div class="t">'+esc(c.name)+'</div><div class="dim num">'+esc(c.phone||'بدون شماره')+'</div><div class="dim" style="font-size:12px;margin-top:2px">'+esc(sub)+'</div></div><div style="text-align:left">'+(s.done.length?'<span class="chip a">'+s.done.length+' مراجعه</span>':'')+(s.due?'<div class="chip" style="color:var(--bad);margin-top:4px">'+s.ds+' روز نیامده</div>':'')+'</div></div>'+(s.due&&c.phone?'<div class="row" style="margin-top:8px">'+msgBtns(c,'back')+'</div>':'')+'</div>'}
+function custView(){
+ var list=searchCustomers(cq),n=db.customers.length,S={},cnt={due:0,vip:0,nw:0};
+ db.customers.forEach(function(c){var s=custStats(c);S[c.id]=s;if(s.due)cnt.due++;if(s.vip)cnt.vip++;if(s.done.length<=1)cnt.nw++});
+ var all=list.length;
+ if(cf==='due')list=list.filter(function(c){return S[c.id].due}).sort(function(a,b){return S[b.id].ds-S[a.id].ds});
+ else if(cf==='vip')list=list.filter(function(c){return S[c.id].vip}).sort(function(a,b){return S[b.id].done.length-S[a.id].done.length});
+ else if(cf==='new')list=list.filter(function(c){return S[c.id].done.length<=1});
+ return '<div class="row" style="margin-bottom:8px"><input class="in" id="cq" placeholder="جستجوی اسم (فارسی یا فینگلیش) یا شماره…" value="'+esc(cq)+'"><button class="btn pri" data-a="cadd" aria-label="مشتری جدید">＋</button></div>'+
+ seg([['all','همه'],['due','نیامده '+cnt.due],['vip','پرمراجعه'],['new','جدید']],cf,'cf')+
+ '<div class="row sp" style="margin:10px 0"><span class="dim">'+n+' مشتری'+(cq||cf!=='all'?' · '+list.length+' نتیجه':'')+'</span><button class="btn sm" data-a="cimp">⬆ وارد کردن مخاطبین (VCF)</button></div><input type="file" id="vcf" accept=".vcf,text/vcard,text/x-vcard,text/directory,text/plain" hidden>'+
+ (cf==='due'?'<details class="card" style="margin-bottom:10px"><summary>متن پیام یادآوری (قابل ویرایش)</summary><textarea class="in" id="mtpl" rows="3" style="margin-top:8px">'+esc(db.settings.msgTpl||DEFTPL)+'</textarea><p class="dim" style="margin:6px 0 0">«{نام}» جای اسم مشتری می‌نشیند. «نیامده» یعنی بیشتر از ۱٫۴ برابر فاصلهٔ معمول مراجعهٔ همان مشتری (یا ۴۵ روز) گذشته و نوبت بعدی هم ندارد.</p></details>':'')+
+ (n?list.slice(0,cshow).map(function(c){return crow(c,S[c.id])}).join('')+(list.length>cshow?'<button class="btn" style="width:100%" data-a="cmore">نمایش '+Math.min(40,list.length-cshow)+' مشتری بعدی</button>':'')+(!list.length?'<div class="card dim" style="text-align:center">'+(cf==='due'?'کسی از مشتری‌ها بیش از حد معمول غیبت نکرده 👌':'مشتری پیدا نشد.')+'</div>':''):
+  '<div class="card"><h2>هنوز مشتری ثبت نشده</h2><p class="dim">فایل مخاطبین (VCF) را از «Files» گوشی انتخاب کنید یا با ＋ مشتری اضافه کنید. با هر نوبت برای اسم جدید هم یک پرونده ساخته می‌شود.</p></div>')}
+document.addEventListener('change',function(e){if(e.target.id==='mtpl'){db.settings.msgTpl=e.target.value.trim();save()}});
 
 function dayTableOne(){
  var s=db.settings,d=selDay,oc=hol(d),closed=oc.some(isH)||s.work_days.indexOf(M.weekdayIndex(d))<0,multi=barbers().length>1,bs=(multi&&bf!=='all')?[bOf(bf)]:barbers();
@@ -719,12 +766,6 @@ function importVCF(text){
  return {ok:true,total:cards.length,added:added,merged:merged,dup:dup,noPhone:noPhone,noName:noName}}
 
 /* ---- customers page + customer file ---- */
-function custView(){
- var list=searchCustomers(cq),vc=visitCounts(),n=db.customers.length;
- return '<div class="row" style="margin-bottom:8px"><input class="in" id="cq" placeholder="جستجوی اسم (فارسی یا فینگلیش) یا شماره…" value="'+esc(cq)+'"><button class="btn pri" data-a="cadd" aria-label="مشتری جدید">＋</button></div>'+
- '<div class="row sp" style="margin-bottom:10px"><span class="dim">'+n+' مشتری'+(cq?' · '+list.length+' نتیجه':'')+'</span><button class="btn sm" data-a="cimp">⬆ وارد کردن مخاطبین (VCF)</button></div><input type="file" id="vcf" accept=".vcf,text/vcard,text/x-vcard,text/directory,text/plain" hidden>'+
- (n?list.slice(0,cshow).map(function(c){var v=(vc[c.id]||0)+(vc['n:'+c.name]||0);return '<div class="ap" data-a="copen" data-v="'+c.id+'" style="cursor:pointer"><div class="row sp"><div><div class="t">'+esc(c.name)+'</div><div class="dim num">'+esc(c.phone||'بدون شماره')+'</div></div>'+(v?'<span class="chip a">'+v+' نوبت</span>':'')+'</div></div>'}).join('')+(list.length>cshow?'<button class="btn" style="width:100%" data-a="cmore">نمایش '+Math.min(40,list.length-cshow)+' مشتری بعدی</button>':'')+(!list.length?'<div class="card dim" style="text-align:center">مشتری پیدا نشد.</div>':''):
-  '<div class="card"><h2>هنوز مشتری ثبت نشده</h2><p class="dim">فایل مخاطبین (VCF) را از «Files» گوشی انتخاب کنید تا شماره‌ها وارد شوند. این کار فقط روی همین گوشی انجام می‌شود و مخاطبین جایی فرستاده نمی‌شوند. با هر نوبتی که برای یک اسم جدید می‌نویسید هم یک پروندهٔ جدید ساخته می‌شود.</p><button class="btn pri" data-a="cimp">⬆ وارد کردن مخاطبین</button></div>')}
 function openCustomer(id){
  var c=id?db.customers.filter(function(x){return x.id===id})[0]:null,isNew=!c;if(id&&!c)return;
  var ap=c?custAppts(c):[],done=ap.filter(function(a){return a.status==='completed'}),next=ap.filter(function(a){return a.status==='scheduled'&&a.date>=today}).sort(function(x,y){return (x.date+x.start)<(y.date+y.start)?-1:1})[0],last=done[0];
@@ -734,8 +775,8 @@ function openCustomer(id){
   (c&&(c.phones||[]).length>1?'<div class="dim" style="margin-top:6px">شماره‌های دیگر: <span class="num">'+esc(c.phones.filter(function(p){return p!==ph}).join(' ، '))+'</span></div>':'')+
   '<label>یادداشت (مدل مو، حساسیت، سلیقه…)</label><textarea class="in" id="cno" rows="3">'+esc(c?c.notes:'')+'</textarea>'+
   (c?'<div class="stats3" style="margin-top:12px"><div><b class="num">'+done.length+'</b><span>مراجعه</span></div><div><b class="num">'+fmt(cPaid(c))+'</b><span>جمع پرداختی</span></div><div><b class="num">'+(last?esc(M.formatJalali(last.date,{weekday:false,year:false})):'—')+'</b><span>آخرین مراجعه</span></div></div>'+
-   (next?'<div class="chip a" style="margin-top:10px">نوبت بعدی: '+esc(M.formatJalali(next.date,{weekday:false}))+' ساعت '+next.start+'</div>':'')+
-   (ap.length?'<h2 style="margin-top:14px">سابقه</h2>'+ap.slice(0,8).map(function(a){return '<div class="led"><span>'+esc(M.formatJalali(a.date,{weekday:false}))+' · '+esc(a.service)+'</span><span class="dim">'+ST_FA[a.status]+(a.price?' · '+fmt(a.price):'')+'</span></div>'}).join(''):''):'')+
+   (next?'<div class="chip a" style="margin-top:10px">نوبت بعدی: '+esc(M.formatJalali(next.date,{weekday:false}))+' ساعت '+next.start+'</div>'+(c.phone?'<div class="row" style="margin-top:8px"><span class="dim">یادآوری به مشتری:</span>'+msgBtns(c,'appt',next)+'</div>':''):'')+
+   (c?cInfo(c):'')+(ap.length?'<h2 style="margin-top:14px">سابقه</h2>'+ap.slice(0,8).map(function(a){return '<div class="led"><span>'+esc(M.formatJalali(a.date,{weekday:false}))+' · '+esc(a.service)+'</span><span class="dim">'+ST_FA[a.status]+(a.price?' · '+fmt(a.price):'')+'</span></div>'}).join(''):''):'')+
   '<div id="cer"></div><div class="row wrapf" style="margin-top:12px"><button class="btn pri grow" data-a="csave" data-v="'+(c?c.id:'')+'">ذخیره</button>'+(c?'<button class="btn grow" data-a="cnew" data-v="'+c.id+'">＋ نوبت</button><button class="btn dng" data-a="cdel" data-v="'+c.id+'">حذف</button>':'')+'<button class="btn" data-a="closem">بستن</button></div>')}
 function saveCustomer(id){
  var nm=($('#cn').value||'').replace(/\s+/g,' ').trim(),ph=normPhone($('#cp').value),no=($('#cno').value||'').trim(),er=$('#cer');
@@ -1125,6 +1166,11 @@ function doAct(a,v,el){
   case 'nlead':nset().lead=+v;save();render();break;
   case 'nperm':{if(!('Notification' in window)){render();break}Notification.requestPermission().then(function(){render()});break}
   case 'ntest':{var okn=notify('مهدوان کلاب','اعلان آزمایشی ✓','test'+Date.now());toast(okn?'اعلان آزمایشی فرستاده شد.':'اعلان سیستمی فعال نیست؛ این پیام داخل برنامه است.');break}
+  case 'pushon':pushEnable();break;
+  case 'pushoff':pushOff();break;
+  case 'pushtest':pushTest();break;
+  case 'cf':cf=v;cshow=40;render();break;
+  case 'stop':break;
   case 'sug':unlockSpeech();handle(v);break;
   case 'hb':hb=v;render();break;
   case 'kb':{var f=$('#ptxt');f.style.display=f.style.display==='none'?'flex':'none';if(f.style.display==='flex')$('#pin').focus();break}
@@ -1261,7 +1307,11 @@ function init(){
  document.addEventListener('visibilitychange',function(){if(!document.hidden)sync(false)});
  window.addEventListener('online',function(){sync(false)});
  setInterval(function(){if(!document.hidden)sync(false)},90000)}
-return {card:card,login:login,logout:logout,sync:sync,touch:touch,init:init}})();
+async function pushReg(sub){var tk=await token(),j=sub.toJSON();await http('/rest/v1/push_subs?on_conflict=endpoint',{method:'POST',headers:Object.assign(hdr(tk),{Prefer:'resolution=merge-duplicates,return=minimal'}),body:JSON.stringify({user_id:sess.uid,endpoint:j.endpoint,p256dh:j.keys.p256dh,auth:j.keys.auth,ua:String(navigator.userAgent).slice(0,120)})})}
+async function pushDel(ep){var tk=await token();await http('/rest/v1/push_subs?endpoint=eq.'+encodeURIComponent(ep),{method:'DELETE',headers:hdr(tk)})}
+async function callFn(name,body){var tk=await token();return http('/functions/v1/'+name,{method:'POST',headers:{apikey:KEY0,Authorization:'Bearer '+tk,'Content-Type':'application/json'},body:JSON.stringify(body||{})})}
+function logged(){return !!sess}
+return {card:card,login:login,logout:logout,sync:sync,touch:touch,init:init,pushReg:pushReg,pushDel:pushDel,callFn:callFn,logged:logged}})();
 MCSync.init();
 
 })();
