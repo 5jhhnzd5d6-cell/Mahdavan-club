@@ -226,7 +226,7 @@ html[data-theme=light] header img{filter:invert(1)}html[data-theme=light] header
    <button type="button" class="mic" id="pmic" data-a="mic" aria-label="میکروفن"><svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button></div>
   <div id="msgs"></div><div id="rec"></div>
   <div id="yn" class="row" style="display:none;margin:8px 0"><button class="btn pri grow" id="pyes" data-a="yes">بله، انجام بده</button><button class="btn grow" id="pno" data-a="no">نه</button></div>
-  <div class="sugs"><button class="sug" data-a="sug" data-v="امروز چه نوبت‌هایی دارم">نوبت‌های امروز</button><button class="sug" data-a="sug" data-v="فردا چه نوبت‌هایی دارم">نوبت‌های فردا</button><button class="sug" data-a="sug" data-v="ثبت نوبت جدید">ثبت نوبت جدید</button></div>
+  <div class="sugs"><button class="sug" data-a="sug" data-v="امروز چه نوبت‌هایی دارم">نوبت‌های امروز</button><button class="sug" data-a="sug" data-v="فردا چه نوبت‌هایی دارم">نوبت‌های فردا</button><button class="sug" data-a="sug" data-v="ثبت نوبت جدید">ثبت نوبت جدید</button><button class="sug" data-a="sug" data-v="درآمد امروز چقدره">درآمد امروز</button><button class="sug" data-a="sug" data-v="نوبت بعدی کیه">نوبت بعدی</button><button class="sug" data-a="sug" data-v="فردا وقت خالی دارم">وقت خالی فردا</button></div>
   <form id="ptxt" class="abar"><input class="in" id="pin" autocomplete="off" placeholder="بنویسید یا میکروفن را بزنید…"><button class="send" type="submit" aria-label="ارسال">↑</button><button type="button" class="sidebtn" id="pmute" data-a="mute" aria-label="بی‌صدا">🔊</button></form>
   <button id="pkb" data-a="kb" hidden></button>
  </div>
@@ -522,6 +522,32 @@ function insightsView(){
  var bk=Object.keys(bb);if(bk.length>1)out+='<div class="card"><h2>درآمد هر آرایشگر</h2>'+bk.map(function(id){var b=bOf(id),x=bb[id];return '<div class="led"><span><i style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+esc(b.color||'#b08158')+';margin-inline-end:6px"></i>'+esc(b.name)+'</span><span class="num">'+x.n+' نوبت · '+fmt(x.s)+'</span></div>'}).join('')+'</div>';
  return out}
 document.addEventListener('change',function(e){if(e.target.id==='goal'){db.settings.goal=Number(D(e.target.value).replace(/[^\d]/g,''))||0;save();render()}});
+
+
+/* ---------- assistant: extra local commands (no AI key needed) ---------- */
+function nameMatchAppt(a,q){try{var qt=nameTokens(q);return qt.length>0&&assignCost(qt,ctoks({name:a.customer_name}))>=0}catch(e){return D(a.customer_name).indexOf(D(q))>=0}}
+var QSTOP=/^(آخرین|اخرین|مراجعه|کی|بود|بار|نوبت|انجام|شد|تموم|تمام|کن|رو|را|پرونده|چند|اومد|آمد|اومده|آمده|هست|امروز|فردا|دیروز|ثبت|آقای|اقای|خانم|جناب|مشتری|دکتر|الان|لطفا|لطفاً|یه|یک|برای|از|به|که|می|کار|کارش|اش|ش|و)$/;
+function qName(s,p){if(p&&p.name)return p.name;return s.replace(/[؟?!،,.]/g,' ').split(/\s+/).filter(function(x){return x&&!QSTOP.test(x)&&!/^\d+$/.test(x)}).join(' ')}
+function slotStr(x){return typeof x==='string'?x:(x&&x.start)||''}
+function localQuery(t){
+ var s=D(t).replace(/ي/g,'ی').replace(/ك/g,'ک'),p=M.parseCommand(t,today,db.settings.services),qn=qName(s,p),now=M.nowMinutesTehran(),st=db.settings;
+ var rd=function(){if(/دیروز/.test(s))return [M.addDays(today,-1),M.addDays(today,-1),'دیروز'];if(/ماه (قبل|گذشته|پیش)/.test(s))return range('prev');if(/ماه/.test(s))return range('month');if(/هفته/.test(s))return range('week');return [today,today,'امروز']};
+ if(/(درآمد|فروش|سود|چقدر (کار )?(کردم|درآوردم)|چقدر پول)/.test(s)&&!/(ثبت|لغو)/.test(s))return async function(){var r=rd(),x=ledSum(r[0],r[1]),n=db.appts.filter(function(a){return a.status==='completed'&&a.date>=r[0]&&a.date<=r[1]}).length;await say(r[2]+': درآمد '+fmt(x.inc)+' تومان از '+n+' مشتری، هزینه '+fmt(x.exp)+' و خالص '+fmt(x.net)+' تومان.')};
+ if(/(نوبت|وقت|ساعت) *(خالی|آزاد)|(خالی|آزاد).*(داریم|داری|هست|دارم)/.test(s))return async function(){var d=p.date||today,f=M.freeSlotsMulti({date:d,existing:db.appts,barberIds:bIds(),workStart:st.work_start,workEnd:st.work_end,duration:dur(),step:Math.max(30,st.slot_step),fromMinute:d===today?now:0}).map(slotStr).filter(Boolean),lb=d===today?'امروز':d===M.addDays(today,1)?'فردا':M.formatJalali(d,{weekday:true});
+  await say(f.length?'ساعت‌های خالی '+lb+': '+f.slice(0,8).join('، ')+(f.length>8?' و '+(f.length-8)+' ساعت دیگر':'')+'.':'برای '+lb+' ساعت خالی نیست.')};
+ if(/(نوبت|مشتری) *بعدی|بعدی کیه|کی (میاد|می‌آد|میرسه)/.test(s))return async function(){var L=byDate(today).filter(function(a){return a.status==='scheduled'&&M.toMinutes(a.end)>now}),a=L[0];
+  await say(a?(M.toMinutes(a.start)<=now?'الان نوبت '+a.customer_name+' است (تا '+a.end+')'+(L[1]?'؛ بعدش '+L[1].customer_name+' ساعت '+L[1].start+'.':'.'):'نوبت بعدی: '+a.customer_name+' ساعت '+a.start+'، '+(M.toMinutes(a.start)-now)+' دقیقه دیگر.'):'برای امروز نوبتی باقی نمانده.')};
+ if(/(انجام شد|تموم شد|تمام شد|تموم کن)/.test(s)&&!/نشد/.test(s))return async function(){var nm=qn,L=byDate(today).filter(function(a){return a.status==='scheduled'&&(nm?nameMatchAppt(a,nm):(M.toMinutes(a.start)<=now&&M.toMinutes(a.end)>now))});
+  if(!L.length){await say(nm?'نوبت امروزِ «'+nm+'» پیدا نشد.':'اسم مشتری را هم بگویید، مثلاً «نوبت علی انجام شد».');return}
+  if(L.length>1){await say('چند نوبت پیدا شد: '+L.map(function(a){return a.customer_name+' ('+a.start+')'}).join('، ')+'. اسم کامل‌تر را بگویید.');return}
+  var a=L[0],snap=JSON.stringify(db);a.status='completed';a.price=(+a.price>0?+a.price:svPrice(a.service))||0;syncLedger(a);
+  if(save()){render();await say('نوبت '+a.customer_name+' «انجام شد» ثبت شد'+(a.price?' ('+fmt(a.price)+' تومان).':'.'))}else{restore(snap);await say('ذخیره نشد.')}};
+ if(/(آخرین|اخرین) *(مراجعه|بار|نوبت)|کی (اومد|آمد|اومده|آمده)|چند بار (اومد|آمد)|پرونده/.test(s))return async function(){if(!qn){await say('اسم مشتری را هم بگویید.');return}
+  var m=matchCustomers(qn,3);if(!m.length){await say('مشتری با اسم «'+qn+'» پیدا نشد.');return}var c=m[0].c,x=custStats(c);
+  await say(x.last?c.name+': '+x.done.length+' مراجعه، آخرین بار '+x.ds+' روز پیش'+(x.avg?'، معمولاً هر '+x.avg+' روز یک‌بار می‌آید':'')+(x.fav?'، بیشتر '+x.fav:'')+'.':c.name+' هنوز مراجعهٔ ثبت‌شده‌ای ندارد.')};
+ if(/(یادآوری|یاد آوری)|پیام (بده|بفرست|بزن)/.test(s)&&/(مشتری|امروز|فردا|نوبت)/.test(s))return async function(){rday=/امروز/.test(s)?'today':'tmr';openRemind();await say('فهرست یادآوری را باز کردم.')};
+ return null}
+function normVerbs(t){return t.replace(/(^|\s)(ببرش|ببر|ببرید|بیارش|بیار|بکشش|بکش)(?=\s|$)/g,'$1جابجا کن')}
 
 function dayTableOne(){
  var s=db.settings,d=selDay,oc=hol(d),closed=oc.some(isH)||s.work_days.indexOf(M.weekdayIndex(d))<0,multi=barbers().length>1,bs=(multi&&bf!=='all')?[bOf(bf)]:barbers();
@@ -1099,8 +1125,10 @@ function aliasAppts(t){
 async function handle(t,noEcho){
  t=(t||'').trim();if(!t||(busy&&!noEcho&&!speaking))return;if(!noEcho&&speaking)stopSpeech();
  if(pendingPick){busy=true;if(!noEcho)addMsg(t,'u');try{await resolvePick(t)}finally{busy=false}return}
+ if(!noEcho&&dlg.phase==='idle'){var lq=localQuery(t);if(lq){busy=true;addMsg(t,'u');setAv('processing');try{await lq()}finally{busy=false;setAv('idle')}return}}
  if(!noEcho&&gcfg().key&&dlg.phase==='idle'&&M.parseCommand(t,today,db.settings.services).intent==='unknown'){busy=true;addMsg(t,'u');try{await interpret({text:t})}finally{busy=false}return}
  busy=true;if(!noEcho)addMsg(t,'u');setAv('processing');
+ if(dlg.phase==='idle')t=normVerbs(t);
  var was=dlg.phase;if(was==='idle'){pendingBarber=null;pendingBarberId=null}
  var bm=barberFromText(t);if(bm)pendingBarber=bm;
  var r=M.step(dlg,t,{today:today,services:db.settings.services,appointments:aliasAppts(t),work:{start:db.settings.work_start,end:db.settings.work_end,days:db.settings.work_days},nowMinutes:M.nowMinutesTehran(),barberIds:bIds()});
@@ -1244,7 +1272,7 @@ $('#ptxt').addEventListener('submit',function(e){e.preventDefault();unlockSpeech
 function net(){$('#off').style.display=navigator.onLine?'none':'block'}window.addEventListener('online',net);window.addEventListener('offline',net);net();
 
 $('#msgs').innerHTML='';
-addMsg('سلام! بگویید چه نوبتی ثبت یا لغو کنم. مثلاً: «برای فردا ساعت پنج، آقای احمدی رو برای اصلاح ثبت کن».');
+addMsg('سلام! بگویید چه نوبتی ثبت یا لغو کنم. مثلاً: «برای فردا ساعت پنج، آقای احمدی رو برای اصلاح ثبت کن». هر چیز دیگر هم بپرسید، مثل «درآمد امروز چقدره؟»، «نوبت بعدی کیه؟»، «فردا وقت خالی دارم؟»، «نوبت علی انجام شد» یا «آخرین مراجعه علی کی بود؟».');
 load();tmLoad();render();setAv('idle');updateMic();
 setTimeout(function(){pickVoice();if(!gcfg().key&&voiceInfo.note)addMsg('ℹ️ '+voiceInfo.note)},600);
 if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();
