@@ -212,7 +212,7 @@ html[data-theme=light] header img{filter:invert(1)}html[data-theme=light] header
 #toast{position:fixed;top:calc(10px + env(safe-area-inset-top));left:12px;right:12px;z-index:90;padding:12px 14px;border-radius:20px;background:rgba(30,22,16,.88);color:#fff;border:1px solid rgba(var(--rgb2),.5);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);font-size:13.5px;display:none;box-shadow:0 10px 30px rgba(0,0,0,.4)}
 .wk3{border:1px solid var(--line);border-radius:16px;padding:10px 12px;margin-bottom:8px;background:var(--raised)}.wk3 .l2{font-size:12px;color:var(--dim);margin-top:4px;line-height:1.7}
 .up{color:var(--ok)}.dn{color:var(--bad)}.chart .cur{opacity:.55}
-.ap.rdone{opacity:.75}</style>
+.ap.rdone{opacity:.75}.pgbar{height:8px;border-radius:8px;background:rgba(255,255,255,.12);overflow:hidden;margin-top:10px}.pgbar s{display:block;height:100%;background:linear-gradient(90deg,var(--accd),var(--acc2));border-radius:8px}html[data-theme=light] .pgbar{background:rgba(0,0,0,.1)}</style>
 </head>
 <body>
 <div id="off" role="status">آفلاین هستید — برنامه کار می‌کند چون اطلاعات روی همین دستگاه است.</div>
@@ -394,7 +394,7 @@ setInterval(checkAlerts,10000);setTimeout(checkAlerts,2500);document.addEventLis
 document.addEventListener('input',function(e){if(e.target.id==='ac'){db.settings.accent=e.target.value;applyAccent()}});
 document.addEventListener('change',function(e){if(e.target.id==='ac'){db.settings.accent=e.target.value;save();render()}});
 /* ---------- weekly comparison ---------- */
-var MSEG=[['day','امروز'],['week','7 روز'],['month','این ماه'],['prev','ماه قبل'],['cmp','هفته‌ها']];
+var MSEG=[['day','امروز'],['week','7 روز'],['month','این ماه'],['prev','ماه قبل'],['cmp','هفته‌ها'],['ins','تحلیل']];
 function ab(v){return v>=1e6?(Math.round(v/1e5)/10)+'M':v>=1e3?Math.round(v/1e3)+'k':''+v}
 function barsX(items,two){var W=340,H=150,pl=6,pb=20,pt=18,n=items.length,mx=1,g='',gl='';items.forEach(function(i){mx=Math.max(mx,i.a||0,i.b||0)});var bw=(W-pl*2)/n,hh=H-pb-pt;
  for(var k=1;k<=3;k++){var y=(H-pb-hh*k/3).toFixed(1);gl+='<line x1="'+pl+'" x2="'+(W-pl)+'" y1="'+y+'" y2="'+y+'" stroke-dasharray="2 3"/>'}
@@ -482,6 +482,45 @@ function openRemind(){var d=M.addDays(today,1),L=tomorrowAppts();
  (L.length?L.map(function(a){var c=custOf(a);return '<div class="ap'+(a.reminded?' rdone':'')+'"><div class="row sp"><div class="grow"><div class="t">'+esc(a.customer_name)+'</div><div class="dim num">'+a.start+'–'+a.end+' · '+esc(a.service)+'</div></div><span class="chip rchk" style="color:var(--ok);'+(a.reminded?'':'display:none')+'">✓ فرستاده شد</span></div><div class="row" style="margin-top:8px">'+(c.phone?msgBtns(c,'appt',a,'rsent'):'<span class="dim">شماره ندارد</span>')+'</div></div>'}).join(''):'<div class="card dim" style="text-align:center">برای فردا نوبتی ثبت نشده.</div>')+
  '<details class="card" style="margin-top:8px"><summary>متن پیام (قابل ویرایش)</summary><textarea class="in" id="atpl" rows="3" style="margin-top:8px">'+esc(db.settings.apptTpl||DEFAPPT)+'</textarea><p class="dim" style="margin:6px 0 0">می‌توانی از {نام} و {تاریخ} و {ساعت} استفاده کنی. بعد از تغییر، فهرست دوباره ساخته می‌شود.</p></details><button class="btn" data-a="closem" style="width:100%;margin-top:10px">بستن</button>')}
 document.addEventListener('change',function(e){if(e.target.id==='atpl'){db.settings.apptTpl=e.target.value.trim();save();openRemind()}});
+
+
+/* ---------- insights (تحلیل) ---------- */
+var INDAYS=90;
+function insightsView(){
+ var s=db.settings,from=M.addDays(today,-(INDAYS-1)),A=db.appts.filter(function(a){return a.status==='completed'&&a.date>=from&&a.date<=today}),inc={},k,tot=0;
+ db.ledger.forEach(function(e){if(e.type==='income'&&e.apptId)inc[e.apptId]=(inc[e.apptId]||0)+e.amount});
+ var ai=function(a){return inc[a.id]!=null?inc[a.id]:(+a.price||0)};A.forEach(function(a){tot+=ai(a)});
+ /* goal */
+ var r=range('month'),j=M.isoToJalali(today),mi=ledSum(r[0],today).inc,len=M.jalaliMonthLength(j.jy,j.jm),goal=+s.goal||0,left=len-j.jd,proj=j.jd?Math.round(mi/j.jd*len):0;
+ var gc='<div class="card"><h2>هدف درآمد '+esc(r[2])+'</h2><div class="row"><input class="in" id="goal" inputmode="numeric" placeholder="هدف ماهانه (تومان)" value="'+(goal||'')+'"></div>';
+ if(goal){var pc=Math.min(100,Math.round(mi/goal*100)),need=left>0?Math.ceil(Math.max(goal-mi,0)/left):0;
+  gc+='<div class="pgbar"><s style="width:'+pc+'%"></s></div><p style="margin:8px 0 0;line-height:1.9">تا امروز <b class="num">'+fmt(mi)+'</b> از <b class="num">'+fmt(goal)+'</b> ('+pc+'٪). با همین روند آخر ماه حدود <b class="num">'+fmt(proj)+'</b> می‌شود'+(proj>=goal?' و به هدف می‌رسی 👌':'؛ کمتر از هدف است')+'.'+(mi>=goal?' هدف این ماه انجام شده ✓':(left>0?' برای رسیدن به هدف روزی حدود <b class="num">'+fmt(need)+'</b> تومان لازم است.':''))+'</p>'}
+ else gc+='<p class="dim" style="margin:8px 0 0">یک عدد بنویس تا نوار پیشرفت و پیش‌بینی آخر ماه را ببینی.</p>';
+ gc+='</div>';
+ if(A.length<8)return seg(MSEG,mp,'mp')+gc+'<div class="card dim" style="text-align:center">برای تحلیل روز و ساعت و خدمت‌ها هنوز نوبت «انجام شده» کافی نیست (کمتر از ۸ نوبت در '+INDAYS+' روز اخیر).</div>';
+ /* weekdays */
+ var wk=s.work_days||[0,1,2,3,4,5],wc=[0,0,0,0,0,0,0],occ=[0,0,0,0,0,0,0],d;
+ A.forEach(function(a){wc[M.weekdayIndex(a.date)]++});for(d=from;d<=today;d=M.addDays(d,1))occ[M.weekdayIndex(d)]++;
+ var wa=wc.map(function(c,i){return occ[i]?Math.round(c/occ[i]*10)/10:0}),wdays=wk.slice().sort(function(a,b){return wa[b]-wa[a]});
+ /* hours */
+ var h0=Math.floor(M.toMinutes(s.work_start)/60),h1=Math.max(h0,Math.ceil(M.toMinutes(s.work_end)/60)-1),hc={},hs=[];A.forEach(function(a){var h=Math.floor(M.toMinutes(a.start)/60);hc[h]=(hc[h]||0)+1});
+ for(k=h0;k<=h1;k++)hs.push(k);var hord=hs.slice().sort(function(a,b){return (hc[b]||0)-(hc[a]||0)});
+ /* services */
+ var sv={};A.forEach(function(a){var n=a.service||'—';(sv[n]=sv[n]||{n:0,s:0});sv[n].n++;sv[n].s+=ai(a)});var sl=Object.keys(sv).sort(function(a,b){return sv[b].s-sv[a].s}).slice(0,6);
+ /* barbers */
+ var bb={};A.forEach(function(a){var id=bId(a);(bb[id]=bb[id]||{n:0,s:0});bb[id].n++;bb[id].s+=ai(a)});
+ var notes=[];
+ notes.push('شلوغ‌ترین روز «'+M.WEEKDAYS[wdays[0]]+'» است (میانگین '+wa[wdays[0]]+' نوبت) و کم‌کارترین «'+M.WEEKDAYS[wdays[wdays.length-1]]+'» ('+wa[wdays[wdays.length-1]]+' نوبت). برای پر کردن روز کم‌کار می‌توانی پیشنهاد ویژه یا یادآوری به مشتری‌های «نیامده» بفرستی.');
+ if(hord.length>1)notes.push('پرتقاضاترین ساعت '+hord[0]+' است و ساعت '+hord[hord.length-1]+' خالی‌ترین.');
+ if(sl.length)notes.push('بیشترین درآمد از «'+esc(sl[0])+'» می‌آید'+(tot?' ('+Math.round(sv[sl[0]].s/tot*100)+'٪ کل درآمد)':'')+'.');
+ var out=seg(MSEG,mp,'mp')+gc+'<div class="card"><h2>خلاصه ('+INDAYS+' روز اخیر، '+A.length+' نوبت)</h2>'+notes.map(function(x){return '<p style="margin:0 0 8px;line-height:1.9">'+x+'</p>'}).join('')+'</div>';
+ out+='<div class="card"><h2>میانگین نوبت در هر روز هفته</h2>'+barsX(wk.map(function(i){return {l:M.WEEKDAYS_SHORT[i],a:wa[i]}}),false)+'</div>';
+ out+='<div class="card"><h2>تعداد نوبت در هر ساعت</h2>'+barsX(hs.map(function(h){return {l:String(h),a:hc[h]||0}}),false)+'</div>';
+ var mxs=Math.max.apply(null,sl.map(function(n){return sv[n].s}).concat([1]));
+ out+='<div class="card"><h2>خدمت‌ها بر اساس درآمد</h2>'+sl.map(function(n){var x=sv[n];return '<div style="margin-bottom:10px"><div class="row sp"><b>'+esc(n)+'</b><span class="dim num">'+x.n+' نوبت · '+fmt(x.s)+'</span></div><div class="pgbar"><s style="width:'+Math.round(x.s/mxs*100)+'%"></s></div></div>'}).join('')+'</div>';
+ var bk=Object.keys(bb);if(bk.length>1)out+='<div class="card"><h2>درآمد هر آرایشگر</h2>'+bk.map(function(id){var b=bOf(id),x=bb[id];return '<div class="led"><span><i style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+esc(b.color||'#b08158')+';margin-inline-end:6px"></i>'+esc(b.name)+'</span><span class="num">'+x.n+' نوبت · '+fmt(x.s)+'</span></div>'}).join('')+'</div>';
+ return out}
+document.addEventListener('change',function(e){if(e.target.id==='goal'){db.settings.goal=Number(D(e.target.value).replace(/[^\d]/g,''))||0;save();render()}});
 
 function dayTableOne(){
  var s=db.settings,d=selDay,oc=hol(d),closed=oc.some(isH)||s.work_days.indexOf(M.weekdayIndex(d))<0,multi=barbers().length>1,bs=(multi&&bf!=='all')?[bOf(bf)]:barbers();
@@ -584,6 +623,7 @@ function tasksView(){return seg([['check','چک‌لیست'],['stats','آمار'
 /* ---------- money ---------- */
 function moneyView(){
  if(mp==='cmp')return weeksView();
+ if(mp==='ins')return insightsView();
  var r=range(mp),s=ledSum(r[0],r[1]),days=eachDay(r[0],r[1]).slice(-31),items=days.map(function(d){var x=ledSum(d,d);return {l:String(M.isoToJalali(d).jd),a:x.inc,b:x.exp}});
  var ents=db.ledger.filter(function(e){return e.date>=r[0]&&e.date<=r[1]}).sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:0}),g={};ents.forEach(function(e){(g[e.date]=g[e.date]||[]).push(e)});
  return seg(MSEG,mp,'mp')+'<div class="dim" style="margin:-4px 0 8px">'+esc(r[2])+'</div>'+
