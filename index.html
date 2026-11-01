@@ -212,7 +212,7 @@ html[data-theme=light] header img{filter:invert(1)}html[data-theme=light] header
 #toast{position:fixed;top:calc(10px + env(safe-area-inset-top));left:12px;right:12px;z-index:90;padding:12px 14px;border-radius:20px;background:rgba(30,22,16,.88);color:#fff;border:1px solid rgba(var(--rgb2),.5);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);font-size:13.5px;display:none;box-shadow:0 10px 30px rgba(0,0,0,.4)}
 .wk3{border:1px solid var(--line);border-radius:16px;padding:10px 12px;margin-bottom:8px;background:var(--raised)}.wk3 .l2{font-size:12px;color:var(--dim);margin-top:4px;line-height:1.7}
 .up{color:var(--ok)}.dn{color:var(--bad)}.chart .cur{opacity:.55}
-</style>
+.ap.rdone{opacity:.75}</style>
 </head>
 <body>
 <div id="off" role="status">آفلاین هستید — برنامه کار می‌کند چون اطلاعات روی همین دستگاه است.</div>
@@ -344,7 +344,7 @@ function homeInfo(){
  if(!rows)rows='<div class="qr"><div class="grow dim">نوبتی برای امروز ثبت نشده</div><button class="plus" data-a="slot" data-v="'+today+'|'+M.fromMinutes(Math.ceil(Math.max(now,M.toMinutes(s.work_start))/30)*30)+'|'+hb+'">+</button></div>';
  return '<div class="card qc"><div class="qh"><div><div class="dim">امروز · '+M.formatJalali(today,{weekday:false,year:false})+'</div><div class="t accent num">'+(big?big.start:'--:--')+'</div></div></div>'+tabs+'<div class="qlist">'+rows+'</div>'+
  '<div class="qf"><span>نوبت امروز: <b class="num">'+all.length+'</b></span><span>ساعت خالی: <b class="num">'+free.length+'</b></span><span>درآمد: <b class="num">'+fmt(inc)+'</b></span></div>'+
- (occ.length?'<div style="margin-top:8px">'+occ.map(function(o){return '<span class="chip '+(o.holiday?'h':'')+'">'+esc(o.title)+(o.holiday?' · تعطیل':'')+(o.approximate?' (تقریبی)':'')+'</span> '}).join('')+'</div>':'')+'</div>'}
+ remBtn()+(occ.length?'<div style="margin-top:8px">'+occ.map(function(o){return '<span class="chip '+(o.holiday?'h':'')+'">'+esc(o.title)+(o.holiday?' · تعطیل':'')+(o.approximate?' (تقریبی)':'')+'</span> '}).join('')+'</div>':'')+'</div>'}
 function paintHome(keep){var q0=$('.qlist'),st=q0?q0.scrollTop:0;$('#homeinfo').innerHTML=D(homeInfo());var q=$('.qlist');if(q){if(keep)q.scrollTop=st;else{var e=q.querySelector('.on')||q.querySelector('.nx');if(e)q.scrollTop=Math.max(0,e.offsetTop-6)}}tickMini()}
 function tickMini(){var n=M.nowMinutesTehran()*60+new Date().getSeconds();$$('.mini[data-t]').forEach(function(e){var p=e.dataset.t.split('|'),s=M.toMinutes(p[0])*60,en=M.toMinutes(p[1])*60,r,t;
  if(n>=en)t=Math.round((en-s)/60)+' د';else if(n>=s){r=en-n;t=p2(r/60|0)+':'+p2(r%60)}else{r=s-n;t=r>=3600?(r/3600|0)+'h'+p2((r%3600)/60|0):p2(r/60|0)+':'+p2(r%60)}e.textContent=t})}
@@ -449,9 +449,9 @@ function custStats(c){var ap=custAppts(c),done=ap.filter(function(a){return a.st
  done.forEach(function(a){if(a.service)sv[a.service]=(sv[a.service]||0)+1});var fav=Object.keys(sv).sort(function(x,y){return sv[y]-sv[x]})[0]||'';
  var ds=last?dayDiff(today,last.date):null,hasNext=ap.some(function(a){return a.status==='scheduled'&&a.date>=today}),lim=avg?Math.max(Math.round(avg*1.4),14):45;
  return {done:done,last:last,ds:ds,avg:avg,fav:fav,ns:ap.filter(function(a){return a.status==='no_show'}).length,hasNext:hasNext,lim:lim,due:!!last&&!hasNext&&ds>=lim,vip:done.length>=6}}
-function msgText(c,kind,a){var tpl=kind==='appt'?'سلام {نام} عزیز، یادآوری نوبت شما: {تاریخ} ساعت {ساعت} — مهدوان کلاب':(db.settings.msgTpl||DEFTPL);return tpl.replace(/\{نام\}/g,c.name).replace(/\{تاریخ\}/g,a?M.formatJalali(a.date,{weekday:true}):'').replace(/\{ساعت\}/g,a?a.start:'')}
-function msgBtns(c,kind,a){var ph=c.phone;if(!ph)return '';var tx=encodeURIComponent(msgText(c,kind,a)),wa=/^09\d{9}$/.test(ph)?'98'+ph.slice(1):'';
- return '<a class="btn sm" data-a="stop" href="sms:'+esc(ph)+'?&body='+tx+'">💬 پیامک</a>'+(wa?'<a class="btn sm" data-a="stop" href="https://wa.me/'+wa+'?text='+tx+'" target="_blank" rel="noopener">واتساپ</a>':'')}
+function msgText(c,kind,a){var tpl=kind==='appt'?(db.settings.apptTpl||DEFAPPT):(db.settings.msgTpl||DEFTPL);return tpl.replace(/\{نام\}/g,c.name).replace(/\{تاریخ\}/g,a?M.formatJalali(a.date,{weekday:true}):'').replace(/\{ساعت\}/g,a?a.start:'')}
+function msgBtns(c,kind,a,act){act=act||'stop';var ph=c.phone;if(!ph)return '';var tx=encodeURIComponent(msgText(c,kind,a)),wa=/^09\d{9}$/.test(ph)?'98'+ph.slice(1):'',dv=' data-a="'+act+'" data-v="'+(a?a.id:'')+'"';
+ return '<a class="btn sm"'+dv+' href="sms:'+esc(ph)+'?&body='+tx+'">💬 پیامک</a>'+(wa?'<a class="btn sm"'+dv+' href="https://wa.me/'+wa+'?text='+tx+'" target="_blank" rel="noopener">واتساپ</a>':'')}
 function cInfo(c){var s=custStats(c);if(!s.done.length)return '';
  return '<div class="dim" style="margin-top:10px;line-height:1.9;font-size:12.5px">'+(s.fav?'خدمت پرتکرار: <b>'+esc(s.fav)+'</b> · ':'')+(s.avg?'معمولاً هر <b class="num">'+s.avg+'</b> روز یک‌بار می‌آید · ':'')+'آخرین مراجعه <b class="num">'+s.ds+'</b> روز پیش'+(s.ns?' · غیبت: <b class="num">'+s.ns+'</b>':'')+'</div>'+(s.due&&c.phone?'<div class="row" style="margin-top:8px"><span class="chip" style="color:var(--bad)">'+s.ds+' روز نیامده</span>'+msgBtns(c,'back')+'</div>':'')}
 function crow(c,s){var sub=s.last?'آخرین مراجعه '+s.ds+' روز پیش'+(s.avg?' · معمولاً هر '+s.avg+' روز':''):'هنوز مراجعه‌ای ثبت نشده';
@@ -470,6 +470,18 @@ function custView(){
  (n?list.slice(0,cshow).map(function(c){return crow(c,S[c.id])}).join('')+(list.length>cshow?'<button class="btn" style="width:100%" data-a="cmore">نمایش '+Math.min(40,list.length-cshow)+' مشتری بعدی</button>':'')+(!list.length?'<div class="card dim" style="text-align:center">'+(cf==='due'?'کسی از مشتری‌ها بیش از حد معمول غیبت نکرده 👌':'مشتری پیدا نشد.')+'</div>':''):
   '<div class="card"><h2>هنوز مشتری ثبت نشده</h2><p class="dim">فایل مخاطبین (VCF) را از «Files» گوشی انتخاب کنید یا با ＋ مشتری اضافه کنید. با هر نوبت برای اسم جدید هم یک پرونده ساخته می‌شود.</p></div>')}
 document.addEventListener('change',function(e){if(e.target.id==='mtpl'){db.settings.msgTpl=e.target.value.trim();save()}});
+
+
+/* ---------- tomorrow reminders ---------- */
+var DEFAPPT='سلام {نام} عزیز، یادآوری نوبت شما: {تاریخ} ساعت {ساعت} — مهدوان کلاب';
+function tomorrowAppts(){var d=M.addDays(today,1);return act().filter(function(a){return a.date===d&&a.status==='scheduled'}).sort(function(x,y){return x.start<y.start?-1:1})}
+function custOf(a){var c=a.customer_id?db.customers.filter(function(x){return x.id===a.customer_id})[0]:null;if(!c)c=db.customers.filter(function(x){return x.name===a.customer_name})[0];return {name:a.customer_name,phone:normPhone((c&&c.phone)||a.customer_phone||'')}}
+function remBtn(){var n=tomorrowAppts().length;return n?'<button class="btn sm" data-a="remind" style="margin-top:10px;width:100%">📨 یادآوری مشتری‌های فردا ('+n+')</button>':''}
+function openRemind(){var d=M.addDays(today,1),L=tomorrowAppts();
+ openModal('<h2>یادآوری نوبت‌های فردا</h2><p class="dim">'+esc(M.formatJalali(d,{weekday:true}))+' · '+L.length+' نوبت. روی «پیامک» یا «واتساپ» بزن؛ پیام آماده باز می‌شود و فقط ارسال را می‌زنی.</p>'+
+ (L.length?L.map(function(a){var c=custOf(a);return '<div class="ap'+(a.reminded?' rdone':'')+'"><div class="row sp"><div class="grow"><div class="t">'+esc(a.customer_name)+'</div><div class="dim num">'+a.start+'–'+a.end+' · '+esc(a.service)+'</div></div><span class="chip rchk" style="color:var(--ok);'+(a.reminded?'':'display:none')+'">✓ فرستاده شد</span></div><div class="row" style="margin-top:8px">'+(c.phone?msgBtns(c,'appt',a,'rsent'):'<span class="dim">شماره ندارد</span>')+'</div></div>'}).join(''):'<div class="card dim" style="text-align:center">برای فردا نوبتی ثبت نشده.</div>')+
+ '<details class="card" style="margin-top:8px"><summary>متن پیام (قابل ویرایش)</summary><textarea class="in" id="atpl" rows="3" style="margin-top:8px">'+esc(db.settings.apptTpl||DEFAPPT)+'</textarea><p class="dim" style="margin:6px 0 0">می‌توانی از {نام} و {تاریخ} و {ساعت} استفاده کنی. بعد از تغییر، فهرست دوباره ساخته می‌شود.</p></details><button class="btn" data-a="closem" style="width:100%;margin-top:10px">بستن</button>')}
+document.addEventListener('change',function(e){if(e.target.id==='atpl'){db.settings.apptTpl=e.target.value.trim();save();openRemind()}});
 
 function dayTableOne(){
  var s=db.settings,d=selDay,oc=hol(d),closed=oc.some(isH)||s.work_days.indexOf(M.weekdayIndex(d))<0,multi=barbers().length>1,bs=(multi&&bf!=='all')?[bOf(bf)]:barbers();
@@ -1171,6 +1183,8 @@ function doAct(a,v,el){
   case 'pushtest':pushTest();break;
   case 'cf':cf=v;cshow=40;render();break;
   case 'stop':break;
+  case 'remind':openRemind();break;
+  case 'rsent':{var ra=db.appts.filter(function(x){return x.id===v})[0];if(ra){ra.reminded=today;save()}var rw=el.closest('.ap');if(rw){rw.classList.add('rdone');var ck=rw.querySelector('.rchk');if(ck)ck.style.display=''}break}
   case 'sug':unlockSpeech();handle(v);break;
   case 'hb':hb=v;render();break;
   case 'kb':{var f=$('#ptxt');f.style.display=f.style.display==='none'?'flex':'none';if(f.style.display==='flex')$('#pin').focus();break}
