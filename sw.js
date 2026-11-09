@@ -1,4 +1,4 @@
-const C='mahdavan-lite-v4';const F=['./','index.html','logo2.png','icon-192.png','manifest.webmanifest'];
+const C='mahdavan-lite-v5';const F=['./','index.html','logo2.png','icon-192.png','manifest.webmanifest'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>Promise.all(F.map(u=>c.add(u).catch(()=>{})))));self.skipWaiting()});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C).map(x=>caches.delete(x)))));self.clients.claim()});
 // Only our own files. Never touch other origins (Gemini / Supabase calls must reach the network and never be cached).
