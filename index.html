@@ -443,6 +443,31 @@ body.neu .nu-rings>div,body.neu .nu-rings svg{width:58px;height:58px}body.neu .n
 .tg>summary{list-style:none;display:flex;align-items:center;gap:12px;padding:10px 14px;cursor:pointer;min-height:54px}.tg>summary::-webkit-details-marker{display:none}
 .tgi{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;font-size:17px;flex:none}.tgt{flex:1;font-size:15px;font-weight:600}
 .tgc{color:var(--dim);font-size:22px;transition:transform .2s}.tg[open]>summary .tgc{transform:rotate(-90deg)}.tgb{padding:2px 14px 16px}
+
+/* ===== voice assistant (wave orb) ===== */
+#assist .acard{position:relative;background:radial-gradient(120% 70% at 50% 28%,#0b1d4d 0%,#050a1c 62%,#02050f 100%)!important;color:#e8f0ff;border:1px solid rgba(90,140,255,.22)!important;border-radius:30px;padding:16px 16px 14px;overflow:hidden;box-shadow:0 20px 60px rgba(10,30,90,.45),inset 0 1px 0 rgba(140,180,255,.12);-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+#assist .ahead{display:block;position:relative;text-align:center}
+.av-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:2px}
+#assist .brand.accent{background:linear-gradient(135deg,#9cc6ff,#3d7dff);-webkit-background-clip:text;background-clip:text;color:transparent;font-size:14px}
+#atime{font:600 12px/1 ui-monospace,Menlo,monospace;color:#6f9cff;direction:ltr}body.asst #atime{margin-left:38px}
+.orbwrap{position:relative}#assist .acard #stage.av2{width:100%;height:236px;display:block;position:relative;animation:none}
+#stage canvas{height:100%;width:auto;aspect-ratio:1;display:block;margin:0 auto}#stage .rimg,#stage img{display:none!important}
+.orbtxt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;padding:0 26%}
+#assist #sttl{font-size:20px;font-weight:700;color:#fff;margin:0;line-height:1.35;text-shadow:0 0 18px rgba(80,140,255,.7)}
+#assist #ssub{font-size:11.5px;color:#7fa6ff;margin:6px 0 0;line-height:1.5}
+#assist #msgs{max-height:118px;margin:2px 0 8px;gap:8px;overflow:auto}#assist #msgs .m:not(:last-child){display:none}
+#assist .m{border:0;background:none;padding:0;max-width:100%;font-size:16px;font-weight:600;line-height:1.55;color:#fff;text-align:center;align-self:center}
+#assist .m.u{color:#7fa6ff;font-size:15px;font-weight:500;background:none}#assist .m.ok{color:#7be0a8;background:none}#assist .m.er{color:#ff8f8f;background:none}
+#assist .sugs{display:none}#assist .acard.sugon .sugs{display:flex}
+#assist .sug{background:rgba(40,80,180,.22);border:1px solid rgba(110,160,255,.3);color:#cfe0ff}
+#assist .abar{background:rgba(20,40,90,.4);border:1px solid rgba(110,160,255,.28);margin-bottom:8px}#assist .abar .in{background:none;border:0;color:#fff}
+#assist .acard .btn{color:#fff}
+.cbar{display:flex;justify-content:center;align-items:center;gap:30px;margin:6px 0 2px}
+.cbtn{width:46px;height:46px;border-radius:50%;border:1px solid rgba(110,160,255,.3);background:rgba(20,40,90,.4);color:#cfe0ff;font-size:18px;display:grid;place-items:center;padding:0}
+#assist .acard .mic{width:72px;height:72px;background:radial-gradient(circle at 50% 30%,#3d86ff,#0c2c80 80%);border:1px solid rgba(170,205,255,.55);color:#fff;box-shadow:0 0 0 7px rgba(60,130,255,.14),0 0 32px rgba(60,130,255,.6)}
+#assist .acard .mic svg{width:30px;height:30px}#assist .acard .mic.live{animation:mpb 1.3s ease-out infinite}
+@keyframes mpb{0%{box-shadow:0 0 0 0 rgba(80,150,255,.6),0 0 32px rgba(60,130,255,.6)}100%{box-shadow:0 0 0 26px rgba(80,150,255,0),0 0 32px rgba(60,130,255,.6)}}
+#assist .asst-x{background:rgba(255,255,255,.1);color:#fff}
 </style>
 </head>
 <body>
@@ -452,14 +477,15 @@ body.neu .nu-rings>div,body.neu .nu-rings svg{width:58px;height:58px}body.neu .n
 <section id="assist">
  <div id="homeinfo"></div>
  <div class="card acard"><button class="asst-x" data-a="asst" aria-label="بستن">✕</button>
-  <div class="ahead"><div class="robot av2 idle" id="stage"><span class="rimg"><img src="robot.jpg" alt=""><i class="eye l"></i><i class="eye r"></i><i class="mouth"></i></span></div>
-   <div class="grow"><b class="brand accent" dir="ltr">Ai Mahdavan Club</b><div id="sttl">بفرمایید، می‌شنوم…</div><p id="ssub">مثلاً «فردا ساعت پنج آقای احمدی اصلاح»</p></div>
-   <button type="button" class="mic" id="pmic" data-a="mic" aria-label="میکروفن"><svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button></div>
+  <div class="ahead"><div class="av-top"><b class="brand accent" dir="ltr">Ai Mahdavan Club</b><span id="atime">00:00</span></div>
+   <div class="orbwrap"><div class="robot av2 idle" id="stage"><canvas id="orb" width="520" height="520"></canvas><span class="rimg"></span></div>
+   <div class="orbtxt"><div id="sttl">بفرمایید، می‌شنوم…</div><p id="ssub">مثلاً «فردا ساعت پنج آقای احمدی اصلاح»</p></div></div></div>
   <div id="msgs"></div><div id="rec"></div>
   <div id="yn" class="row" style="display:none;margin:8px 0"><button class="btn pri grow" id="pyes" data-a="yes">بله، انجام بده</button><button class="btn grow" id="pno" data-a="no">نه</button></div>
   <div class="sugs"><button class="sug" data-a="sug" data-v="امروز چه نوبت‌هایی دارم">نوبت‌های امروز</button><button class="sug" data-a="sug" data-v="فردا چه نوبت‌هایی دارم">نوبت‌های فردا</button><button class="sug" data-a="sug" data-v="ثبت نوبت جدید">ثبت نوبت جدید</button><button class="sug" data-a="sug" data-v="درآمد امروز چقدره">درآمد امروز</button><button class="sug" data-a="sug" data-v="نوبت بعدی کیه">نوبت بعدی</button><button class="sug" data-a="sug" data-v="فردا وقت خالی دارم">وقت خالی فردا</button></div>
-  <form id="ptxt" class="abar"><input class="in" id="pin" autocomplete="off" placeholder="بنویسید یا میکروفن را بزنید…"><button class="send" type="submit" aria-label="ارسال">↑</button><button type="button" class="sidebtn" id="pmute" data-a="mute" aria-label="بی‌صدا">🔊</button></form>
+  <form id="ptxt" class="abar" style="display:none"><input class="in" id="pin" autocomplete="off" placeholder="بنویسید یا میکروفن را بزنید…"><button class="send" type="submit" aria-label="ارسال">↑</button><button type="button" class="sidebtn" id="pmute" data-a="mute" aria-label="بی‌صدا">🔊</button></form>
   <button id="pkb" data-a="kb" hidden></button>
+  <div class="cbar"><button type="button" class="cbtn" data-a="kb" aria-label="کیبورد">⌨️</button><button type="button" class="mic" id="pmic" data-a="mic" aria-label="میکروفن"><svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button><button type="button" class="cbtn" data-a="sugtgl" aria-label="دستورهای آماده">🔖</button></div>
  </div>
 </section>
 
@@ -872,20 +898,22 @@ function crow2(c,s){var sub,chip='<span class="chip a">'+s.all+' نوبت</span>
  else if(csort==='count')sub=s.done.length+' انجام‌شده'+(s.last?' · آخرین '+s.ds+' روز پیش':'');
  else sub=s.last?'آخرین مراجعه '+s.ds+' روز پیش':'هنوز مراجعه‌ای ثبت نشده';
  if(csort==='last'&&s.last)chip='<span class="chip a">'+s.ds+' روز پیش</span>';
- return '<div class="ap" data-a="copen" data-v="'+c.id+'" style="cursor:pointer"><div class="row"><div>'+avHtml(c.name,c.photo)+'</div><div class="grow"><div class="t">'+esc(c.name)+(u<=7?' <span title="تولد">🎂</span>':'')+'</div><div class="dim num">'+esc(c.phone||'بدون شماره')+'</div><div class="dim" style="font-size:12px;margin-top:2px">'+esc(sub)+'</div></div><div style="text-align:left">'+chip+(s.due?'<div class="chip" style="color:var(--bad);margin-top:4px">'+s.ds+' روز نیامده</div>':'')+'</div></div>'+(s.due&&c.phone&&cf==='due'?'<div class="row" style="margin-top:8px">'+msgBtns(c,'back')+'</div>':'')+'</div>'}
+ return '<div class="ap" data-a="copen" data-v="'+c.id+'" style="cursor:pointer"><div class="row"><div>'+avHtml(c.name,c.photo)+'</div><div class="grow"><div class="t">'+esc(c.name)+(u<=7?' <span title="تولد">🎂</span>':'')+'</div><div class="dim num">'+esc(c.phone||'بدون شماره')+'</div><div class="dim" style="font-size:12px;margin-top:2px">'+esc(sub)+'</div></div><div style="text-align:left">'+chip+'<div><button class="btn sm" data-a="creg" data-v="'+c.id+'" aria-label="مشتری ثابت" style="margin-top:4px;padding:2px 10px">'+(s.reg?'⭐':'☆')+'</button></div>'+(s.due?'<div class="chip" style="color:var(--bad);margin-top:4px">'+s.ds+' روز نیامده</div>':'')+'</div></div>'+(s.due&&c.phone&&cf==='due'?'<div class="row" style="margin-top:8px">'+msgBtns(c,'back')+'</div>':'')+'</div>'}
+function isReg(c,s){var m=+db.settings.regularMin||3;return c.regular===true||(c.regular!==false&&s.done.length>=m)}
 function custView(){
- var list=searchCustomers(cq),n=db.customers.length,S={},cnt={due:0,vip:0,nw:0},col=new Intl.Collator('fa');
- db.customers.forEach(function(c){var s=custStats(c);s.all=custAppts(c).filter(function(a){return a.status!=='cancelled'}).length;S[c.id]=s;if(s.due)cnt.due++;if(s.vip)cnt.vip++;if(s.done.length<=1)cnt.nw++});
- if(cf==='due')list=list.filter(function(c){return S[c.id].due});else if(cf==='vip')list=list.filter(function(c){return S[c.id].vip});else if(cf==='new')list=list.filter(function(c){return S[c.id].done.length<=1});
+ var list=searchCustomers(cq),n=db.customers.length,S={},cnt={due:0,vip:0,nw:0,reg:0},col=new Intl.Collator('fa');
+ db.customers.forEach(function(c){var s=custStats(c);s.all=custAppts(c).filter(function(a){return a.status!=='cancelled'}).length;S[c.id]=s;s.reg=isReg(c,s);if(s.reg)cnt.reg++;if(s.due)cnt.due++;if(s.vip)cnt.vip++;if(s.done.length<=1)cnt.nw++});
+ if(cf==='reg')list=list.filter(function(c){return S[c.id].reg});else if(cf==='due')list=list.filter(function(c){return S[c.id].due});else if(cf==='vip')list=list.filter(function(c){return S[c.id].vip});else if(cf==='new')list=list.filter(function(c){return S[c.id].done.length<=1});
  if(csort==='count')list.sort(function(a,b){return (S[b.id].all-S[a.id].all)||(S[b.id].done.length-S[a.id].done.length)||col.compare(a.name,b.name)});
  else if(csort==='last')list.sort(function(a,b){var x=S[a.id].last?S[a.id].last.date:'',y=S[b.id].last?S[b.id].last.date:'';return x===y?col.compare(a.name,b.name):(x<y?1:-1)});
  else list.sort(function(a,b){return col.compare(a.name,b.name)});
  var rows='',prev='';list.forEach(function(c){if(csort==='name'){var L=ini(c.name);if(L!==prev){prev=L;rows+='<div class="dim" style="margin:10px 4px 4px;font-size:12px;letter-spacing:.5px">'+L+'</div>'}}rows+=crow2(c,S[c.id])});
  return '<div class="row" style="margin-bottom:8px"><input class="in" id="cq" placeholder="جستجوی اسم (فارسی یا فینگلیش) یا شماره…" value="'+esc(cq)+'"><button class="btn pri" data-a="cadd" aria-label="مشتری جدید">＋</button></div>'+
  '<div class="dim" style="font-size:12px;margin:0 4px 4px">مرتب‌سازی</div>'+seg([['name','نام'],['count','بیشترین نوبت'],['last','آخرین مراجعه']],csort,'csort')+
- '<div class="dim" style="font-size:12px;margin:10px 4px 4px">نمایش</div>'+seg([['all','همه ('+n+')'],['due','نیامده '+cnt.due],['vip','پرمراجعه'],['new','جدید']],cf,'cf')+
+ '<div class="dim" style="font-size:12px;margin:10px 4px 4px">نمایش</div>'+seg([['all','همه ('+n+')'],['reg','⭐ ثابت '+cnt.reg],['due','نیامده '+cnt.due],['vip','پرمراجعه'],['new','جدید']],cf,'cf')+
  '<div class="row sp" style="margin:10px 0"><span class="dim">'+list.length+' مشتری</span><button class="btn sm" data-a="cimp">⬆ وارد کردن مخاطبین (VCF)</button></div><input type="file" id="vcf" accept=".vcf,text/vcard,text/x-vcard,text/directory,text/plain" hidden>'+
- (cf==='due'?'<details class="card" style="margin-bottom:10px"><summary>متن پیام یادآوری (قابل ویرایش)</summary><textarea class="in" id="mtpl" rows="3" style="margin-top:8px">'+esc(db.settings.msgTpl||DEFTPL)+'</textarea><p class="dim" style="margin:6px 0 0">«نیامده» یعنی بیشتر از ۱٫۴ برابر فاصلهٔ معمول مراجعهٔ همان مشتری (یا ۴۵ روز) گذشته و نوبت بعدی هم ندارد.</p></details>':'')+
+ (cf==='reg'?'<div class="card" style="margin-bottom:10px"><div class="dim" style="font-size:12px;margin-bottom:6px">هر مشتری که این تعداد نوبتِ «انجام‌شده» داشته باشد خودکار ثابت می‌شود (با ⭐ هم می‌توانی دستی اضافه یا حذف کنی)</div>'+seg([['2','۲ بار'],['3','۳ بار'],['4','۴ بار'],['5','۵ بار']],String(+db.settings.regularMin||3),'rmin')+'</div>':'')+
+  (cf==='due'?'<details class="card" style="margin-bottom:10px"><summary>متن پیام یادآوری (قابل ویرایش)</summary><textarea class="in" id="mtpl" rows="3" style="margin-top:8px">'+esc(db.settings.msgTpl||DEFTPL)+'</textarea><p class="dim" style="margin:6px 0 0">«نیامده» یعنی بیشتر از ۱٫۴ برابر فاصلهٔ معمول مراجعهٔ همان مشتری (یا ۴۵ روز) گذشته و نوبت بعدی هم ندارد.</p></details>':'')+
  (n?rows+(!list.length?'<div class="card dim" style="text-align:center">مشتری پیدا نشد.</div>':''):'<div class="card"><h2>هنوز مشتری ثبت نشده</h2><p class="dim">فایل مخاطبین (VCF) را از «Files» گوشی انتخاب کنید یا با ＋ مشتری اضافه کنید. با هر نوبت برای اسم جدید هم یک پرونده ساخته می‌شود.</p></div>')}
 document.addEventListener('change',function(e){var x=e.target;
  if(x.id==='btpl'){db.settings.bdTpl=x.value.trim();save()}
@@ -1513,7 +1541,17 @@ function updateMic(){var i=$('#pin');if(i)i.placeholder=micOk()?'بنویسید 
 
 /* ---------- assistant ---------- */
 var dlg=M.initialState(),aState='idle',recog=null,muted=false,busy=false,pendingPick=null,pendingCust=null,pendingBarber=null,pendingBarberId=null;
-function setAv(s){aState=s;$$('.av2').forEach(function(e){e.className='av2 '+s});var L={idle:'بفرمایید، می‌شنوم…',listening:'در حال شنیدن…',processing:'در حال پردازش…',speaking:'در حال پاسخ…',success:'انجام شد ✓',error:'خطا'};$('#sttl').textContent=L[s]||L.idle;$('#ssub').style.visibility=s==='idle'?'visible':'hidden';$('#pmic').classList.toggle('live',s==='listening')}
+function setAv(s){aState=s;$$('.av2').forEach(function(e){e.className='av2 '+s});var L={idle:'بفرمایید، می‌شنوم…',listening:'در حال شنیدن…',processing:'در حال پردازش…',speaking:'در حال پاسخ…',success:'انجام شد ✓',error:'خطا'};$('#sttl').textContent=L[s]||L.idle;$('#ssub').style.visibility=s==='idle'?'visible':'hidden';$('#pmic').classList.toggle('live',s==='listening');orbState(s)}
+
+var oT0=0,oTm=0;function oTick(){var e=$('#atime');if(!e)return;var d=Math.floor((Date.now()-oT0)/1000);e.textContent=('0'+Math.floor(d/60)).slice(-2)+':'+('0'+d%60).slice(-2)}
+function orbState(s){if(s==='listening'){if(!oTm){oT0=Date.now();oTick();oTm=setInterval(oTick,500)}}else{if(oTm){clearInterval(oTm);oTm=0}if(s==='idle'){var e=$('#atime');if(e)e.textContent='00:00'}}}
+(function(){var cv=document.getElementById('orb');if(!cv)return;var g=cv.getContext('2d'),W=520,H=520,t=0,cur=.28,last=0;
+function tgt(){return aState==='listening'?1:aState==='speaking'?.8:aState==='processing'?.5:.26}
+function fr(now){requestAnimationFrame(fr);if(now-last<32||!cv.offsetParent)return;last=now;t+=.03;cur+=(tgt()-cur)*.07;g.clearRect(0,0,W,H);g.globalCompositeOperation='lighter';
+for(var k=0;k<7;k++){g.beginPath();for(var i=0;i<=160;i++){var a=i/160*6.2832,r=176+cur*32*Math.sin(a*3+t*1.5+k*.7)+cur*16*Math.sin(a*5-t*1.1+k*1.3)+(aState==='processing'?7*Math.sin(a*2+t*4):0),aa=a+k*.05+(aState==='processing'?t*.9:0),x=W/2+Math.cos(aa)*r*(1+k*.014),y=H/2+Math.sin(aa)*r*(1-k*.012);i?g.lineTo(x,y):g.moveTo(x,y)}
+g.closePath();g.strokeStyle='rgba('+(70+k*12)+','+(150+k*12)+',255,'+(.6-k*.06)+')';g.lineWidth=1.5;g.shadowColor='#3a8bff';g.shadowBlur=14;g.stroke()}}
+requestAnimationFrame(fr)})();
+hdrFill();setInterval(hdrFill,4000);
 function addMsg(t,cls){var d=document.createElement('div');d.className='m '+(cls||'');d.textContent=D(t);var b=$('#msgs');b.appendChild(d);b.scrollTop=1e6}
 var voiceInfo={checked:false,voice:null,lang:'fa-IR',note:null};
 function pickVoice(){
@@ -1703,7 +1741,7 @@ function doAct(a,v,el){
   case 'gotab':closeModal();if(v==='ins'){mp='ins';tab='money'}else tab=v;render();break;
   case 'asst':if(tab!=='home'){tab='home';render();document.body.classList.add('asst')}else document.body.classList.toggle('asst');break;
   case 'bday':openBirthdays();break;
-  case 'csort':csort=v;render();break;
+  case 'csort':csort=v;render();break;case 'creg':{var rc=db.customers.filter(function(z){return z.id===v})[0];if(rc){rc.regular=!isReg(rc,custStats(rc));if(!save())toast('ذخیره نشد.')}render();break}case 'rmin':db.settings.regularMin=+v;save();render();break;
   case 'cphotodel':{var pc=db.customers.filter(function(x){return x.id===v})[0];if(pc){pc.photo=null;save();render();openCustomer(v)}break}
   case 'nsel':nsel=v;paintHome(true);break;
   case 'ntip':ntip=v;paintHome(true);break;
@@ -1713,7 +1751,7 @@ function doAct(a,v,el){
   case 'rsent':{var ra=db.appts.filter(function(x){return x.id===v})[0];if(ra){ra.reminded=ra.date;save()}var rw=el.closest('.ap');if(rw){rw.classList.add('rdone');var ck=rw.querySelector('.rchk');if(ck)ck.style.display=''}break}
   case 'sug':unlockSpeech();handle(v);break;
   case 'hb':hb=v;render();break;
-  case 'kb':{var f=$('#ptxt');f.style.display=f.style.display==='none'?'flex':'none';if(f.style.display==='flex')$('#pin').focus();break}
+  case 'sugtgl':{var ac=$('.acard');if(ac)ac.classList.toggle('sugon');break}case 'kb':{var f=$('#ptxt');f.style.display=f.style.display==='none'?'flex':'none';if(f.style.display==='flex')$('#pin').focus();break}
   case 'mute':muted=!muted;el.textContent=muted?'🔇':'🔊';if(ttsStop)ttsStop();try{speechSynthesis.cancel()}catch(x){}break;
   case 'yes':unlockSpeech();handle('بله');break;
   case 'no':unlockSpeech();handle('نه');break;
