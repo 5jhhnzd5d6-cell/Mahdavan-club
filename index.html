@@ -1114,11 +1114,15 @@ function completeAppt(id){var a=find(id);if(!a)return;
   if(!save()){restore(snap);flash={ok:false,t:'ذخیره نشد؛ تغییر اعمال نشد.'}}else flash={ok:true,t:'ثبت شد: '+fmt(v)+' تومان'};closeModal();render()})}
 function openWalkin(){
  var s=db.settings,first=s.services[0]||{name:'',price:0};
- openModal('<h2>مشتری گذری</h2><label>خدمت</label><select class="in" id="wsv">'+s.services.map(function(x){return '<option>'+esc(x.name)+'</option>'}).join('')+'<option value="">سایر</option></select>'+(barbers().length>1?'<label>اصلاح‌کار</label><select class="in" id="wbr">'+barbers().map(function(b){return '<option value="'+b.id+'">'+esc(b.name)+'</option>'}).join('')+'</select>':'')+'<label>نام (اختیاری)</label><input class="in" id="wnm"><label>مبلغ (تومان)</label><input class="in" id="wam" inputmode="numeric" value="'+(first.price||'')+'"><label>تاریخ</label>'+jpick('wd',today)+'<div class="err" id="merr"></div><div class="row" style="margin-top:12px"><button class="btn pri grow" id="mok">ثبت درآمد</button><button class="btn" data-a="closem">انصراف</button></div>');
- var touched=false;$('#wam').oninput=function(){touched=true};$('#wsv').onchange=function(){if(!touched)$('#wam').value=svPrice(this.value)||''};
- $('#mok').onclick=function(){var v=num($('#wam').value);if(!(v>0))return $('#merr').textContent='مبلغ را وارد کنید.';
-  var svn=$('#wsv').value,nm=$('#wnm').value.trim(),snap=JSON.stringify(db);
-  db.ledger.push({id:uid(),date:jval('wd'),type:'income',amount:v,title:(nm?nm+' — ':'')+(svn||'مشتری گذری'),src:'walkin',barber_id:($('#wbr')?$('#wbr').value:barbers()[0].id)});
+var rows=s.services.map(function(x,i){return '<div class="row" style="justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)"><span>'+esc(x.name)+'<br><small class="dim">'+fmt(x.price||0)+' تومان</small></span><span class="row" style="gap:8px;align-items:center;direction:ltr"><button type="button" class="btn sm" data-q="'+i+'" data-d="-1">−</button><b class="num" id="wq'+i+'" style="min-width:24px;text-align:center">0</b><button type="button" class="btn sm" data-q="'+i+'" data-d="1">＋</button></span></div>'}).join('');
+ openModal('<h2>مشتری گذری</h2>'+(barbers().length>1?'<label>اصلاح‌کار</label><select class="in" id="wbr">'+barbers().map(function(b){return '<option value="'+b.id+'">'+esc(b.name)+'</option>'}).join('')+'</select>':'')+'<label>خدمات و تعداد</label>'+rows+'<div class="dim" id="wtot" style="margin:10px 0 4px;font-weight:700"></div><label>مبلغ دیگر (اختیاری)</label><input class="in" id="wam" inputmode="numeric" placeholder="۰"><label>نام (اختیاری)</label><input class="in" id="wnm"><label>تاریخ</label>'+jpick('wd',today)+'<div class="err" id="merr"></div><div class="row" style="margin-top:12px"><button class="btn pri grow" id="mok">ثبت درآمد</button><button class="btn" data-a="closem">انصراف</button></div>');
+ var Q=s.services.map(function(){return 0});if(Q.length)Q[0]=1;
+ function tot(){var t=0;s.services.forEach(function(x,i){t+=(+x.price||0)*Q[i];$('#wq'+i).innerHTML=D('<span>'+Q[i]+'</span>')});t+=num($('#wam').value)||0;$('#wtot').innerHTML=D('<span>جمع: '+fmt(t)+' تومان</span>');return t}
+ $$('[data-q]').forEach(function(b){b.onclick=function(){var i=+b.dataset.q;Q[i]=Math.max(0,Math.min(99,Q[i]+ +b.dataset.d));tot()}});$('#wam').oninput=tot;tot();
+ $('#mok').onclick=function(){if(!(tot()>0))return $('#merr').textContent='حداقل یک خدمت یا مبلغ را وارد کنید.';
+  var nm=$('#wnm').value.trim(),snap=JSON.stringify(db),d=jval('wd'),br=($('#wbr')?$('#wbr').value:barbers()[0].id),pre=nm?nm+' — ':'';
+  s.services.forEach(function(x,i){if(Q[i]>0)db.ledger.push({id:uid(),date:d,type:'income',amount:(+x.price||0)*Q[i],qty:Q[i],title:pre+x.name+(Q[i]>1?' × '+Q[i]:''),src:'walkin',barber_id:br})});
+  var o=num($('#wam').value)||0;if(o>0)db.ledger.push({id:uid(),date:d,type:'income',amount:o,title:pre+'مشتری گذری',src:'walkin',barber_id:br});
   if(!save()){restore(snap);return $('#merr').textContent='ذخیره نشد.'}closeModal();flash={ok:true,t:'درآمد ثبت شد.'};render()}}
 function openExpense(){
  openModal('<h2>ثبت هزینه</h2><label>عنوان</label><input class="in" id="etl" placeholder="مثلاً خرید لوازم"><label>دسته</label><input type="hidden" id="ecat" value="">'+catChips('','ecatpick')+'<label>مبلغ (تومان)</label><input class="in" id="eam" inputmode="numeric"><label>تاریخ</label>'+jpick('ed',today)+'<div class="err" id="merr"></div><div class="row" style="margin-top:12px"><button class="btn pri grow" id="mok">ثبت هزینه</button><button class="btn" data-a="closem">انصراف</button></div>');
@@ -1552,6 +1556,9 @@ for(var k=0;k<7;k++){g.beginPath();for(var i=0;i<=160;i++){var a=i/160*6.2832,r=
 g.closePath();g.strokeStyle='rgba('+(70+k*12)+','+(150+k*12)+',255,'+(.6-k*.06)+')';g.lineWidth=1.5;g.shadowColor='#3a8bff';g.shadowBlur=14;g.stroke()}}
 requestAnimationFrame(fr)})();
 hdrFill();setInterval(hdrFill,4000);
+document.addEventListener('paste',function(e){var t=e.target;if(!t||!t.matches||!t.matches('input[inputmode="tel"]'))return;var cd=e.clipboardData||window.clipboardData,x=cd&&cd.getData('text');if(!x)return;
+x=x.replace(/[۰-۹]/g,function(d){return String(d.charCodeAt(0)-1776)}).replace(/[٠-٩]/g,function(d){return String(d.charCodeAt(0)-1632)}).replace(/[\s\u00a0\u200b-\u200f\u202a-\u202e\u2066-\u2069()\-\u2013\u2014.]/g,'');
+e.preventDefault();t.setRangeText(x,t.selectionStart,t.selectionEnd,'end');t.dispatchEvent(new Event('input',{bubbles:true}))},true);
 function addMsg(t,cls){var d=document.createElement('div');d.className='m '+(cls||'');d.textContent=D(t);var b=$('#msgs');b.appendChild(d);b.scrollTop=1e6}
 var voiceInfo={checked:false,voice:null,lang:'fa-IR',note:null};
 function pickVoice(){
