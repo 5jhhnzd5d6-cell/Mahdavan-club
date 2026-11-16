@@ -1812,11 +1812,12 @@ if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();
 if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0)navigator.serviceWorker.register('sw.js').catch(function(){});
 /* ---------- cloud sync (Supabase REST; no external library) ---------- */
 var MCSync=(function(){
-var URL0='https://iymqhbkzscdtjzwghwqa.supabase.co',KEY0='sb_publishable_rFnm8GgvPUUOV0y8ibbBFA_D61QwXXk';
+var URL0='https://dillgdsipzuhialhfatc.supabase.co',KEY0='sb_publishable_oGw4NjfwKr4qWDz8VAgfKw_BzUfkr-p';
 var SK='mahdavan_sb_session',MK='mahdavan_sb_meta';
 function lsGet(k){try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}}
 function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}
 var sess=lsGet(SK),meta=lsGet(MK)||{base:null,dirty:false},st={msg:'',ok:true},busy=false,timer=null,ver=0;
+var SBU='mahdavan_sb_url';if(lsGet(SBU)!==URL0){if(sess||meta.base){sess=null;meta={base:null,dirty:false};lsSet(SK,null);lsSet(MK,meta)}lsSet(SBU,URL0)}
 function $e(id){return document.getElementById(id)}
 function setMsg(t,ok){st.msg=t;st.ok=ok!==false;var el=$e('sbmsg');if(el){el.textContent=t;el.style.color=st.ok?'var(--ok)':'var(--bad)'}}
 function hm(){var d=new Date();return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)}
