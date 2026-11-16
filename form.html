@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#141414">
+<title>MAHDAVAN CLUB</title>
+<style>
+:root{--bg:#141414;--card:#1e1e1f;--line:rgba(255,255,255,.1);--text:#f2efe9;--dim:#9b958b;--acc:#b08158;--bad:#e0654f;--ok:#4fb59a;
+--sc:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='6' cy='6' r='3' fill='none' stroke='%23000' stroke-width='2'/%3E%3Ccircle cx='6' cy='18' r='3' fill='none' stroke='%23000' stroke-width='2'/%3E%3Cpath d='M8.1 8.1L20 20M8.1 15.9L20 4' stroke='%23000' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);font:16px/1.7 -apple-system,"Vazirmatn","Segoe UI",Tahoma,sans-serif}
+body{min-height:100vh;padding:max(18px,env(safe-area-inset-top)) 16px max(24px,env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center}
+.wrap{width:100%;max-width:440px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.top img{height:34px}.lang{background:none;border:1px solid var(--line);color:var(--dim);border-radius:20px;padding:4px 12px;font:inherit;font-size:13px}
+.strip{display:flex;align-items:center;gap:10px;margin:6px 0 18px;direction:ltr}.strip span{flex:1;height:1px;background:var(--line)}
+.sc{display:inline-block;width:15px;height:15px;background:var(--acc);-webkit-mask:var(--sc) center/contain no-repeat;mask:var(--sc) center/contain no-repeat}.sc.f{transform:scaleX(-1)}
+.strip b{font:700 10px/1 sans-serif;letter-spacing:.34em;color:var(--dim)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px}
+h1{font-size:20px;margin:0 0 4px}.sub{color:var(--dim);font-size:14px;margin:0 0 16px}
+label{display:block;font-size:13px;color:var(--dim);margin:14px 0 6px}label i{font-style:normal;opacity:.7}
+input,select{width:100%;background:#151516;color:var(--text);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font:inherit;outline:none}
+input:focus,select:focus{border-color:var(--acc)}input[dir=ltr]{text-align:left}
+.row{display:flex;gap:8px}.row>*{flex:1}
+button.pri{width:100%;margin-top:18px;background:var(--acc);color:#fff;border:0;border-radius:14px;padding:13px;font:inherit;font-weight:700}
+button.pri:disabled{opacity:.5}button.lnk{background:none;border:0;color:var(--acc);font:inherit;font-size:14px;padding:8px 0;margin-top:6px}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin-top:10px}.note{color:var(--dim);font-size:12.5px;margin-top:14px}
+.step{display:none}.step.on{display:block}.done{text-align:center;padding:14px 0}.done .big{font-size:44px;color:var(--ok)}
+.code{letter-spacing:.5em;text-align:center!important;font-size:22px;font-weight:700}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <div class="top"><img src="logo2.png" alt="MAHDAVAN CLUB"><button class="lang" id="lang"></button></div>
+ <div class="strip"><i class="sc"></i><span></span><b>MAHDAVAN CLUB</b><span></span><i class="sc f"></i></div>
+ <div class="card">
+  <div class="step on" id="s1"><h1 data-t="title"></h1><p class="sub" data-t="sub"></p>
+   <label data-t="phone"></label><input id="ph" inputmode="tel" dir="ltr" autocomplete="tel" placeholder="09xxxxxxxxx">
+   <button class="pri" id="send" data-t="send"></button><div class="err" id="e1"></div></div>
+  <div class="step" id="s2"><h1 data-t="codeT"></h1><p class="sub" id="codeSub"></p>
+   <input id="cd" class="code" inputmode="numeric" maxlength="6" dir="ltr" autocomplete="one-time-code" placeholder="••••••">
+   <button class="pri" id="verify" data-t="verify"></button><button class="lnk" id="resend"></button><button class="lnk" id="back" data-t="changeNo"></button><div class="err" id="e2"></div></div>
+  <div class="step" id="s3"><h1 data-t="formT"></h1>
+   <label data-t="name"></label><input id="nm" autocomplete="name">
+   <label data-t="bday"></label><div class="row"><select id="bd"></select><select id="bm"></select><select id="by"></select></div>
+   <label><span data-t="insta"></span> <i data-t="opt"></i></label><input id="ig" dir="ltr" placeholder="@username" autocapitalize="none">
+   <label><span data-t="how"></span> <i data-t="opt"></i></label><select id="src"></select>
+   <p class="note" data-t="consent"></p>
+   <button class="pri" id="submit" data-t="submit"></button><div class="err" id="e3"></div></div>
+  <div class="step" id="s4"><div class="done"><div class="big">✓</div><h1 data-t="thanks"></h1><p class="sub" data-t="thanksSub"></p></div></div>
+ </div>
+</div>
+<script>
+var API='https://dillgdsipzuhialhfatc.supabase.co/functions/v1/mahdavan-api',KEY='sb_publishable_oGw4NjfwKr4qWDz8VAgfKw_BzUfkr-p';
+var MON={fa:['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'],en:['Farvardin','Ordibehesht','Khordad','Tir','Mordad','Shahrivar','Mehr','Aban','Azar','Dey','Bahman','Esfand']};
+var SRC=['friends','instagram','search','referral','other'];
+var T={fa:{title:'تکمیل پروندهٔ مشتری',sub:'برای ادامه، شمارهٔ موبایلتان را بنویسید تا کد تأیید برایتان پیامک شود.',phone:'شمارهٔ موبایل',send:'ارسال کد تأیید',codeT:'کد تأیید',verify:'تأیید',changeNo:'تغییر شماره',formT:'اطلاعات شما',name:'نام و نام خانوادگی (فارسی)',bday:'تاریخ تولد (شمسی)',day:'روز',month:'ماه',year:'سال',insta:'اینستاگرام',opt:'(اختیاری)',how:'نحوهٔ آشنایی با ما',choose:'انتخاب کنید',consent:'با ارسال این فرم موافقت می‌کنید که پیامک‌های خدماتی (مثل تأیید نوبت) به شمارهٔ شما ارسال شود.',submit:'ثبت اطلاعات',thanks:'ممنون، ثبت شد',thanksSub:'اطلاعات شما در پرونده‌تان ذخیره می‌شود.',
+ src:{friends:'از طریق دوستان یا آشنایان',instagram:'اینستاگرام',search:'جست‌وجو در گوگل یا نقشه',referral:'معرفی مشتری قبلی',other:'سایر'},
+ sentTo:function(p){return 'کد ۶ رقمی به '+p+' پیامک شد.'},resendIn:function(s){return 'ارسال دوباره ('+s+')'},resend:'ارسال دوباره کد',
+ e:{phone:'شمارهٔ موبایل درست نیست (مثل 09123456789).',too_many:'چند بار کد خواسته‌اید. یک ساعت دیگر دوباره امتحان کنید.',busy:'الان امکان ارسال نیست. کمی بعد دوباره امتحان کنید.',sms_failed:'ارسال پیامک انجام نشد. کمی بعد دوباره امتحان کنید.',wrong:'کد درست نیست.',expired:'کد منقضی شده. دوباره کد بگیرید.',locked:'تعداد تلاش بیش از حد. دوباره کد بگیرید.',ticket:'زمان شما تمام شد. از ابتدا شروع کنید.',name:'نام را کامل بنویسید.',bday:'تاریخ تولد را کامل انتخاب کنید.',insta:'نام کاربری اینستاگرام درست نیست.',server:'مشکلی پیش آمد. دوباره امتحان کنید.',network:'اتصال اینترنت را بررسی کنید.',code:'کد ۶ رقمی را وارد کنید.'}},
+ en:{title:'Complete your profile',sub:'Enter your mobile number and we will text you a verification code.',phone:'Mobile number',send:'Send code',codeT:'Verification code',verify:'Verify',changeNo:'Change number',formT:'Your details',name:'Full name (Persian)',bday:'Birthday (Jalali)',day:'Day',month:'Month',year:'Year',insta:'Instagram',opt:'(optional)',how:'How did you find us?',choose:'Choose',consent:'By submitting you agree to receive service text messages (such as appointment confirmations) on this number.',submit:'Submit',thanks:'Thank you, saved',thanksSub:'Your details will be added to your profile.',
+ src:{friends:'Through friends or acquaintances',instagram:'Instagram',search:'Google or Maps search',referral:'Referred by a customer',other:'Other'},
+ sentTo:function(p){return 'A 6-digit code was sent to '+p+'.'},resendIn:function(s){return 'Resend ('+s+')'},resend:'Resend code',
+ e:{phone:'Invalid mobile number (e.g. 09123456789).',too_many:'Too many code requests. Try again in an hour.',busy:'Sending is unavailable right now. Try again shortly.',sms_failed:'Could not send the text message. Try again shortly.',wrong:'Wrong code.',expired:'The code expired. Request a new one.',locked:'Too many attempts. Request a new code.',ticket:'Your session expired. Please start again.',name:'Please enter your full name.',bday:'Please choose your full birthday.',insta:'Invalid Instagram username.',server:'Something went wrong. Try again.',network:'Check your internet connection.',code:'Enter the 6-digit code.'}}};
+var lang=localStorage.getItem('mf_lang')||'fa',phone='',ticket='',tm=null;
+function $(i){return document.getElementById(i)}
+function en(s){return String(s||'').replace(/[۰-۹]/g,function(d){return d.charCodeAt(0)-1776}).replace(/[٠-٩]/g,function(d){return d.charCodeAt(0)-1632})}
+function norm(s){s=en(s).replace(/[^\d+]/g,'');if(s.indexOf('+98')===0)s='0'+s.slice(3);else if(s.indexOf('0098')===0)s='0'+s.slice(4);else if(/^98\d{10}$/.test(s))s='0'+s.slice(2);else if(/^9\d{9}$/.test(s))s='0'+s;return s}
+function show(n){['s1','s2','s3','s4'].forEach(function(x){$(x).classList.toggle('on',x==='s'+n)})}
+function msg(id,k){$(id).textContent=k?(T[lang].e[k]||T[lang].e.server):''}
+function post(action,data){data=data||{};data.action=action;return fetch(API,{method:'POST',headers:{'Content-Type':'application/json',apikey:KEY},body:JSON.stringify(data)}).then(function(r){return r.json().catch(function(){return{ok:false,error:'server'}})}).catch(function(){return{ok:false,error:'network'}})}
+function fill(){var t=T[lang];document.documentElement.lang=lang;document.documentElement.dir=lang==='fa'?'rtl':'ltr';
+ document.querySelectorAll('[data-t]').forEach(function(e){e.textContent=t[e.getAttribute('data-t')]});
+ $('lang').textContent=lang==='fa'?'English':'فارسی';
+ var d='<option value="">'+t.day+'</option>',m='<option value="">'+t.month+'</option>',y='<option value="">'+t.year+'</option>',i;
+ for(i=1;i<=31;i++)d+='<option>'+i+'</option>';for(i=1;i<=12;i++)m+='<option value="'+i+'">'+MON[lang][i-1]+'</option>';for(i=1400;i>=1320;i--)y+='<option>'+i+'</option>';
+ var cur=[$('bd').value,$('bm').value,$('by').value,$('src').value];$('bd').innerHTML=d;$('bm').innerHTML=m;$('by').innerHTML=y;
+ $('src').innerHTML='<option value="">'+t.choose+'</option>'+SRC.map(function(k){return '<option value="'+k+'">'+t.src[k]+'</option>'}).join('');
+ $('bd').value=cur[0];$('bm').value=cur[1];$('by').value=cur[2];$('src').value=cur[3];
+ if(phone)$('codeSub').textContent=t.sentTo(phone);tick()}
+function tick(){clearInterval(tm);var s=60,b=$('resend');b.disabled=true;function u(){b.textContent=s>0?T[lang].resendIn(s):T[lang].resend;b.disabled=s>0}u();tm=setInterval(function(){s--;u();if(s<=0)clearInterval(tm)},1000)}
+$('lang').onclick=function(){lang=lang==='fa'?'en':'fa';localStorage.setItem('mf_lang',lang);fill()};
+function sendCode(){var p=norm($('ph').value);msg('e1','');if(!/^09\d{9}$/.test(p))return msg('e1','phone');$('send').disabled=true;
+ post('otp_request',{phone:p}).then(function(r){$('send').disabled=false;if(!r.ok)return msg('e1',r.error);phone=p;$('codeSub').textContent=T[lang].sentTo(p);$('cd').value='';msg('e2','');show(2);tick();$('cd').focus()})}
+$('send').onclick=sendCode;$('ph').onkeydown=function(e){if(e.key==='Enter')sendCode()};
+$('resend').onclick=function(){$('e2').textContent='';post('otp_request',{phone:phone}).then(function(r){if(!r.ok)return msg('e2',r.error);tick()})};
+$('back').onclick=function(){show(1)};
+$('verify').onclick=function(){var c=en($('cd').value).replace(/\D/g,'');msg('e2','');if(c.length!==6)return msg('e2','code');$('verify').disabled=true;
+ post('otp_verify',{phone:phone,code:c}).then(function(r){$('verify').disabled=false;if(!r.ok)return msg('e2',r.error);ticket=r.ticket;msg('e3','');show(3)})};
+$('submit').onclick=function(){msg('e3','');var nm=$('nm').value.replace(/\s+/g,' ').trim();if(nm.length<2)return msg('e3','name');
+ if(!$('bd').value||!$('bm').value||!$('by').value)return msg('e3','bday');$('submit').disabled=true;
+ post('form_submit',{ticket:ticket,name_fa:nm,bday_y:+$('by').value,bday_m:+$('bm').value,bday_d:+$('bd').value,instagram:$('ig').value.trim(),source:$('src').value}).then(function(r){$('submit').disabled=false;if(!r.ok)return msg('e3',r.error);show(4)})};
+fill();
+</script>
+</body>
+</html>
